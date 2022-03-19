@@ -3,12 +3,7 @@ import "./Health/Health.js";
 import "./Auth/Auth.js";
 import "./Auth/ResetPassword.js";
 
-import "./Nouns/GetNouns.js";
-import "./Nouns/PostNouns.js";
-import "./Nouns/PatchNouns.js";
-import "./Nouns/DeleteNouns.js";
-import "./Fields/BatchPostFields.js";
-import "./Fields/GetNounFields.js";
+// Normal API endpoints
 
 // The default API Handler responds with a 404
 import "./ApiNotFound.js";

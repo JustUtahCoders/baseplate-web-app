@@ -27,7 +27,7 @@ docker-compose exec db bash
 psql foundry
 # show tables
 \dt
-select * from "Nouns";
+select * from "Users";
 ```
 
 ## Database migrations

@@ -1,11 +1,9 @@
 import { StaticRouter, Route, Redirect } from "react-router";
 import { BrowserRouter } from "react-router-dom";
-import { CreateNoun } from "./Nouns/CreateNoun";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { Login } from "./Auth/Login";
 import { ResetPassword } from "./Auth/ResetPassword";
 import { ResetPasswordEmailSent } from "./Auth/ResetPasswordEmailSent";
-import { CreateEditIntakeForm } from "./Nouns/CreateEditIntakeForm";
 
 const queryClient = new QueryClient();
 
@@ -43,17 +41,13 @@ export function App(props: AppProps) {
       <body>
         {/* @ts-ignore */}
         <Router context={props.routerContext} location={props.reqUrl}>
-          <Route path="/create-noun" component={CreateNoun} />
           <Route path="/login" component={Login} />
           <Route path="/reset-password" component={ResetPassword} />
           <Route
             path="/reset-password-email-sent"
             component={ResetPasswordEmailSent}
           />
-          <Route
-            path="/create-intake-form/:nounId"
-            component={CreateEditIntakeForm}
-          />
+          <Route path="/" render={() => <div>Home</div>} />
         </Router>
         {props.jsFiles.map((jsFile) => (
           <script key={jsFile} src={`${props.assetBase}/${jsFile}`}></script>
