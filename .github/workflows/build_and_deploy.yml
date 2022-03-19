@@ -16,6 +16,8 @@ jobs:
         node-version: [16.4]
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v2
         with:
@@ -30,11 +32,13 @@ jobs:
           key: ${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-
+      - run: git checkout main && git checkout $GITHUB_SHA
       - run: pnpm install
       - run: pnpm run check-format
       - run: pnpm run lint
       - run: pnpm run test
       - run: pnpm run build
+      - run: pnpm exec changeset status
       - run: cp dist/webpack-manifest.json lib/backend
       - run: find lib
       - run: find dist

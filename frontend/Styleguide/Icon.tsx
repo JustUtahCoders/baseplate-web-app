@@ -1,3 +1,5 @@
+import { FunctionComponent } from "react";
+
 export function Icon({ variant, size = 16, alt }: IconProps) {
   const IconComponent: React.FunctionComponent<SpecificIconProps> =
     IconComponents[variant];
@@ -25,7 +27,10 @@ export enum IconVariant {
   move = "move",
 }
 
-const IconComponents = {
+const IconComponents: Record<
+  IconVariant,
+  FunctionComponent<SpecificIconProps>
+> = {
   [IconVariant.close]: CloseIcon,
   [IconVariant.expanded]: ExpandedIcon,
   [IconVariant.collapsed]: CollapsedIcon,
@@ -81,7 +86,7 @@ function ExpandedIcon({ size, alt }: SpecificIconProps) {
   );
 }
 
-function CollapsedIcon({ size, alt }) {
+function CollapsedIcon({ size, alt }: SpecificIconProps) {
   return (
     <svg
       version="1.1"
@@ -111,7 +116,7 @@ function CollapsedIcon({ size, alt }) {
   );
 }
 
-function RequiredIcon({ size, alt }: IconProps) {
+function RequiredIcon({ size, alt }: SpecificIconProps) {
   return (
     <svg
       height={`${size}px`}
@@ -135,7 +140,7 @@ function RequiredIcon({ size, alt }: IconProps) {
   );
 }
 
-function MoveIcon({ size, alt }: IconProps) {
+function MoveIcon({ size, alt }: SpecificIconProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"

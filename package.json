@@ -44,6 +44,8 @@
     "@babel/preset-env": "^7.16.11",
     "@babel/preset-react": "^7.16.7",
     "@babel/preset-typescript": "^7.16.7",
+    "@changesets/changelog-github": "^0.4.3",
+    "@changesets/cli": "^2.21.1",
     "@jest/types": "^27.5.1",
     "@node-loader/core": "^2.0.0",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.4",
