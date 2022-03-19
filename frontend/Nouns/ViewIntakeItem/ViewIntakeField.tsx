@@ -10,6 +10,7 @@ export function ViewIntakeField(props: ViewIntakeItemProps) {
     <FormField className="pointer-events-none mt-3">
       <FormFieldLabel htmlFor={`intake-item-${fieldItem.id}`}>
         {fieldItem.question.label}
+        {fieldItem.question.required ? " *" : null}
       </FormFieldLabel>
       <Input
         id={`intake-item-${fieldItem.id}`}

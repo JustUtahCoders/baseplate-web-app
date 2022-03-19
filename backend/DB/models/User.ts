@@ -52,7 +52,10 @@ modelEvents.once("init", (sequelize) => {
     }
   );
 
-  UserModel.sync({
-    alter: true,
-  });
+  modelEvents.emit(
+    "migration",
+    UserModel.sync({
+      alter: true,
+    })
+  );
 });

@@ -58,6 +58,10 @@ function getEditComponent(
       return EditSectionItem;
     case IntakeItemType.Header:
       return EditIntakeHeader;
+    default:
+      throw Error(
+        `No Edit component implemented for intake item type ${intakeItem.type}`
+      );
   }
 }
 

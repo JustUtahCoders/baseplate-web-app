@@ -34,7 +34,7 @@ export async function sendEmail({ to, subject, body }) {
 
   const email = await makeEmail({
     to,
-    from: "Flax CRM <info@single-spa-workshop.com>",
+    from: "Single-Spa Foundry <info@single-spa-workshop.com>",
     subject,
     body,
   });

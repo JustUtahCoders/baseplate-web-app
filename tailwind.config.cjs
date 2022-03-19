@@ -9,6 +9,9 @@ module.exports = {
       white: colors.white,
       gray: colors.gray,
       coolGray: colors.coolGray,
+      blue: colors.blue,
+      red: colors.red,
+      transparent: "transparent",
     },
     extend: {
       outline: {

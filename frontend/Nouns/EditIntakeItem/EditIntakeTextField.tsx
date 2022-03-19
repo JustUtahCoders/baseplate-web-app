@@ -9,6 +9,7 @@ import { Toggle } from "../../Styleguide/Toggle";
 import { Button, ButtonKind } from "../../Styleguide/Button";
 import { Field } from "../../../backend/DB/models/Field";
 import { Select } from "../../Styleguide/Select";
+import { newIntakeItemId } from "../CreateIntakeItem";
 
 export function EditIntakeTextField(props: EditItemProps) {
   const intakeItem = props.intakeItem as IntakeFieldItem;
@@ -84,8 +85,8 @@ export function EditIntakeTextField(props: EditItemProps) {
   function handleSubmit(evt: FormEvent<HTMLFormElement>): void {
     evt.preventDefault();
     const intakeItem: IntakeFieldItem = {
-      id: props.intakeItem?.id ?? -1,
-      field: (props.intakeItem as IntakeFieldItem)?.field ?? emptyTextField,
+      id: props.intakeItem?.id ?? newIntakeItemId(),
+      field: (props.intakeItem as IntakeFieldItem)?.field ?? emptyTextField(),
       type: IntakeItemType.Field,
       question: {
         label,
@@ -97,13 +98,13 @@ export function EditIntakeTextField(props: EditItemProps) {
   }
 }
 
-const emptyTextField: Field = {
+const emptyTextField: () => Field = () => ({
   activeStatus: true,
   columnName: "",
   friendlyName: "",
-  id: -1,
+  id: newIntakeItemId(),
   nounId: -1,
   type: "text",
   createdAt: new Date().toString(),
   updatedAt: new Date().toString(),
-};
+});

@@ -27,6 +27,12 @@ export function CreateIntakeItem(props: CreateIntakeItemProps) {
   );
 }
 
+let newlyCreatedItemId = -1;
+
+export function newIntakeItemId(): number {
+  return newlyCreatedItemId--;
+}
+
 function getCreateComponent(
   intakeItemType: IntakeItemType
 ): React.FunctionComponent<CreateItemProps> {

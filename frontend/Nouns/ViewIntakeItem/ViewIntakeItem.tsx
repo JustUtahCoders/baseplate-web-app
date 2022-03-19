@@ -2,11 +2,21 @@ import { IntakeItem, IntakeItemType } from "../CreateEditIntakeForm";
 import { ViewIntakeField } from "./ViewIntakeField";
 import { ViewIntakeParagraph } from "./ViewIntakeParagraph";
 import { ViewIntakeHeader } from "./ViewIntakeHeader";
+import { ViewIntakePage } from "./ViewIntakePage";
+import { FunctionComponent } from "react";
 
 export function ViewIntakeItem(props: ViewIntakeItemProps) {
   const ViewItem = getViewItemComponent(props.intakeItem);
 
-  return <ViewItem {...props} />;
+  if (props.WrapperComponent) {
+    return (
+      <props.WrapperComponent {...props}>
+        <ViewItem {...props} />
+      </props.WrapperComponent>
+    );
+  } else {
+    return <ViewItem {...props} />;
+  }
 }
 
 function getViewItemComponent(
@@ -19,9 +29,11 @@ function getViewItemComponent(
       return ViewIntakeParagraph;
     case IntakeItemType.Header:
       return ViewIntakeHeader;
+    case IntakeItemType.Page:
+      return ViewIntakePage;
     default:
       throw Error(
-        `ViewIntakeItem not implemented for intake items with type '${intakeItem.type}'`
+        `No component implemented for viewing intake items of type '${intakeItem.type}'`
       );
   }
 }
@@ -29,4 +41,5 @@ function getViewItemComponent(
 export interface ViewIntakeItemProps {
   intakeItem: IntakeItem;
   nestingLevel: number;
+  WrapperComponent?: FunctionComponent<any>;
 }

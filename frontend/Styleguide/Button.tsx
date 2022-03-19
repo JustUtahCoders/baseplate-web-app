@@ -1,15 +1,21 @@
 import { always, maybe } from "kremling";
-import { ButtonHTMLAttributes } from "react";
+import { ButtonHTMLAttributes, forwardRef } from "react";
 
-export function Button(props: ButtonProps) {
-  const { kind, className, children, ...otherProps } = props;
+export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
+  (props, ref) => {
+    const { kind, className, children, ...otherProps } = props;
 
-  return (
-    <button className={buttonClasses(kind, className)} {...otherProps}>
-      {children}
-    </button>
-  );
-}
+    return (
+      <button
+        className={buttonClasses(kind, className)}
+        {...otherProps}
+        ref={ref}
+      >
+        {children}
+      </button>
+    );
+  }
+);
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   kind: ButtonKind;
@@ -31,7 +37,7 @@ export function buttonClasses(kind: ButtonKind, extraClassName: string = "") {
     .toString();
 }
 
-const styledButtonClasses = `flex items-center justify-center cursor-pointer py-2.5 px-5 rounded font-medium`;
+const styledButtonClasses = `inline-flex items-center justify-center cursor-pointer py-2.5 px-5 rounded font-medium`;
 
 const styledButtonKinds = [ButtonKind.primary, ButtonKind.secondary];
 
@@ -43,5 +49,5 @@ const buttonKindClasses = {
   [ButtonKind.classic]:
     "text-primary underline hover:text-primary hover:underline",
   [ButtonKind.icon]:
-    "text-primary hover:bg-gray-200 flex justify-items-center align-items-center p-2 rounded",
+    "text-primary hover:bg-gray-200 inline-flex justify-items-center align-items-center p-2 rounded",
 };

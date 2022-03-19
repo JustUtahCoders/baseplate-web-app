@@ -1,20 +1,14 @@
 import { useEffect, useReducer } from "react";
-import {
-  DragDropContext,
-  Droppable,
-  Draggable,
-  DropResult,
-} from "react-beautiful-dnd";
 import { RouteComponentProps } from "react-router";
 import { Field } from "../../backend/DB/models/Field";
 import { useQuery } from "react-query";
 import { Card } from "../Styleguide/Card";
 import { Loader } from "../Styleguide/Loader";
-import { EditIntakeItem } from "./EditIntakeItem";
 import { Button, ButtonKind } from "../Styleguide/Button";
 import { CreateIntakeItem } from "./CreateIntakeItem";
-import { flaxFetch } from "../Utils/flaxFetch";
-import { ViewIntakeItem } from "./ViewIntakeItem/ViewIntakeItem";
+import { foundryFetch } from "../Utils/foundryFetch";
+import { ViewEditIntakeItem } from "./EditIntakeItem/ViewEditIntakeItem";
+import { useIntakeFormKeyboardShortcuts } from "./useIntakeFormKeyboardShortcuts";
 
 export function CreateEditIntakeForm(
   props: RouteComponentProps<{ nounId: string }>
@@ -33,7 +27,7 @@ export function CreateEditIntakeForm(
     isError: isErrorFields,
     error: errorFields,
   } = useQuery<Field[]>(`fields-${nounId}`, async () => {
-    const r = await flaxFetch<{ fields: Field[] }>(
+    const r = await foundryFetch<{ fields: Field[] }>(
       `/api/nouns/${nounId}/fields`
     );
     return r.fields;
@@ -48,42 +42,50 @@ export function CreateEditIntakeForm(
     const r: GetIntakeItemsResponse = {
       intakeItems: [
         {
-          type: IntakeItemType.Field,
-          field: {
-            createdAt: Date.now().toString(),
-            id: 1,
-            activeStatus: true,
-            columnName: "givenName",
-            friendlyName: "First Name",
-            nounId: 10,
-            type: "text",
-            updatedAt: Date.now().toString(),
-          },
-          id: 1,
-          question: {
-            label: "First Name",
-            placeholderText: "Jane",
-            required: true,
-          },
-        },
-        {
-          type: IntakeItemType.Field,
-          field: {
-            createdAt: Date.now().toString(),
-            id: 2,
-            activeStatus: true,
-            columnName: "surname",
-            friendlyName: "Last Name",
-            nounId: 10,
-            type: "text",
-            updatedAt: Date.now().toString(),
-          },
-          id: 2,
-          question: {
-            label: "Last Name",
-            placeholderText: "Doe",
-            required: true,
-          },
+          type: IntakeItemType.Page,
+          id: 3,
+          intakeItems: [
+            {
+              type: IntakeItemType.Field,
+              field: {
+                createdAt: Date.now().toString(),
+                id: 1,
+                activeStatus: true,
+                columnName: "givenName",
+                friendlyName: "First Name",
+                nounId: 10,
+                type: "text",
+                updatedAt: Date.now().toString(),
+              },
+              id: 1,
+              pageId: 3,
+              question: {
+                label: "First Name",
+                placeholderText: "Jane",
+                required: true,
+              },
+            },
+            {
+              type: IntakeItemType.Field,
+              field: {
+                createdAt: Date.now().toString(),
+                id: 2,
+                activeStatus: true,
+                columnName: "surname",
+                friendlyName: "Last Name",
+                nounId: 10,
+                type: "text",
+                updatedAt: Date.now().toString(),
+              },
+              id: 2,
+              pageId: 3,
+              question: {
+                label: "Last Name",
+                placeholderText: "Doe",
+                required: true,
+              },
+            },
+          ],
         },
       ],
     };
@@ -92,17 +94,32 @@ export function CreateEditIntakeForm(
 
   useEffect(() => {
     dispatch({
-      type: ActionTypes.NounFieldsLoaded,
+      type: CreateEditIntakeFormActionTypes.NounFieldsLoaded,
       nounFields: fields || [],
     });
   }, [fields]);
 
   useEffect(() => {
     dispatch({
-      type: ActionTypes.IntakeItemsLoaded,
+      type: CreateEditIntakeFormActionTypes.IntakeItemsLoaded,
       intakeItems: intakeItems || [],
     });
   }, [intakeItems]);
+
+  useEffect(() => {
+    window.addEventListener("click", clearEdit);
+    function clearEdit() {
+      dispatch({
+        type: CreateEditIntakeFormActionTypes.CancelEdit,
+      });
+    }
+
+    return () => {
+      window.removeEventListener("click", clearEdit);
+    };
+  });
+
+  useIntakeFormKeyboardShortcuts({ dispatch });
 
   if (isLoadingIntakeItems || isLoadingFields) {
     return (
@@ -128,94 +145,42 @@ export function CreateEditIntakeForm(
           kind={ButtonKind.primary}
           onClick={() =>
             dispatch({
-              type: ActionTypes.CreateItem,
+              type: CreateEditIntakeFormActionTypes.CreateItem,
             })
           }
         >
           Add Field
         </Button>
       </div>
-      <DragDropContext onDragEnd={onDragEnd}>
-        <Droppable droppableId="intake-form">
-          {(provided, snapshot) => (
-            <div {...provided.droppableProps} ref={provided.innerRef}>
-              {state.intakeForm.intakeItems.map((item, i) => {
-                return (
-                  <Draggable
-                    key={item.id}
-                    draggableId={String(item.id)}
-                    index={i}
-                  >
-                    {(provided, snapshot) => (
-                      <div
-                        ref={provided.innerRef}
-                        {...provided.draggableProps}
-                        {...provided.dragHandleProps}
-                        className={snapshot.isDragging ? "outline-primary" : ""}
-                        role="button"
-                        tabIndex={0}
-                        onClick={() =>
-                          dispatch({
-                            type: ActionTypes.EditItem,
-                            item,
-                          })
-                        }
-                      >
-                        <ViewIntakeItem intakeItem={item} nestingLevel={0} />
-                      </div>
-                    )}
-                  </Draggable>
-                );
-              })}
-              {provided.placeholder}
-            </div>
-          )}
-        </Droppable>
-      </DragDropContext>
-      {state.itemToEdit && (
-        <EditIntakeItem
-          fields={state.nounFields}
-          intakeItem={state.itemToEdit}
-          close={() => {
-            dispatch({
-              type: ActionTypes.CancelEdit,
-            });
-          }}
-        />
-      )}
+      {state.intakeForm.intakeItems.map((item, i) => {
+        return (
+          <ViewEditIntakeItem
+            key={item.id}
+            intakeItem={item}
+            nestingLevel={0}
+            dispatch={dispatch}
+            selectedItem={state.itemToEdit}
+          />
+        );
+      })}
       {state.creatingItem && (
         <CreateIntakeItem
           fields={state.nounFields}
           addNewItem={(intakeItem: IntakeItem) => {
             dispatch({
-              type: ActionTypes.AddNewItem,
+              type: CreateEditIntakeFormActionTypes.AddNewItem,
               intakeItem,
             });
           }}
           close={() => {
             dispatch({
-              type: ActionTypes.CancelCreate,
+              type: CreateEditIntakeFormActionTypes.CancelCreate,
             });
           }}
         />
       )}
     </div>
   );
-
-  function onDragEnd(result: DropResult) {
-    if (
-      !result.destination ||
-      result.destination.index === result.source.index
-    ) {
-      return;
-    }
-
-    dispatch({
-      type: ActionTypes.Reorder,
-      sourceIndex: result.source.index,
-      destIndex: result.destination.index,
-    });
-  }
 }
 
 const initialState: State = {
@@ -225,67 +190,266 @@ const initialState: State = {
   nounFields: [],
   creatingItem: false,
   itemToEdit: undefined,
+  undoStack: [],
+  redoStack: [],
 };
 
-function reducer(state: State, action: Action): State {
+function reducer(state: State, action: CreateEditIntakeFormAction): State {
   switch (action.type) {
-    case ActionTypes.IntakeItemsLoaded:
+    case CreateEditIntakeFormActionTypes.IntakeItemsLoaded:
       return modifyIntakeForm(state, {
         intakeItems: action.intakeItems,
       });
-    case ActionTypes.Reorder:
-      const newItems = [...state.intakeForm.intakeItems];
-      const [removedItem] = newItems.splice(action.sourceIndex, 1);
-      newItems.splice(action.destIndex, 0, removedItem);
-
-      return modifyIntakeForm(state, {
-        intakeItems: newItems,
-      });
-    case ActionTypes.EditItem:
-      return {
-        ...state,
-        itemToEdit: action.item,
-      };
-    case ActionTypes.CancelEdit:
-      return {
-        ...state,
-        itemToEdit: undefined,
-      };
-    case ActionTypes.CreateItem:
+    case CreateEditIntakeFormActionTypes.EditItem:
+      if (action.item !== state.itemToEdit) {
+        return {
+          ...state,
+          itemToEdit: action.item,
+        };
+      }
+      break;
+    case CreateEditIntakeFormActionTypes.SaveItemEdit:
+      if (state.itemToEdit) {
+        return {
+          ...state,
+          itemToEdit: action.intakeItem,
+          intakeForm: {
+            ...state.intakeForm,
+            intakeItems: replaceIntakeItem(
+              state.intakeForm.intakeItems,
+              state.itemToEdit,
+              action.intakeItem
+            ),
+          },
+        };
+      } else {
+        throw Error(`Cannot save intake item when none is selected`);
+      }
+    case CreateEditIntakeFormActionTypes.CancelEdit:
+      if (state.itemToEdit) {
+        return {
+          ...state,
+          itemToEdit: undefined,
+        };
+      }
+    case CreateEditIntakeFormActionTypes.CreateItem:
       return {
         ...state,
         creatingItem: true,
       };
-    case ActionTypes.CancelCreate:
+    case CreateEditIntakeFormActionTypes.CancelCreate:
       return {
         ...state,
         creatingItem: false,
       };
-    case ActionTypes.AddNewItem:
+    case CreateEditIntakeFormActionTypes.AddNewItem:
       return {
         ...state,
+        undoStack: [
+          {
+            type: CreateEditIntakeFormActionTypes.DeleteItem,
+            intakeItem: action.intakeItem,
+          },
+          ...state.undoStack,
+        ],
         intakeForm: {
           ...state.intakeForm,
           intakeItems: [...state.intakeForm.intakeItems, action.intakeItem],
         },
         creatingItem: false,
       };
-    case ActionTypes.NounFieldsLoaded:
+    case CreateEditIntakeFormActionTypes.NounFieldsLoaded:
       return {
         ...state,
         nounFields: action.nounFields,
       };
+    case CreateEditIntakeFormActionTypes.DeleteItem:
+      const item = state.itemToEdit || action.intakeItem;
+      if (item) {
+        return modifyIntakeForm(state, {
+          intakeItems: replaceIntakeItem(
+            state.intakeForm.intakeItems,
+            item,
+            null
+          ),
+        });
+      }
+    case CreateEditIntakeFormActionTypes.MoveItemUp:
+    case CreateEditIntakeFormActionTypes.MoveItemDown:
+      if (state.itemToEdit) {
+        const { intakeItems, itemMoved } = moveItemOne(
+          state.intakeForm.intakeItems,
+          state.itemToEdit,
+          action.type === CreateEditIntakeFormActionTypes.MoveItemUp
+        );
+        if (itemMoved) {
+          let undoAction;
+
+          if (action.type === CreateEditIntakeFormActionTypes.MoveItemUp) {
+            undoAction = {
+              type: CreateEditIntakeFormActionTypes.MoveItemDown,
+            };
+          } else {
+            undoAction = {
+              type: CreateEditIntakeFormActionTypes.MoveItemUp,
+            };
+          }
+
+          return modifyIntakeForm(
+            state,
+            {
+              intakeItems,
+            },
+            undoAction
+          );
+        }
+      }
+      break;
+    case CreateEditIntakeFormActionTypes.Undo:
+      if (state.undoStack.length > 0) {
+        const newState = reducer(state, state.undoStack[0]);
+        const undoneActions = newState.undoStack.splice(0, 1);
+        newState.redoStack.push(...undoneActions);
+        return newState;
+      }
+      break;
+    case CreateEditIntakeFormActionTypes.Redo:
+      if (state.redoStack.length > 0) {
+        const newState = reducer(state, state.redoStack[0]);
+        const redoneActions = newState.redoStack.splice(0, 1);
+        newState.undoStack.push(...redoneActions);
+        return newState;
+      }
+      break;
     default:
       throw Error();
   }
+
+  return state;
+}
+
+function moveItemOne(
+  intakeItems: IntakeItem[],
+  itemToMove: IntakeItem,
+  moveToPrevious: boolean
+): MoveResult {
+  let performMove = createPerformMove(intakeItems, moveToPrevious),
+    resultItems: IntakeItem[] = intakeItems;
+
+  for (let [index, item] of intakeItems.entries()) {
+    if (item.id === itemToMove.id) {
+      if (performMove) {
+        resultItems = performMove(index);
+        return {
+          intakeItems: resultItems,
+          itemMoved: true,
+        };
+      } else {
+        return {
+          intakeItems,
+          itemMoved: false,
+        };
+      }
+    } else if ((item as IntakePageItem).intakeItems) {
+      const { intakeItems: newChildItems, itemMoved } = moveItemOne(
+        (item as IntakePageItem).intakeItems,
+        itemToMove,
+        moveToPrevious
+      );
+
+      if (itemMoved) {
+        (item as IntakePageItem).intakeItems = newChildItems;
+        return {
+          intakeItems,
+          itemMoved: true,
+        };
+      }
+    }
+
+    performMove = createPerformMove(intakeItems, moveToPrevious);
+  }
+
+  return {
+    intakeItems: resultItems,
+    itemMoved: false,
+  };
+}
+
+function createPerformMove(
+  intakeItems: IntakeItem[],
+  moveToPrevious: boolean
+): (index: number) => IntakeItem[] {
+  return (index: number) => {
+    const result = [...intakeItems];
+    if (moveToPrevious) {
+      if (index !== 0) {
+        swapArrayItems(result, index, index - 1);
+      }
+    } else {
+      if (index !== result.length - 1) {
+        console.log("moving down", index, result.length - 1, intakeItems);
+        swapArrayItems(result, index, index + 1);
+      }
+    }
+    return result;
+  };
+}
+
+function swapArrayItems(
+  arr: any[],
+  firstIndex: number,
+  secondIndex: number
+): void {
+  const item = arr[firstIndex];
+  arr[firstIndex] = arr[secondIndex];
+  arr[secondIndex] = item;
+}
+
+interface MoveResult {
+  intakeItems: IntakeItem[];
+  itemMoved: boolean;
+}
+
+function replaceIntakeItem(
+  intakeItems: IntakeItem[],
+  oldItem: IntakeItem,
+  newItem: IntakeItem | null
+): IntakeItem[] {
+  return intakeItems.reduce<IntakeItem[]>((result, intakeItem) => {
+    let thisItem: IntakeItem | null;
+
+    if (intakeItem.id === oldItem.id) {
+      thisItem = newItem;
+    } else if ((intakeItem as IntakePageItem).intakeItems) {
+      const item: IntakePageItem = {
+        ...(intakeItem as IntakePageItem),
+        intakeItems: replaceIntakeItem(
+          (intakeItem as IntakePageItem).intakeItems,
+          oldItem,
+          newItem
+        ),
+      };
+      thisItem = item;
+    } else {
+      thisItem = intakeItem;
+    }
+
+    if (thisItem) {
+      result.push(thisItem);
+    }
+
+    return result;
+  }, []);
 }
 
 function modifyIntakeForm(
   state: State,
-  partialIntakeForm: Partial<IntakeForm>
-) {
+  partialIntakeForm: Partial<IntakeForm>,
+  undoAction?: CreateEditIntakeFormAction
+): State {
   return {
     ...state,
+    undoStack: undoAction ? [undoAction, ...state.undoStack] : state.undoStack,
     intakeForm: {
       ...state.intakeForm,
       ...partialIntakeForm,
@@ -298,21 +462,28 @@ interface State {
   itemToEdit?: IntakeItem;
   creatingItem?: boolean;
   nounFields: Field[];
+  undoStack: CreateEditIntakeFormAction[];
+  redoStack: CreateEditIntakeFormAction[];
 }
 
 interface IntakeForm {
   intakeItems: IntakeItem[];
 }
 
-enum ActionTypes {
+export enum CreateEditIntakeFormActionTypes {
   IntakeItemsLoaded = "IntakeItemsLoaded",
-  Reorder = "Reorder",
   EditItem = "EditItem",
+  SaveItemEdit = "SaveItemEdit",
   CancelEdit = "CancelEdit",
   CreateItem = "CreateItem",
   CancelCreate = "CancelCreate",
   AddNewItem = "AddNewItem",
   NounFieldsLoaded = "NounFieldsLoaded",
+  DeleteItem = "DeleteItem",
+  MoveItemUp = "MoveItemUp",
+  MoveItemDown = "MoveItemDown",
+  Undo = "Undo",
+  Redo = "Redo",
 }
 
 export enum IntakeItemType {
@@ -323,30 +494,37 @@ export enum IntakeItemType {
   Paragraph = "Paragraph",
 }
 
-export interface IntakeFieldItem {
+interface AnyIntakeItem {
+  type: IntakeItemType;
+  id: number;
+  pageId?: number;
+}
+
+export type IntakeFieldItem = AnyIntakeItem & {
   type: IntakeItemType.Field;
   id: number;
   field: Field;
   question: FieldQuestion;
-}
+};
 
-export interface IntakeSectionItem {
+export type IntakeSectionItem = AnyIntakeItem & {
   type: IntakeItemType.Section;
-  id: number;
   intakeItems: IntakeItem[];
-}
+};
 
-export interface IntakeParagraphItem {
+export type IntakeParagraphItem = AnyIntakeItem & {
   type: IntakeItemType.Paragraph;
-  id: number;
   textContent: string;
-}
+};
 
-export interface IntakeHeaderItem {
-  type: IntakeItemType.Header;
-  id: number;
+export type IntakeHeaderItem = AnyIntakeItem & {
   textContent: string;
-}
+};
+
+export type IntakePageItem = AnyIntakeItem & {
+  type: IntakeItemType.Page;
+  intakeItems: IntakeItem[];
+};
 interface FieldQuestion {
   label: string;
   required: boolean;
@@ -357,61 +535,82 @@ export type IntakeItem =
   | IntakeFieldItem
   | IntakeSectionItem
   | IntakeParagraphItem
-  | IntakeHeaderItem;
+  | IntakeHeaderItem
+  | IntakePageItem;
 
 interface IntakeItemsLoadedAction {
-  type: ActionTypes.IntakeItemsLoaded;
+  type: CreateEditIntakeFormActionTypes.IntakeItemsLoaded;
   intakeItems: IntakeItem[];
 }
 
-interface ReorderAction {
-  type: ActionTypes.Reorder;
-  sourceIndex: number;
-  destIndex: number;
-}
-
 interface EditItemAction {
-  type: ActionTypes.EditItem;
+  type: CreateEditIntakeFormActionTypes.EditItem;
   item: IntakeItem;
 }
 
 interface CancelEditAction {
-  type: ActionTypes.CancelEdit;
+  type: CreateEditIntakeFormActionTypes.CancelEdit;
 }
 
 interface CreateAction {
-  type: ActionTypes.CreateItem;
+  type: CreateEditIntakeFormActionTypes.CreateItem;
 }
 
 interface CancelCreateAction {
-  type: ActionTypes.CancelCreate;
+  type: CreateEditIntakeFormActionTypes.CancelCreate;
 }
 
 interface AddNewItem {
-  type: ActionTypes.AddNewItem;
+  type: CreateEditIntakeFormActionTypes.AddNewItem;
   intakeItem: IntakeItem;
 }
 
 interface NounFieldsLoaded {
-  type: ActionTypes.NounFieldsLoaded;
+  type: CreateEditIntakeFormActionTypes.NounFieldsLoaded;
   nounFields: Field[];
 }
 
-type Action =
+interface SaveItemEditAction {
+  type: CreateEditIntakeFormActionTypes.SaveItemEdit;
+  intakeItem: IntakeItem;
+}
+
+interface DeleteItemAction {
+  type: CreateEditIntakeFormActionTypes.DeleteItem;
+  intakeItem?: IntakeItem;
+}
+
+interface MoveItemUpAction {
+  type: CreateEditIntakeFormActionTypes.MoveItemUp;
+}
+interface MoveItemDownAction {
+  type: CreateEditIntakeFormActionTypes.MoveItemDown;
+}
+
+interface Undo {
+  type: CreateEditIntakeFormActionTypes.Undo;
+}
+
+interface Redo {
+  type: CreateEditIntakeFormActionTypes.Redo;
+}
+
+export type CreateEditIntakeFormAction =
   | IntakeItemsLoadedAction
-  | ReorderAction
   | EditItemAction
   | CancelEditAction
   | CreateAction
   | CancelCreateAction
   | AddNewItem
-  | NounFieldsLoaded;
+  | NounFieldsLoaded
+  | SaveItemEditAction
+  | DeleteItemAction
+  | MoveItemUpAction
+  | MoveItemDownAction
+  | Undo
+  | Redo;
 
-type Reducer = (state: State, action: Action) => State;
-
-interface RouteParams {
-  nounId: string;
-}
+type Reducer = (state: State, action: CreateEditIntakeFormAction) => State;
 
 interface GetIntakeItemsResponse {
   intakeItems: IntakeItem[];

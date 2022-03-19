@@ -2,7 +2,7 @@ import React, { useState, useEffect, useReducer } from "react";
 import { Input } from "../Styleguide/Input";
 import { RouterProps, useHistory } from "react-router";
 import { useMutation } from "react-query";
-import { flaxFetch } from "../Utils/flaxFetch";
+import { foundryFetch } from "../Utils/foundryFetch";
 import { unary, kebabCase } from "lodash-es";
 import { Noun } from "../../backend/DB/models/Noun";
 import { FieldToCreate } from "../../backend/Fields/BatchPostFields";
@@ -26,7 +26,7 @@ export function CreateNoun(props: RouterProps) {
   >(async (evt) => {
     evt.preventDefault();
 
-    const noun = await flaxFetch<Noun>(`/api/nouns`, {
+    const noun = await foundryFetch<Noun>(`/api/nouns`, {
       method: "POST",
       body: {
         friendlyName: nounName,
@@ -36,7 +36,7 @@ export function CreateNoun(props: RouterProps) {
       },
     });
 
-    await flaxFetch<void>(`/api/nouns/${noun.id}/fields`, {
+    await foundryFetch<void>(`/api/nouns/${noun.id}/fields`, {
       method: "POST",
       body: {
         fields,

@@ -20,10 +20,10 @@ export const renderWebApp = async (req, res: Response) => {
     routerContext,
     reqUrl: req.url,
     assetBase: isProd
-      ? "https://storage.googleapis.com/flax-crm-frontend/dist"
+      ? "https://storage.googleapis.com/single-spa-foundry-web-app/dist"
       : "http://localhost:7700",
     cssFiles: [isProd ? webpackManifest["main.css"] : "main.css"],
-    jsFiles: [isProd ? webpackManifest["main.js"] : "flax.js"],
+    jsFiles: [isProd ? webpackManifest["main.js"] : "foundry-web-app.js"],
   };
 
   let stream;

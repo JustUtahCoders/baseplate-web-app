@@ -24,7 +24,10 @@ process.on("SIGINT", function () {
   process.exit();
 });
 
-if (process.env.NODE_ENV !== "production" && process.env.FLAX_OPEN === "true") {
-  delete process.env.FLAX_OPEN;
+if (
+  process.env.NODE_ENV !== "production" &&
+  process.env.FOUNDRY_OPEN === "true"
+) {
+  delete process.env.FOUNDRY_OPEN;
   open(fullUrl);
 }

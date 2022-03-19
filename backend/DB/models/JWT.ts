@@ -49,7 +49,10 @@ modelEvents.once("init", (sequelize) => {
 
   JWTModel.belongsTo(UserModel);
 
-  JWTModel.sync({
-    alter: true,
-  });
+  modelEvents.emit(
+    "migration",
+    JWTModel.sync({
+      alter: true,
+    })
+  );
 });

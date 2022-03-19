@@ -58,12 +58,25 @@ export const dbReady = new Promise<void>((resolve, reject) => {
       process.exit(1);
     }, 10000);
   }
-}).then(() => {
-  // Tell all models to init and associate with other models. This can't be done synchronously
-  // in the model files because of order-of-execution edge cases.
-  // See https://sequelize.org/master/class/lib/associations/base.js~Association.html
-  modelEvents.emit("init", sequelize);
-});
+})
+  .then(() => {
+    let initPromises: Promise<any>[] = [];
+
+    modelEvents.on("migration", (promise: Promise<any>) => {
+      initPromises.push(promise);
+    });
+
+    // Tell all models to init and associate with other models. This can't be done synchronously
+    // in the model files because of order-of-execution edge cases.
+    // See https://sequelize.org/master/class/lib/associations/base.js~Association.html
+    modelEvents.emit("init", sequelize);
+
+    return Promise.all(initPromises);
+  })
+  .then(() => {
+    // Used for the custom logger to know when to start logging
+    modelEvents.emit("start", sequelize);
+  });
 
 router.use(async (req, res, next) => {
   await dbReady;

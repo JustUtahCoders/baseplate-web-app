@@ -44,9 +44,12 @@ modelEvents.once("init", (sequelize) => {
     },
   });
 
-  NounModel.sync({
-    alter: true,
-  });
+  modelEvents.emit(
+    "migration",
+    NounModel.sync({
+      alter: true,
+    })
+  );
 });
 
 export interface NounAttributes {

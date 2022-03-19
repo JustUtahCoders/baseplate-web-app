@@ -60,7 +60,10 @@ modelEvents.once("init", (sequelize) => {
     },
   });
 
-  FieldModel.sync({
-    alter: true,
-  });
+  modelEvents.emit(
+    "migration",
+    FieldModel.sync({
+      alter: true,
+    })
+  );
 });

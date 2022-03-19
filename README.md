@@ -1,4 +1,4 @@
-# Flax CRM
+# single-spa foundry web app
 
 ## Running locally
 
@@ -24,7 +24,7 @@ Then click on "Run and Debug" in VS Code, and press Start for Develop Backend.
 
 ```sh
 docker-compose exec db bash
-psql flax
+psql foundry
 # show tables
 \dt
 select * from "Nouns";

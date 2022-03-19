@@ -12,7 +12,9 @@ module.exports = (webpackConfigEnv, argv) => {
     entry: path.resolve(process.cwd(), "frontend/entry.tsx"),
     output: {
       path: path.resolve(process.cwd(), "dist"),
-      filename: isProd ? "flax.[contenthash].js" : "flax.js",
+      filename: isProd
+        ? "foundry-web-app.[contenthash].js"
+        : "foundry-web-app.js",
     },
     mode: "development",
     devtool: "source-map",

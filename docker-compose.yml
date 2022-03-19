@@ -7,6 +7,6 @@ services:
     environment:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: password
-      POSTGRES_DB: flax
+      POSTGRES_DB: foundry
     ports:
       - "5432:5432"

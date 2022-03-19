@@ -6,7 +6,7 @@ import { FormFieldLabel } from "../Styleguide/FormFieldLabel";
 import { Input } from "../Styleguide/Input";
 import { RouterProps } from "react-router";
 import { useMutation } from "react-query";
-import { flaxFetch } from "../Utils/flaxFetch";
+import { foundryFetch } from "../Utils/foundryFetch";
 import { unary } from "lodash-es";
 
 export function ResetPassword(props: RouterProps) {
@@ -24,7 +24,7 @@ export function ResetPassword(props: RouterProps) {
   >(
     (evt) => {
       evt.preventDefault();
-      let requestPromise = flaxFetch<void>(`/send-reset-password-email`, {
+      let requestPromise = foundryFetch<void>(`/send-reset-password-email`, {
         method: "POST",
         body: {
           email: resetPasswordFormData.email,

@@ -7,6 +7,7 @@ import { EditItemProps } from "../EditIntakeItem";
 import { ModalActions } from "../../Styleguide/Modal";
 import { Button, ButtonKind } from "../../Styleguide/Button";
 import { Input } from "../../Styleguide/Input";
+import { newIntakeItemId } from "../CreateIntakeItem";
 
 export function EditIntakeHeader(props: EditItemProps) {
   const intakeItem = props.intakeItem as IntakeHeaderItem;
@@ -38,7 +39,7 @@ export function EditIntakeHeader(props: EditItemProps) {
   function handleSubmit(evt: FormEvent<HTMLFormElement>): void {
     evt.preventDefault();
     const intakeItem: IntakeHeaderItem = {
-      id: props.intakeItem?.id ?? -1,
+      id: props.intakeItem?.id ?? newIntakeItemId(),
       type: IntakeItemType.Header,
       textContent,
     };

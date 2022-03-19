@@ -6,6 +6,7 @@ import { IntakeItemType, IntakeParagraphItem } from "../CreateEditIntakeForm";
 import { EditItemProps } from "../EditIntakeItem";
 import { ModalActions } from "../../Styleguide/Modal";
 import { Button, ButtonKind } from "../../Styleguide/Button";
+import { newIntakeItemId } from "../CreateIntakeItem";
 
 export function EditIntakeParagraph(props: EditItemProps) {
   const intakeItem = props.intakeItem as IntakeParagraphItem;
@@ -37,7 +38,7 @@ export function EditIntakeParagraph(props: EditItemProps) {
   function handleSubmit(evt: FormEvent<HTMLFormElement>): void {
     evt.preventDefault();
     const intakeItem: IntakeParagraphItem = {
-      id: props.intakeItem?.id ?? -1,
+      id: props.intakeItem?.id ?? newIntakeItemId(),
       type: IntakeItemType.Paragraph,
       textContent,
     };
