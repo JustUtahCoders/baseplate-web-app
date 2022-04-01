@@ -3,6 +3,7 @@ lockfileVersion: 5.3
 specifiers:
   '@babel/core': ^7.17.8
   '@babel/eslint-parser': ^7.17.0
+  '@babel/plugin-syntax-import-assertions': ^7.16.7
   '@babel/preset-env': ^7.16.11
   '@babel/preset-react': ^7.16.7
   '@babel/preset-typescript': ^7.16.7
@@ -134,6 +135,7 @@ dependencies:
 devDependencies:
   '@babel/core': 7.17.8
   '@babel/eslint-parser': 7.17.0_@babel+core@7.17.8+eslint@8.11.0
+  '@babel/plugin-syntax-import-assertions': 7.16.7_@babel+core@7.17.8
   '@babel/preset-env': 7.16.11_@babel+core@7.17.8
   '@babel/preset-react': 7.16.7_@babel+core@7.17.8
   '@babel/preset-typescript': 7.16.7_@babel+core@7.17.8
@@ -749,6 +751,16 @@ packages:
 
   /@babel/plugin-syntax-export-namespace-from/7.8.3_@babel+core@7.17.8:
     resolution: {integrity: sha512-MXf5laXo6c1IbEbegDmzGPwGNTsHZmEy6QGznu5Sh2UCWvueywb2ee+CCE4zQiZstxU9BMoQO9i6zUFSY0Kj0Q==}
+    peerDependencies:
+      '@babel/core': ^7.0.0-0
+    dependencies:
+      '@babel/core': 7.17.8
+      '@babel/helper-plugin-utils': 7.16.7
+    dev: true
+
+  /@babel/plugin-syntax-import-assertions/7.16.7_@babel+core@7.17.8:
+    resolution: {integrity: sha512-DoM/wsaMaDXpM2fa+QkZeqqfYs340WTY+boLRiZ7ckqt3PAFt1CdGmMXVniFCcN8RuStim2Z4Co3bIKdWjTXIQ==}
+    engines: {node: '>=6.9.0'}
     peerDependencies:
       '@babel/core': ^7.0.0-0
     dependencies:
@@ -3435,8 +3447,8 @@ packages:
     engines: {node: '>=6'}
     dev: true
 
-  /cli-color/2.0.1:
-    resolution: {integrity: sha512-eBbxZF6fqPUNnf7CLAFOersUnyYzv83tHFLSlts+OAHsNendaqv2tHCq+/MO+b3Y+9JeoUlIvobyxG/Z8GNeOg==}
+  /cli-color/2.0.2:
+    resolution: {integrity: sha512-g4JYjrTW9MGtCziFNjkqp3IMpGhnJyeB0lOtRPjQkYhXzKYr6tYnXKyEVnMzITxhpbahsEW9KsxOYIDKwcsIBw==}
     engines: {node: '>=0.10'}
     dependencies:
       d: 1.0.1
@@ -6119,8 +6131,8 @@ packages:
     resolution: {integrity: sha512-NnRs6dsyqUXejqk/yv2aiXlAvOs56sLkX6nUdeaNezI5LFFLlsZjOThmwnrcwh5ZZRwZlCMnVAY3CvhIhoVEKQ==}
     dev: false
 
-  /js-beautify/1.14.0:
-    resolution: {integrity: sha512-yuck9KirNSCAwyNJbqW+BxJqJ0NLJ4PwBUzQQACl5O3qHMBXVkXb/rD0ilh/Lat/tn88zSZ+CAHOlk0DsY7GuQ==}
+  /js-beautify/1.14.2:
+    resolution: {integrity: sha512-H85kX95a53os+q1OCqtYe8AXAmgy3BvtysA/V83S3fdhznm6WlUpGi14DqSPbKFsL3dXZFXYl7YQwW9U1+76ng==}
     engines: {node: '>=10'}
     hasBin: true
     dependencies:
@@ -8112,9 +8124,9 @@ packages:
     engines: {node: '>=10.0.0'}
     hasBin: true
     dependencies:
-      cli-color: 2.0.1
+      cli-color: 2.0.2
       fs-extra: 9.1.0
-      js-beautify: 1.14.0
+      js-beautify: 1.14.2
       lodash: 4.17.21
       resolve: 1.22.0
       umzug: 2.3.0

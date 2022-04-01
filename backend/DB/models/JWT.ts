@@ -1,5 +1,6 @@
 import S from "sequelize";
-import { modelEvents } from "../../DB";
+import { modelEvents } from "../../InitDB";
+import { CustomerOrgModel } from "./CustomerOrg";
 import { DefaultModelAttrs } from "./DefaultModelAttrs";
 import { UserModel } from "./User";
 
@@ -12,6 +13,7 @@ export class JWTModel
   public id!: number;
   public token!: string;
   public userId!: number;
+  public customerOrgId?: number;
   public jwtType!: string;
 
   public readonly createdAt!: Date;
@@ -22,6 +24,7 @@ export interface JWTAttributes {
   id: number;
   token: string;
   userId: number;
+  customerOrgId?: number;
   jwtType: string;
 }
 
@@ -39,6 +42,7 @@ modelEvents.once("init", (sequelize) => {
       },
       token: DataTypes.STRING,
       userId: DataTypes.INTEGER.UNSIGNED,
+      customerOrgId: DataTypes.INTEGER,
       jwtType: DataTypes.STRING,
     },
     {
@@ -46,13 +50,20 @@ modelEvents.once("init", (sequelize) => {
       modelName: "JWT",
     }
   );
+});
 
-  JWTModel.belongsTo(UserModel);
+modelEvents.once("associate", (sequelize) => {
+  JWTModel.belongsTo(UserModel, {
+    foreignKey: {
+      name: "userId",
+      allowNull: false,
+    },
+  });
 
-  modelEvents.emit(
-    "migration",
-    JWTModel.sync({
-      alter: true,
-    })
-  );
+  JWTModel.belongsTo(CustomerOrgModel, {
+    foreignKey: {
+      name: "customerOrgId",
+      allowNull: false,
+    },
+  });
 });

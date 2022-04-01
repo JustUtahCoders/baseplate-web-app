@@ -1,28 +1,22 @@
 import Sequelize from "sequelize";
 import bcrypt from "bcryptjs";
-import { UserModel } from "../DB/models/User.js";
+import { UserModel } from "../DB/Models/User.js";
 
 const { Op } = Sequelize;
 
-export async function findOrCreateLocalUser(email): Promise<UserModel> {
+export async function findOrCreateLocalUser(): Promise<UserModel> {
   const users = await UserModel.findAll({
     where: {
-      email: email,
+      email: "sampleuser@single-spa-foundry.com",
     },
   });
 
   let localUser = users.length > 0 ? users[0] : null;
 
-  const hashLocalDevPass = await bcrypt.hash("localDevPassword", 5);
-
   if (!localUser) {
-    localUser = await UserModel.create({
-      firstName: "localDevFirstName",
-      lastName: "localDevLastName",
-      email: email,
-      password: hashLocalDevPass,
-      googleAuthToken: null,
-    });
+    throw Error(
+      `No local user found. This means your local postgres database has not been properly seeded. To fix, run pnpm exec sequelize-cli db:seed:all`
+    );
   }
 
   return localUser;
@@ -46,8 +40,8 @@ export async function findOrCreateGoogleUser(profile): Promise<UserModel> {
 
   if (!googleUser) {
     googleUser = await UserModel.create({
-      firstName: profile.name.givenName,
-      lastName: profile.name.familyName,
+      givenName: profile.name.givenName,
+      familyName: profile.name.familyName,
       email: userGoogleEmail,
       password: null,
       googleAuthToken: profile.id, // googleAuthToken is not a token, it's a Google id

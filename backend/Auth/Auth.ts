@@ -20,8 +20,6 @@ import { OAuth2Strategy as GoogleStrategy } from "passport-google-oauth";
 import Keygrip from "keygrip";
 import { serverApiError } from "../Utils/EndpointResponses.js";
 
-const LOCAL_DEV_USER_EMAIL = "localdev@email.com";
-
 let passportStrategy = new Strategy(async function (email, password, done) {
   try {
     let user = await findUser(email, password);
@@ -97,7 +95,7 @@ router.use("/", async (req, res, next) => {
   if (req?.session?.passport?.user?.id) {
     return next();
   } else if (process.env.IS_RUNNING_LOCALLY) {
-    const localUser = await findOrCreateLocalUser(LOCAL_DEV_USER_EMAIL);
+    const localUser = await findOrCreateLocalUser();
     try {
       const login = util.promisify(req.login).bind(req);
       await login(localUser);
