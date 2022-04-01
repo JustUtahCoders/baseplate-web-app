@@ -3,7 +3,7 @@ const path = require('path');
 require('ts-node/register')
 
 module.exports = {
-    'config': path.resolve('backend/DB/Config', 'Database.json'),
+    'config': path.resolve('backend/DB/Config', 'Databases.json'),
     'models-path': path.resolve('backend/DB', 'Models'),
     'migrations-path': path.resolve('backend/DB', 'Migrations'),
     'seeders-path': path.resolve('backend/DB', 'Seeders'),

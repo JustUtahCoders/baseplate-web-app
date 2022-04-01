@@ -1,5 +1,5 @@
 import { Options } from "sequelize";
-import database from "./Database.json" assert { type: "json" };
+import database from "./Databases.json" assert { type: "json" };
 
 const allConfigs: AllDBConfigs = database as AllDBConfigs;
 
