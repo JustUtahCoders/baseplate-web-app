@@ -9,7 +9,7 @@ module.exports = (webpackConfigEnv, argv) => {
   const isProd = webpackConfigEnv.prod;
 
   return {
-    entry: path.resolve(process.cwd(), "frontend/entry.tsx"),
+    entry: path.resolve(process.cwd(), "frontend/Entry.tsx"),
     output: {
       path: path.resolve(process.cwd(), "dist"),
       filename: isProd

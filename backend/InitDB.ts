@@ -1,6 +1,6 @@
 import { router } from "./Router.js";
 import { Sequelize } from "sequelize";
-import dbConfigs from "./DB/config/config";
+import dbConfigs from "./DB/Config/Config";
 import EventEmitter from "events";
 
 const env: string = process.env.NODE_ENV || "development";
@@ -71,9 +71,12 @@ export const dbReady = new Promise<void>((resolve, reject) => {
     // See https://sequelize.org/master/class/lib/associations/base.js~Association.html
     modelEvents.emit("init", sequelize);
 
+    modelEvents.emit("associate", sequelize);
+
     return Promise.all(initPromises);
   })
   .then(() => {
+    console.log("DB fully initialized");
     // Used for the custom logger to know when to start logging
     modelEvents.emit("start", sequelize);
   });

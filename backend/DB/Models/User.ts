@@ -1,16 +1,16 @@
 import S from "sequelize";
 import { DefaultModelAttrs } from "./DefaultModelAttrs";
-import { modelEvents } from "../../DB";
+import { modelEvents } from "../../InitDB";
+import { CustomerOrgModel } from "./CustomerOrg";
 
 const { Model, DataTypes } = S;
-
 export class UserModel
   extends Model<UserAttributes, UserCreationAttributes>
   implements UserAttributes
 {
   public id!: number;
-  public firstName!: string;
-  public lastName!: string;
+  public givenName!: string;
+  public familyName!: string;
   public email!: string;
   public password: string | null;
   public googleAuthToken: string | null;
@@ -21,8 +21,8 @@ export class UserModel
 
 export interface UserAttributes {
   id: number;
-  firstName: string;
-  lastName: string;
+  givenName: string;
+  familyName: string;
   email: string;
   password: string | null;
   googleAuthToken: string | null;
@@ -40,8 +40,8 @@ modelEvents.once("init", (sequelize) => {
         autoIncrement: true,
         primaryKey: true,
       },
-      firstName: DataTypes.STRING,
-      lastName: DataTypes.STRING,
+      givenName: DataTypes.STRING,
+      familyName: DataTypes.STRING,
       email: DataTypes.STRING,
       password: DataTypes.STRING,
       googleAuthToken: DataTypes.STRING,
@@ -51,11 +51,10 @@ modelEvents.once("init", (sequelize) => {
       modelName: "User",
     }
   );
+});
 
-  modelEvents.emit(
-    "migration",
-    UserModel.sync({
-      alter: true,
-    })
-  );
+modelEvents.once("associate", (sequelize) => {
+  UserModel.belongsToMany(CustomerOrgModel, {
+    through: "UserCustomerOrgs",
+  });
 });

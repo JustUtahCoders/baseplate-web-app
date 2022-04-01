@@ -1,7 +1,7 @@
 import express from "express";
 import { router } from "./Router.js";
 import bodyParser from "body-parser";
-import "./DB.js";
+import "./InitDB.js";
 import "./RouteImports.js";
 import kill from "tree-kill";
 import open from "open";

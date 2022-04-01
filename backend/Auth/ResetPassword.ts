@@ -8,7 +8,7 @@ import {
 } from "../Utils/EndpointResponses";
 import { sendEmail, baseUrl } from "../Utils/EmailUtils.js";
 import { makeJWT } from "../Utils/JWTUtils.js";
-import { JWTModel } from "../DB/models/JWT";
+import { JWTModel } from "../DB/Models/JWT";
 
 function getResetPasswordBody(baseUrl: string, token: string): string {
   return `<div style="width: 60vw; margin: 4rem auto auto auto; color: #403F3D;">
