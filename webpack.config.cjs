@@ -9,8 +9,9 @@ module.exports = (webpackConfigEnv, argv) => {
   const isProd = webpackConfigEnv.prod;
 
   return {
-    entry: "./frontend/Entry.tsx",
+    entry: path.resolve(process.cwd(), "frontend/Entry.tsx"),
     output: {
+      path: path.resolve(process.cwd(), "dist"),
       filename: isProd
         ? "foundry-web-app.[contenthash].js"
         : "foundry-web-app.js",
