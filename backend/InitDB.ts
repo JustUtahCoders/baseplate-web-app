@@ -1,6 +1,6 @@
 import { router } from "./Router.js";
 import { Sequelize } from "sequelize";
-import dbConfigs from "./DB/config/config";
+import dbConfigs from "./DB/Config/Config";
 import EventEmitter from "events";
 
 const env: string = process.env.NODE_ENV || "development";
