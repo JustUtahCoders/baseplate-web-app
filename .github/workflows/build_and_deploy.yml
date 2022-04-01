@@ -37,7 +37,6 @@ jobs:
       - run: pnpm run check-format
       - run: pnpm run lint
       - run: pnpm run test
-      - run: pwd && find frontend
       - run: pnpm run build
       - run: pnpm exec changeset status
       - run: cp dist/webpack-manifest.json lib/backend
