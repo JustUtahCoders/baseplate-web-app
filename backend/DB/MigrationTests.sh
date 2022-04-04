@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# This test verifies that all our migrations and seeds work together properly and can
+# create a functioning DB when executed in the correct order.
+
 # Fail if any command fails
 set -e
 
