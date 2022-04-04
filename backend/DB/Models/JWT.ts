@@ -30,7 +30,7 @@ export interface JWTAttributes {
 
 export enum JWTType {
   loginMFAEmail = "loginMFAEmail",
-  resetPassword = "resetPassword",
+  passwordReset = "passwordReset",
   foundryApiToken = "foundryApiToken",
 }
 

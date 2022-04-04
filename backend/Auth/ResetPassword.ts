@@ -8,7 +8,7 @@ import {
 } from "../Utils/EndpointResponses";
 import { sendEmail, baseUrl } from "../Utils/EmailUtils.js";
 import { makeJWT } from "../Utils/JWTUtils.js";
-import { JWTModel } from "../DB/Models/JWT";
+import { JWTModel, JWTType } from "../DB/Models/JWT";
 
 function getResetPasswordBody(baseUrl: string, token: string): string {
   return `<div style="width: 60vw; margin: 4rem auto auto auto; color: #403F3D;">
@@ -47,7 +47,7 @@ router.post(
       const newJWT = await JWTModel.create({
         token: token,
         userId: user.id,
-        jwtType: "passwordReset",
+        jwtType: JWTType.passwordReset,
       });
 
       if (newJWT) {
