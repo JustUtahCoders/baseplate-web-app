@@ -93,9 +93,44 @@ module.exports = {
         allowNull: false,
       },
     });
+
+    await queryInterface.createTable("DeploymentLogs", {
+      id: {
+        type: Sequelize.INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
+      },
+      deploymentId: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: "Deployments",
+          key: "id",
+        },
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      },
+      label: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      text: {
+        type: Sequelize.TEXT,
+        allowNull: false,
+      },
+      createdAt: {
+        type: Sequelize.DATE,
+        allowNull: false,
+      },
+      updatedAt: {
+        type: Sequelize.DATE,
+        allowNull: false,
+      },
+    });
   },
 
   async down(queryInterface, Sequelize) {
+    await queryInterface.dropTable("DeploymentLogs");
     await queryInterface.dropTable("Deployments");
     await queryInterface.dropTable("Microfrontends");
   },

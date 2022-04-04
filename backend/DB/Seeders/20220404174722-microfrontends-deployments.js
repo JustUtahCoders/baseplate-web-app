@@ -31,31 +31,90 @@ module.exports = {
       }
     );
 
-    await queryInterface.bulkInsert("Deployments", [
+    const [dep1, dep2, dep3] = await queryInterface.bulkInsert(
+      "Deployments",
+      [
+        {
+          microfrontendId: navbarMFE.id,
+          userId: sampleUserId,
+          foundryTokenId: null,
+          cause: "foundryWebApp",
+          status: "success",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          microfrontendId: settingsMFE.id,
+          userId: sampleUserId,
+          foundryTokenId: null,
+          cause: "deploymentCLI",
+          status: "failure",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          microfrontendId: settingsMFE.id,
+          userId: sampleUserId,
+          foundryTokenId: null,
+          cause: "foundryWebApp",
+          status: "success",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+      ],
       {
-        microfrontendId: navbarMFE.id,
-        userId: sampleUserId,
-        foundryTokenId: null,
-        cause: "foundryWebApp",
-        status: "success",
+        returning: true,
+      }
+    );
+
+    await queryInterface.bulkInsert("DeploymentLogs", [
+      {
+        deploymentId: dep1.id,
+        label: "Upload Static Files",
+        text: `
+          Uploading navbar.js to s3
+          Uploading navbar.css to s3
+        `.trim(),
         createdAt: new Date(),
         updatedAt: new Date(),
       },
       {
-        microfrontendId: settingsMFE.id,
-        userId: sampleUserId,
-        foundryTokenId: null,
-        cause: "deploymentCLI",
-        status: "failure",
+        deploymentId: dep1.id,
+        label: "Update Import Map",
+        text: `
+          Updating navbar in import map.
+          Import Map update complete.
+        `.trim(),
         createdAt: new Date(),
         updatedAt: new Date(),
       },
       {
-        microfrontendId: settingsMFE.id,
-        userId: sampleUserId,
-        foundryTokenId: null,
-        cause: "foundryWebApp",
-        status: "success",
+        deploymentId: dep2.id,
+        label: "Upload Static Files",
+        text: `
+          Uploading navbar.js to s3
+          Error communicating with s3. Check credentials.
+        `.trim(),
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        deploymentId: dep3.id,
+        label: "Upload Static Files",
+        text: `
+          Uploading settings.js to s3
+          Uploading settings.css to s3
+        `.trim(),
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        deploymentId: dep3.id,
+        label: "Update Import Map",
+        text: `
+          Updating settings in import map
+          Import Map update complete.
+        `.trim(),
         createdAt: new Date(),
         updatedAt: new Date(),
       },

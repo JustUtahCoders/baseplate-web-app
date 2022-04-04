@@ -4,6 +4,7 @@ import { modelEvents } from "../../InitDB";
 import { MicrofrontendModel } from "./Microfrontend";
 import { UserModel } from "./User";
 import { JWTModel } from "./JWT";
+import { DeploymentLogModel } from "./DeploymentLogs";
 
 const { Model, DataTypes } = S;
 
@@ -102,5 +103,9 @@ modelEvents.once("associate", (sequelize) => {
       name: "foundryTokenId",
       allowNull: true,
     },
+  });
+
+  DeploymentModel.hasMany(DeploymentLogModel, {
+    foreignKey: "deploymentId",
   });
 });
