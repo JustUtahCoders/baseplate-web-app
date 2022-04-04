@@ -13,6 +13,7 @@ export class CustomerOrgModel
   public name!: string;
   public accountEnabled!: boolean;
   public billingUserId!: number;
+  public orgKey!: string;
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
@@ -23,6 +24,7 @@ export interface CustomerOrgAttributes {
   name: string;
   accountEnabled: boolean;
   billingUserId: number;
+  orgKey: string;
 }
 
 export type CustomerOrgCreationAttributes = Omit<CustomerOrgAttributes, "id">;
@@ -33,7 +35,7 @@ modelEvents.once("init", (sequelize) => {
   CustomerOrgModel.init(
     {
       id: {
-        type: DataTypes.INTEGER.UNSIGNED,
+        type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true,
       },
@@ -46,7 +48,11 @@ modelEvents.once("init", (sequelize) => {
         allowNull: false,
       },
       billingUserId: {
-        type: DataTypes.INTEGER.UNSIGNED,
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      orgKey: {
+        type: DataTypes.STRING,
         allowNull: false,
       },
     },

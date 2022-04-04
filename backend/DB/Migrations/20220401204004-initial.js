@@ -8,14 +8,6 @@ module.exports = {
         autoIncrement: true,
         primaryKey: true,
       },
-      createdAt: {
-        type: Sequelize.DATE,
-        allowNull: false,
-      },
-      updatedAt: {
-        type: Sequelize.DATE,
-        allowNull: false,
-      },
       givenName: {
         type: Sequelize.STRING,
         allowNull: false,
@@ -36,14 +28,6 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: true,
       },
-    });
-
-    queryInterface.createTable("CustomerOrgs", {
-      id: {
-        type: Sequelize.INTEGER,
-        autoIncrement: true,
-        primaryKey: true,
-      },
       createdAt: {
         type: Sequelize.DATE,
         allowNull: false,
@@ -51,6 +35,14 @@ module.exports = {
       updatedAt: {
         type: Sequelize.DATE,
         allowNull: false,
+      },
+    });
+
+    queryInterface.createTable("CustomerOrgs", {
+      id: {
+        type: Sequelize.INTEGER,
+        autoIncrement: true,
+        primaryKey: true,
       },
       name: {
         type: Sequelize.STRING,
@@ -69,6 +61,18 @@ module.exports = {
         },
         onUpdate: "cascade",
         onDelete: "cascade",
+      },
+      orgKey: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      createdAt: {
+        type: Sequelize.DATE,
+        allowNull: false,
+      },
+      updatedAt: {
+        type: Sequelize.DATE,
+        allowNull: false,
       },
     });
 
@@ -101,14 +105,6 @@ module.exports = {
         autoIncrement: true,
         primaryKey: true,
       },
-      createdAt: {
-        type: Sequelize.DATE,
-        allowNull: false,
-      },
-      updatedAt: {
-        type: Sequelize.DATE,
-        allowNull: false,
-      },
       token: {
         type: Sequelize.STRING,
         allowNull: false,
@@ -137,13 +133,21 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
+      createdAt: {
+        type: Sequelize.DATE,
+        allowNull: false,
+      },
+      updatedAt: {
+        type: Sequelize.DATE,
+        allowNull: false,
+      },
     });
   },
 
   async down(queryInterface, Sequelize) {
-    queryInterface.dropTable("JWTs");
-    queryInterface.dropTable("UserCustomerOrgs");
-    queryInterface.dropTable("CustomerOrgs");
-    queryInterface.dropTable("Users");
+    await queryInterface.dropTable("JWTs");
+    await queryInterface.dropTable("UserCustomerOrgs");
+    await queryInterface.dropTable("CustomerOrgs");
+    await queryInterface.dropTable("Users");
   },
 };
