@@ -19,6 +19,7 @@
     "format": "prettier --write .",
     "lint": "eslint \"backend/**/*\" \"frontend/**/*\"",
     "test": "concurrently \"pnpm:test:*\"",
+    "test:db:migrations": "bash backend/DB/MigrationTests.sh",
     "test:frontend": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --config jest.browser.config.js --coverage",
     "prepare": "husky install"
   },

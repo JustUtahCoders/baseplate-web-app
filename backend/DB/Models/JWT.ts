@@ -14,7 +14,7 @@ export class JWTModel
   public token!: string;
   public userId!: number;
   public customerOrgId?: number;
-  public jwtType!: string;
+  public jwtType!: JWTType;
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
@@ -25,7 +25,13 @@ export interface JWTAttributes {
   token: string;
   userId: number;
   customerOrgId?: number;
-  jwtType: string;
+  jwtType: JWTType;
+}
+
+export enum JWTType {
+  loginMFAEmail = "loginMFAEmail",
+  passwordReset = "passwordReset",
+  foundryApiToken = "foundryApiToken",
 }
 
 export type JWTCreationAttributes = Omit<JWTAttributes, "id">;

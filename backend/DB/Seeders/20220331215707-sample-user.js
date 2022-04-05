@@ -29,6 +29,7 @@ module.exports = {
           accountEnabled: true,
           billingUserId: insertedUser.id,
           name: "Convex Co-op",
+          orgKey: "convex",
           createdAt: new Date(),
           updatedAt: new Date(),
         },
@@ -54,5 +55,35 @@ module.exports = {
     await queryInterface.bulkDelete("Users", {
       email: [sampleUserEmail],
     });
+  },
+
+  async getSampleUserAndCustomerOrg(queryInterface) {
+    const [sampleCustomerOrg] = await queryInterface.rawSelect(
+      "CustomerOrgs",
+      {
+        where: {
+          name: "Convex Co-op",
+        },
+        plain: false,
+      },
+      ["id"]
+    );
+
+    const [sampleUser] = await queryInterface.rawSelect(
+      "Users",
+      {
+        where: {
+          givenName: "Sample",
+          familyName: "User",
+        },
+        plain: false,
+      },
+      ["id"]
+    );
+
+    return {
+      sampleUserId: sampleUser.id,
+      sampleCustomerOrgId: sampleCustomerOrg.id,
+    };
   },
 };

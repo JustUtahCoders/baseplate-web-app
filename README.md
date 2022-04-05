@@ -50,7 +50,7 @@ pnpm exec sequelize db:migrate:undo
 pnpm exec sequelize db:migrate:undo:all
 
 # Create migration
-pnpm exec sequelize db:migration:create --name INSERTNAMEHERE
+pnpm exec sequelize migration:create --name INSERTNAMEHERE
 ```
 
 ## Seed data
@@ -68,5 +68,5 @@ pnpm exec sequelize db:seed:undo
 pnpm exec sequelize db:seed:undo:all
 
 # Create migration
-pnpm exec sequelize db:seed:create --name INSERTNAMEHERE
+pnpm exec sequelize seed:create --name INSERTNAMEHERE
 ```
