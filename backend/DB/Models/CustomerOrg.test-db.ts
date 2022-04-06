@@ -45,8 +45,18 @@ describe("CustomerOrgModel", () => {
       billingUserId: getUser().id,
     });
 
-    const user = await customerOrg.getBillingUser();
+    const billingUser = await customerOrg.getBillingUser();
 
-    expect(user.id).toEqual(getUser().id);
+    expect(billingUser.id).toEqual(getUser().id);
+
+    let users = await customerOrg.getUsers();
+
+    expect(users).toEqual([]);
+
+    await customerOrg.setUsers([getUser().id]);
+
+    users = await customerOrg.getUsers();
+
+    expect(users.map((u) => u.id)).toEqual([getUser().id]);
   });
 });

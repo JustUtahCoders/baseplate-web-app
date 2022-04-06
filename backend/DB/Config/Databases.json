@@ -12,8 +12,7 @@
     "database": "foundry",
     "host": "127.0.0.1",
     "dialect": "postgres",
-    "port": 8765,
-    "logging": false
+    "port": 8765
   },
   "production": {
     "use_env_variable": "DB_CONNECTION_STRING"

@@ -1,6 +1,7 @@
 import { DefaultModelAttrs } from "./DefaultModelAttrs";
 import { modelEvents } from "../../InitDB";
 import { CustomerOrgModel } from "./CustomerOrg";
+import { UserCustomerOrgsModel } from "./UserCustomerOrgs";
 import { BelongsToManyMethods } from "./SequelizeTSHelpers";
 import S, {
   BelongsToManyGetAssociationsMixin,
@@ -102,5 +103,7 @@ modelEvents.once("init", (sequelize) => {
 modelEvents.once("associate", (sequelize) => {
   UserModel.belongsToMany(CustomerOrgModel, {
     through: "UserCustomerOrgs",
+    foreignKey: "userId",
+    otherKey: "customerOrgId",
   });
 });

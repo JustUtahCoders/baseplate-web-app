@@ -8,6 +8,8 @@ set -e
 
 sh ./backend/DB/TestHelpers/StartTestDB.sh
 
+export NODE_ENV=db-tests
+
 # Test that migrations and seeds don't throw errors and are self encapsulated / repeatable
 pnpm exec sequelize db:migrate
 pnpm exec sequelize db:seed:all

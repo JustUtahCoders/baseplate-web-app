@@ -107,5 +107,7 @@ modelEvents.once("associate", (sequelize) => {
 
   CustomerOrgModel.belongsToMany(UserModel, {
     through: "UserCustomerOrgs",
+    foreignKey: "customerOrgId",
+    otherKey: "userId",
   });
 });
