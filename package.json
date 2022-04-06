@@ -19,8 +19,12 @@
     "format": "prettier --write .",
     "lint": "eslint \"backend/**/*\" \"frontend/**/*\"",
     "test": "concurrently \"pnpm:test:*\"",
-    "test:db:migrations": "bash backend/DB/MigrationTests.sh",
     "test:frontend": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --config jest.browser.config.js --coverage",
+    "test:db": "pnpm run test-db-migrations && pnpm run test-db-code",
+    "prepare-test-db": "bash backend/DB/TestHelpers/StartTestDB.sh",
+    "destroy-test-db": "docker-compose -f backend/DB/TestHelpers/docker-compose.tests.yml down -v",
+    "test-db-migrations": "bash backend/DB/TestHelpers/MigrationTests.sh",
+    "test-db-code": "cross-env NODE_ENV=db-tests jest --config jest.db.config.js --detectOpenHandles",
     "prepare": "husky install"
   },
   "repository": {

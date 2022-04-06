@@ -1,4 +1,4 @@
-import { router } from "./Router.js";
+import { router } from "./Router";
 import { Sequelize } from "sequelize";
 import dbConfigs from "./DB/Config/Config";
 import EventEmitter from "events";
@@ -44,6 +44,11 @@ export const dbReady = new Promise<void>((resolve, reject) => {
       .then(() => {
         console.log("Database connection established");
         clearInterval(intervalId);
+
+        if (timeoutId) {
+          clearTimeout(timeoutId);
+        }
+
         resolve();
       })
       .catch((err) => {
@@ -52,7 +57,7 @@ export const dbReady = new Promise<void>((resolve, reject) => {
       });
   }, 300);
 
-  if (env !== "development") {
+  if (["development", "db-tests"].includes(env)) {
     timeoutId = setTimeout(() => {
       console.log("Unable to connect to db. Giving up");
       process.exit(1);
