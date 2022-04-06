@@ -1,16 +1,36 @@
-import S from "sequelize";
 import { DefaultModelAttrs } from "./DefaultModelAttrs";
 import { modelEvents } from "../../InitDB";
 import { MicrofrontendModel } from "./Microfrontend";
 import { UserModel } from "./User";
 import { JWTModel } from "./JWT";
 import { DeploymentLogModel } from "./DeploymentLogs";
+import { BelongsToMethods, HasManyMethods } from "./SequelizeTSHelpers";
+import S, {
+  BelongsToGetAssociationMixin,
+  BelongsToSetAssociationMixin,
+  BelongsToCreateAssociationMixin,
+  HasManyGetAssociationsMixin,
+  HasManyHasAssociationsMixin,
+  HasManyHasAssociationMixin,
+  HasManySetAssociationsMixin,
+  HasManyAddAssociationMixin,
+  HasManyAddAssociationsMixin,
+  HasManyRemoveAssociationMixin,
+  HasManyRemoveAssociationsMixin,
+  HasManyCreateAssociationMixin,
+  HasManyCountAssociationsMixin,
+} from "sequelize";
 
 const { Model, DataTypes } = S;
 
 export class DeploymentModel
   extends Model<DeploymentAttributes, DeploymentCreationAttributes>
-  implements DeploymentAttributes
+  implements
+    DeploymentAttributes,
+    BelongsToMethods<{ microfrontend: string }, MicrofrontendModel>,
+    BelongsToMethods<{ user: string }, UserModel>,
+    BelongsToMethods<{ foundryToken: string }, JWTModel>,
+    HasManyMethods<{ deployment: string }, DeploymentModel>
 {
   public id!: number;
   public microfrontendId!: number;
@@ -18,6 +38,38 @@ export class DeploymentModel
   public foundryTokenId?: number;
   public cause: DeploymentCause;
   public status: DeploymentStatus;
+
+  public getMicrofrontend!: BelongsToGetAssociationMixin<MicrofrontendModel>;
+  public setMicrofrontend!: BelongsToSetAssociationMixin<
+    MicrofrontendModel,
+    number
+  >;
+  public createMicrofrontend!: BelongsToCreateAssociationMixin<MicrofrontendModel>;
+
+  public getUser!: BelongsToGetAssociationMixin<UserModel>;
+  public setUser!: BelongsToSetAssociationMixin<UserModel, number>;
+  public createUser!: BelongsToCreateAssociationMixin<UserModel>;
+
+  public getFoundryToken!: BelongsToGetAssociationMixin<JWTModel>;
+  public setFoundryToken!: BelongsToSetAssociationMixin<JWTModel, number>;
+  public createFoundryToken!: BelongsToCreateAssociationMixin<JWTModel>;
+
+  public getDeployments!: HasManyGetAssociationsMixin<DeploymentModel>;
+  public countDeployments!: HasManyCountAssociationsMixin;
+  public hasDeployment!: HasManyHasAssociationMixin<DeploymentModel, number>;
+  public hasDeployments!: HasManyHasAssociationsMixin<DeploymentModel, number>;
+  public setDeployments!: HasManySetAssociationsMixin<DeploymentModel, number>;
+  public addDeployment!: HasManyAddAssociationMixin<DeploymentModel, number>;
+  public addDeployments!: HasManyAddAssociationsMixin<DeploymentModel, number>;
+  public removeDeployment!: HasManyRemoveAssociationMixin<
+    DeploymentModel,
+    number
+  >;
+  public removeDeployments!: HasManyRemoveAssociationsMixin<
+    DeploymentModel,
+    number
+  >;
+  public createDeployment!: HasManyCreateAssociationMixin<DeploymentModel>;
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;

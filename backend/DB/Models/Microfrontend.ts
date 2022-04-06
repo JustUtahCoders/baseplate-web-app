@@ -1,19 +1,32 @@
-import S from "sequelize";
-import { DefaultModelAttrs } from "./DefaultModelAttrs";
 import { modelEvents } from "../../InitDB";
 import { CustomerOrgModel } from "./CustomerOrg";
+import { BelongsToMethods } from "./SequelizeTSHelpers";
+import S, {
+  BelongsToGetAssociationMixin,
+  BelongsToSetAssociationMixin,
+  BelongsToCreateAssociationMixin,
+} from "sequelize";
 
 const { Model, DataTypes } = S;
 
 export class MicrofrontendModel
   extends Model<MicrofrontendAttributes, MicrofrontendCreationAttributes>
-  implements MicrofrontendAttributes
+  implements
+    MicrofrontendAttributes,
+    BelongsToMethods<{ customerOrg: string }, CustomerOrgModel>
 {
   public id!: number;
   public customerOrgId!: number;
   public name!: string;
   public scope?: string;
   public useCustomerOrgKeyAsScope: boolean;
+
+  public getCustomerOrg!: BelongsToGetAssociationMixin<CustomerOrgModel>;
+  public setCustomerOrg!: BelongsToSetAssociationMixin<
+    CustomerOrgModel,
+    number
+  >;
+  public createCustomerOrg!: BelongsToCreateAssociationMixin<CustomerOrgModel>;
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;

@@ -97,6 +97,14 @@ module.exports = {
         onUpdate: "cascade",
         onDelete: "cascade",
       },
+      createdAt: {
+        type: Sequelize.DATE,
+        allowNull: false,
+      },
+      updatedAt: {
+        type: Sequelize.DATE,
+        allowNull: false,
+      },
     });
 
     queryInterface.createTable("JWTs", {

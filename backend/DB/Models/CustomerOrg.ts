@@ -1,19 +1,52 @@
-import S from "sequelize";
 import { DefaultModelAttrs } from "./DefaultModelAttrs";
 import { modelEvents } from "../../InitDB";
 import { UserModel } from "./User";
+import { BelongsToMethods, BelongsToManyMethods } from "./SequelizeTSHelpers";
+import S, {
+  BelongsToManyCountAssociationsMixin,
+  BelongsToGetAssociationMixin,
+  BelongsToSetAssociationMixin,
+  BelongsToCreateAssociationMixin,
+  BelongsToManyGetAssociationsMixin,
+  BelongsToManyHasAssociationsMixin,
+  BelongsToManyHasAssociationMixin,
+  BelongsToManySetAssociationsMixin,
+  BelongsToManyAddAssociationMixin,
+  BelongsToManyAddAssociationsMixin,
+  BelongsToManyRemoveAssociationMixin,
+  BelongsToManyRemoveAssociationsMixin,
+  BelongsToManyCreateAssociationMixin,
+} from "sequelize";
 
 const { Model, DataTypes } = S;
 
 export class CustomerOrgModel
   extends Model<CustomerOrgAttributes, CustomerOrgCreationAttributes>
-  implements CustomerOrgAttributes
+  implements
+    CustomerOrgAttributes,
+    BelongsToMethods<{ billingUser: string }, UserModel>,
+    BelongsToManyMethods<{ user: string }, UserModel>
 {
   public id!: number;
   public name!: string;
   public accountEnabled!: boolean;
   public billingUserId!: number;
   public orgKey!: string;
+
+  public getBillingUser!: BelongsToGetAssociationMixin<UserModel>;
+  public setBillingUser!: BelongsToSetAssociationMixin<UserModel, number>;
+  public createBillingUser!: BelongsToCreateAssociationMixin<UserModel>;
+
+  public getUsers!: BelongsToManyGetAssociationsMixin<UserModel>;
+  public countUsers!: BelongsToManyCountAssociationsMixin;
+  public hasUser!: BelongsToManyHasAssociationMixin<UserModel, number>;
+  public hasUsers!: BelongsToManyHasAssociationsMixin<UserModel, number>;
+  public setUsers!: BelongsToManySetAssociationsMixin<UserModel, number>;
+  public addUser!: BelongsToManyAddAssociationMixin<UserModel, number>;
+  public addUsers!: BelongsToManyAddAssociationsMixin<UserModel, number>;
+  public removeUser!: BelongsToManyRemoveAssociationMixin<UserModel, number>;
+  public removeUsers!: BelongsToManyRemoveAssociationsMixin<UserModel, number>;
+  public createUser!: BelongsToManyCreateAssociationMixin<UserModel>;
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
@@ -69,9 +102,12 @@ modelEvents.once("associate", (sequelize) => {
       name: "billingUserId",
       allowNull: false,
     },
+    as: "billingUser",
   });
 
   CustomerOrgModel.belongsToMany(UserModel, {
     through: "UserCustomerOrgs",
+    foreignKey: "customerOrgId",
+    otherKey: "userId",
   });
 });
