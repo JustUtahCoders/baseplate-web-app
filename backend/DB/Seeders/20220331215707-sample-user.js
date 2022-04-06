@@ -43,8 +43,6 @@ module.exports = {
       {
         userId: insertedUser.id,
         customerOrgId: insertedCustomerOrg.id,
-        createdAt: new Date(),
-        updatedAt: new Date(),
       },
     ]);
   },
