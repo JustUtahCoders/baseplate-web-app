@@ -1,7 +1,8 @@
 #!/bin/sh
 
-# This test verifies that all our migrations and seeds work together properly and can
-# create a functioning DB when executed in the correct order.
+# This script starts up a test postgres database inside a docker container,
+# to be used in jest integration tests and in bash tests for sequelize migrations
+# and seeds
 
 # Fail if any command fails
 set -e
