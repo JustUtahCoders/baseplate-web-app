@@ -1,7 +1,6 @@
 import { DefaultModelAttrs } from "./DefaultModelAttrs";
 import { modelEvents } from "../../InitDB";
 import { CustomerOrgModel } from "./CustomerOrg";
-import { UserCustomerOrgsModel } from "./UserCustomerOrgs";
 import { BelongsToManyMethods } from "./SequelizeTSHelpers";
 import S, {
   BelongsToManyGetAssociationsMixin,
