@@ -1,6 +1,6 @@
 import { dbReady, sequelize } from "../../InitDB";
 import { CustomerOrgModel } from "../Models/CustomerOrg";
-import { MicrofrontendModel } from "../models/Microfrontend";
+import { MicrofrontendModel } from "../Models/Microfrontend";
 import { UserModel } from "../Models/User";
 
 export function dbHelpers() {
