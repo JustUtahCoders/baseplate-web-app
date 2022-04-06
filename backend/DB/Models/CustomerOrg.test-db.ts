@@ -8,7 +8,7 @@ describe("CustomerOrgModel", () => {
 
   afterEach(async () => {
     if (customerOrg) {
-      await customerOrg.destroy();
+      // await customerOrg.destroy();
     }
   });
 
