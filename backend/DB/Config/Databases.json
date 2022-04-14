@@ -2,14 +2,14 @@
   "development": {
     "username": "root",
     "password": "password",
-    "database": "foundry",
+    "database": "baseplate",
     "host": "127.0.0.1",
     "dialect": "postgres"
   },
   "db-tests": {
     "username": "root",
     "password": "password",
-    "database": "foundry",
+    "database": "baseplate",
     "host": "127.0.0.1",
     "dialect": "postgres",
     "port": 8765

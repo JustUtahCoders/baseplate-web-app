@@ -37,8 +37,8 @@ module.exports = {
         {
           microfrontendId: navbarMFE.id,
           userId: sampleUserId,
-          foundryTokenId: null,
-          cause: "foundryWebApp",
+          baseplateTokenId: null,
+          cause: "baseplateWebApp",
           status: "success",
           createdAt: new Date(),
           updatedAt: new Date(),
@@ -46,7 +46,7 @@ module.exports = {
         {
           microfrontendId: settingsMFE.id,
           userId: sampleUserId,
-          foundryTokenId: null,
+          baseplateTokenId: null,
           cause: "deploymentCLI",
           status: "failure",
           createdAt: new Date(),
@@ -55,8 +55,8 @@ module.exports = {
         {
           microfrontendId: settingsMFE.id,
           userId: sampleUserId,
-          foundryTokenId: null,
-          cause: "foundryWebApp",
+          baseplateTokenId: null,
+          cause: "baseplateWebApp",
           status: "success",
           createdAt: new Date(),
           updatedAt: new Date(),

@@ -20,10 +20,10 @@ export const renderWebApp = async (req, res: Response) => {
     routerContext,
     reqUrl: req.url,
     assetBase: isProd
-      ? "https://storage.googleapis.com/single-spa-foundry-web-app/dist"
+      ? "https://storage.googleapis.com/baseplate/dist"
       : "http://localhost:7700",
     cssFiles: [isProd ? webpackManifest["main.css"] : "main.css"],
-    jsFiles: [isProd ? webpackManifest["main.js"] : "foundry-web-app.js"],
+    jsFiles: [isProd ? webpackManifest["main.js"] : "baseplate-web-app.js"],
   };
 
   let stream;

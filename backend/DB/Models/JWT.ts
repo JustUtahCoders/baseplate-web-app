@@ -51,7 +51,7 @@ export interface JWTAttributes {
 export enum JWTType {
   loginMFAEmail = "loginMFAEmail",
   passwordReset = "passwordReset",
-  foundryApiToken = "foundryApiToken",
+  baseplateApiToken = "baseplateApiToken",
 }
 
 export type JWTCreationAttributes = Omit<JWTAttributes, "id">;

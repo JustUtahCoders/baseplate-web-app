@@ -29,13 +29,13 @@ export class DeploymentModel
     DeploymentAttributes,
     BelongsToMethods<{ microfrontend: string }, MicrofrontendModel>,
     BelongsToMethods<{ user: string }, UserModel>,
-    BelongsToMethods<{ foundryToken: string }, JWTModel>,
+    BelongsToMethods<{ baseplateToken: string }, JWTModel>,
     HasManyMethods<{ deployment: string }, DeploymentModel>
 {
   public id!: number;
   public microfrontendId!: number;
   public userId?: number;
-  public foundryTokenId?: number;
+  public baseplateTokenId?: number;
   public cause: DeploymentCause;
   public status: DeploymentStatus;
 
@@ -50,9 +50,9 @@ export class DeploymentModel
   public setUser!: BelongsToSetAssociationMixin<UserModel, number>;
   public createUser!: BelongsToCreateAssociationMixin<UserModel>;
 
-  public getFoundryToken!: BelongsToGetAssociationMixin<JWTModel>;
-  public setFoundryToken!: BelongsToSetAssociationMixin<JWTModel, number>;
-  public createFoundryToken!: BelongsToCreateAssociationMixin<JWTModel>;
+  public getBaseplateToken!: BelongsToGetAssociationMixin<JWTModel>;
+  public setBaseplateToken!: BelongsToSetAssociationMixin<JWTModel, number>;
+  public createBaseplateToken!: BelongsToCreateAssociationMixin<JWTModel>;
 
   public getDeployments!: HasManyGetAssociationsMixin<DeploymentModel>;
   public countDeployments!: HasManyCountAssociationsMixin;
@@ -79,7 +79,7 @@ export interface DeploymentAttributes {
   id: number;
   microfrontendId: number;
   userId?: number;
-  foundryTokenId?: number;
+  baseplateTokenId?: number;
   cause: DeploymentCause;
   status: DeploymentStatus;
 }
@@ -91,7 +91,7 @@ export type Deployment = DeploymentAttributes & DefaultModelAttrs;
 export enum DeploymentCause {
   deploymentCLI = "deploymentCLI",
   manualAPICall = "manualAPICall",
-  foundryWebApp = "foundryWebApp",
+  baseplateWebApp = "baseplateWebApp",
 }
 
 export enum DeploymentStatus {
@@ -115,7 +115,7 @@ modelEvents.once("init", (sequelize) => {
         type: DataTypes.INTEGER,
         allowNull: true,
       },
-      foundryTokenId: {
+      baseplateTokenId: {
         type: DataTypes.INTEGER,
         allowNull: true,
       },
@@ -152,7 +152,7 @@ modelEvents.once("associate", (sequelize) => {
 
   DeploymentModel.belongsTo(JWTModel, {
     foreignKey: {
-      name: "foundryTokenId",
+      name: "baseplateTokenId",
       allowNull: true,
     },
   });

@@ -16,7 +16,7 @@ import { FormFieldLabel } from "../Styleguide/FormFieldLabel";
 import { Input } from "../Styleguide/Input";
 import { RouterProps } from "react-router";
 import { useMutation } from "react-query";
-import { foundryFetch } from "../Utils/foundryFetch";
+import { baseplateFetch } from "../Utils/baseplateFetch";
 import { unary } from "lodash-es";
 
 export function Login(props: RouterProps) {
@@ -34,7 +34,7 @@ export function Login(props: RouterProps) {
   >(
     (evt) => {
       evt.preventDefault();
-      let requestPromise = foundryFetch<LoginResultData>(`/login`, {
+      let requestPromise = baseplateFetch<LoginResultData>(`/login`, {
         method: "POST",
         body: {
           username: loginFormData.username,
@@ -111,7 +111,7 @@ export function Login(props: RouterProps) {
         </Anchor>
 
         <p className="text-center text-xs text-gray-600 py-8">
-          New to Foundry?{" "}
+          New to Baseplate?{" "}
           <Anchor kind={ButtonKind.classic} href="/create-account">
             Create an account
           </Anchor>

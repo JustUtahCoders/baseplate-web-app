@@ -34,7 +34,7 @@ export async function sendEmail({ to, subject, body }) {
 
   const email = await makeEmail({
     to,
-    from: "Single-Spa Foundry <info@single-spa-workshop.com>",
+    from: "Baseplate <info@single-spa-workshop.com>",
     subject,
     body,
   });

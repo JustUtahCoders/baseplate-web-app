@@ -66,7 +66,7 @@ module.exports = {
         onUpdate: "cascade",
         onDelete: "cascade",
       },
-      foundryTokenId: {
+      baseplateTokenId: {
         type: Sequelize.INTEGER,
         allowNull: true,
         references: {

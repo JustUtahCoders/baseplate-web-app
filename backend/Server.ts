@@ -26,8 +26,8 @@ process.on("SIGINT", function () {
 
 if (
   process.env.NODE_ENV !== "production" &&
-  process.env.FOUNDRY_OPEN === "true"
+  process.env.BASEPLATE_OPEN === "true"
 ) {
-  delete process.env.FOUNDRY_OPEN;
+  delete process.env.BASEPLATE_OPEN;
   open(fullUrl);
 }

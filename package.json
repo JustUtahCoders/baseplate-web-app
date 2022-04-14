@@ -1,7 +1,7 @@
 {
-  "name": "@single-spa-foundry/web-app",
+  "name": "@baseplate-sdk/web-app",
   "version": "1.0.0",
-  "description": "Customer web app for single-spa foundry",
+  "description": "Customer web app for Baseplate",
   "type": "module",
   "scripts": {
     "develop": "concurrently \"pnpm:develop:*\"",
@@ -29,7 +29,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/JustUtahCoders/single-spa-foundry-web-app.git"
+    "url": "git+https://github.com/JustUtahCoders/baseplate-web-app.git"
   },
   "browserslist": [
     "last 10 Chrome versions",
@@ -40,9 +40,9 @@
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/JustUtahCoders/single-spa-foundry-web-app/issues"
+    "url": "https://github.com/JustUtahCoders/baseplate-web-app/issues"
   },
-  "homepage": "https://github.com/JustUtahCoders/single-spa-foundry-web-app#readme",
+  "homepage": "https://github.com/JustUtahCoders/baseplate-web-app#readme",
   "devDependencies": {
     "@babel/core": "^7.17.8",
     "@babel/eslint-parser": "^7.17.0",

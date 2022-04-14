@@ -29,11 +29,15 @@ describe("DeploymentModel", () => {
   it(`can create and retrieve deployments`, async () => {
     const microfrontend = getMicrofrontend();
 
-    deployment = await DeploymentModel.create({
-      cause: DeploymentCause.foundryWebApp,
-      microfrontendId: microfrontend.id,
-      status: DeploymentStatus.success,
-    });
+    try {
+      deployment = await DeploymentModel.create({
+        cause: DeploymentCause.baseplateWebApp,
+        microfrontendId: microfrontend.id,
+        status: DeploymentStatus.success,
+      });
+    } catch (err) {
+      console.error(err);
+    }
 
     expect(deployment).toBeTruthy();
     expect(deployment.microfrontendId).toBe(microfrontend.id);
@@ -44,7 +48,7 @@ describe("DeploymentModel", () => {
       },
     });
 
-    expect(deployment.cause).toBe(DeploymentCause.foundryWebApp);
+    expect(deployment.cause).toBe(DeploymentCause.baseplateWebApp);
     expect(deployment.status).toBe(DeploymentStatus.success);
   });
 });
