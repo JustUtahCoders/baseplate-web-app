@@ -20,12 +20,14 @@ describe("EnvironmentModel", () => {
   const getCustomerOrg = sampleCustomerOrg(getUser);
 
   it(`can create and retrieve environments`, async () => {
+    const user = getUser();
     const customerOrg = getCustomerOrg();
 
     environment = await EnvironmentModel.create({
       customerOrgId: customerOrg.id,
       isProd: true,
       name: "prod",
+      auditUserId: user.id,
     });
 
     expect(environment).toBeTruthy();

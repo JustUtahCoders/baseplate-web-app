@@ -4,6 +4,7 @@ const config = {
   moduleNameMapper: {
     "lodash-es": "lodash",
   },
+  extensionsToTreatAsEsm: [".ts"],
 };
 
 export default config;

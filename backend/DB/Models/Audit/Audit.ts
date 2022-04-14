@@ -1,6 +1,6 @@
 import S, { ModelStatic } from "sequelize";
 import { modelEvents } from "../../../InitDB";
-import auditInit from "./AuditInit";
+import { sequelizeOptions } from "./AuditInit";
 
 const { DataTypes, Model } = S;
 
@@ -43,7 +43,7 @@ export function initAuditModel(
   parentModelName: string
 ): void {
   modelEvents.once("init", (sequelize) => {
-    const auditInitOptions = auditInit(parentModelName);
+    const auditInitOptions = sequelizeOptions(parentModelName);
 
     SpecificAuditModel.init(auditInitOptions, {
       sequelize,

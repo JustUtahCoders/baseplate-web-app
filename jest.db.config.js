@@ -5,6 +5,7 @@ const config = {
     "lodash-es": "lodash",
   },
   testRegex: "(/__tests__/.*|(\\.|/)(test-db|spec-db))\\.[jt]sx?$",
+  extensionsToTreatAsEsm: [".ts"],
 };
 
 export default config;
