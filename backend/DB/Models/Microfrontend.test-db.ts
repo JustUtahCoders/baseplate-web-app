@@ -7,16 +7,17 @@ import { MicrofrontendModel } from "./Microfrontend";
 
 describe("MicrofrontendModel", () => {
   dbHelpers();
-  const getUser = sampleUser();
-  const getCustomerOrg = sampleCustomerOrg(getUser);
-
-  let microfrontend: MicrofrontendModel | undefined;
 
   afterEach(async () => {
     if (microfrontend) {
       await microfrontend.destroy();
     }
   });
+
+  const getUser = sampleUser();
+  const getCustomerOrg = sampleCustomerOrg(getUser);
+
+  let microfrontend: MicrofrontendModel | undefined;
 
   it(`can create and retrieve microfrontends`, async () => {
     const customerOrg = getCustomerOrg();

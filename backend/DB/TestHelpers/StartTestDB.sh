@@ -25,3 +25,4 @@ sleep .5;
 export NODE_ENV=db-tests
 
 pnpm exec sequelize db:migrate
+pnpm exec sequelize db:seed:all

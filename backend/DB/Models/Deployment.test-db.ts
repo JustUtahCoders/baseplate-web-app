@@ -12,18 +12,19 @@ import {
 import { MicrofrontendModel } from "./Microfrontend";
 
 describe("DeploymentModel", () => {
-  dbHelpers();
-  const getUser = sampleUser();
-  const getCustomerOrg = sampleCustomerOrg(getUser);
-  const getMicrofrontend = sampleMicrofrontend(getCustomerOrg);
-
   let deployment: DeploymentModel;
+
+  dbHelpers();
 
   afterEach(async () => {
     if (deployment) {
       await deployment.destroy();
     }
   });
+
+  const getUser = sampleUser();
+  const getCustomerOrg = sampleCustomerOrg(getUser);
+  const getMicrofrontend = sampleMicrofrontend(getCustomerOrg);
 
   it(`can create and retrieve deployments`, async () => {
     const microfrontend = getMicrofrontend();
