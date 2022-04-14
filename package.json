@@ -37,8 +37,8 @@
     "last 3 Edge versions",
     "last 10 Firefox versions"
   ],
-  "author": "",
-  "license": "MIT",
+  "author": "Joel Denning",
+  "license": "See LICENSE file",
   "bugs": {
     "url": "https://github.com/JustUtahCoders/baseplate-web-app/issues"
   },
