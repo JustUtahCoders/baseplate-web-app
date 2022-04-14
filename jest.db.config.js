@@ -6,6 +6,9 @@ const config = {
   },
   testRegex: "(/__tests__/.*|(\\.|/)(test-db|spec-db))\\.[jt]sx?$",
   extensionsToTreatAsEsm: [".ts"],
+  transform: {
+    "\\.[jt]sx?$": "babel-jest",
+  },
 };
 
 export default config;

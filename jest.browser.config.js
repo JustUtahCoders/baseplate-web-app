@@ -5,6 +5,9 @@ const config = {
     "lodash-es": "lodash",
   },
   extensionsToTreatAsEsm: [".ts"],
+  transform: {
+    "\\.[jt]sx?$": "babel-jest",
+  },
 };
 
 export default config;
