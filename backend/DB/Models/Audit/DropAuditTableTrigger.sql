@@ -1,0 +1,2 @@
+DROP TRIGGER "MODELNAME_audit_trigger" ON "MODELNAME";
+DROP FUNCTION "MODELNAME_audit_trigger_func";

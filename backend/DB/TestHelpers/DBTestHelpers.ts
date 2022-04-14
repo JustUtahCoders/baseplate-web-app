@@ -1,3 +1,4 @@
+import { Model } from "sequelize";
 import { dbReady, sequelize } from "../../InitDB";
 import { CustomerOrgModel } from "../Models/CustomerOrg";
 import { MicrofrontendModel } from "../Models/Microfrontend";
@@ -18,9 +19,7 @@ export function sampleUser(): () => UserModel {
       familyName: "Sanchez",
     });
   });
-  afterEach(async () => {
-    user.destroy();
-  });
+  afterEach(() => safeDestroy(user));
 
   return () => user;
 }
@@ -41,9 +40,7 @@ export function sampleCustomerOrg(
     });
   });
 
-  afterEach(async () => {
-    customerOrg.destroy();
-  });
+  afterEach(() => safeDestroy(customerOrg));
 
   return () => customerOrg;
 }
@@ -63,9 +60,17 @@ export function sampleMicrofrontend(
     });
   });
 
-  afterEach(async () => {
-    await microfrontend.destroy();
-  });
+  afterEach(() => safeDestroy(microfrontend));
 
   return () => microfrontend;
+}
+
+async function safeDestroy(mod: Model) {
+  try {
+    await mod.destroy();
+  } catch (err) {
+    // Better stacktrace
+    console.error(err);
+    throw err;
+  }
 }

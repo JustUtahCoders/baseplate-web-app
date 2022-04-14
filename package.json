@@ -24,7 +24,7 @@
     "prepare-test-db": "bash backend/DB/TestHelpers/StartTestDB.sh",
     "destroy-test-db": "docker-compose -f backend/DB/TestHelpers/docker-compose.tests.yml down -v",
     "test-db-migrations": "bash backend/DB/TestHelpers/MigrationTests.sh",
-    "test-db-code": "cross-env NODE_ENV=db-tests jest --config jest.db.config.js --detectOpenHandles",
+    "test-db-code": "cross-env NODE_OPTIONS=--experimental-vm-modules NODE_ENV=db-tests jest --config jest.db.config.js --detectOpenHandles",
     "prepare": "husky install"
   },
   "repository": {
@@ -63,6 +63,7 @@
     "@types/passport-local": "^1.0.34",
     "@vercel/ncc": "^0.33.3",
     "autoprefixer": "^10.4.4",
+    "babel-jest": "^27.5.1",
     "babel-loader": "^8.2.3",
     "concurrently": "^7.0.0",
     "copyfiles": "^2.4.1",

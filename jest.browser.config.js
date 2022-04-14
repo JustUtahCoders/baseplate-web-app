@@ -4,6 +4,10 @@ const config = {
   moduleNameMapper: {
     "lodash-es": "lodash",
   },
+  extensionsToTreatAsEsm: [".ts"],
+  transform: {
+    "\\.[jt]sx?$": "babel-jest",
+  },
 };
 
 export default config;
