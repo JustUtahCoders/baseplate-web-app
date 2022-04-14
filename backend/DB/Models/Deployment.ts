@@ -152,7 +152,7 @@ modelEvents.once("associate", (sequelize) => {
 
   DeploymentModel.belongsTo(JWTModel, {
     foreignKey: {
-      name: "baseplateTokenid",
+      name: "baseplateTokenId",
       allowNull: true,
     },
   });
