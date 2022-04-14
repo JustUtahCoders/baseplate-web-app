@@ -76,10 +76,7 @@ export async function dropAuditTable(queryInterface, modelName) {
     /MODELNAME/g,
     modelName
   );
-  console.log("hereA", dropTriggerSql);
   await queryInterface.sequelize.query(dropTriggerSql);
-  console.log("hereB");
 
   await queryInterface.dropTable(`${modelName}Audit`);
-  console.log("hereC");
 }

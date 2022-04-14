@@ -11,10 +11,8 @@ module.exports = {
 
   async down(queryInterface, Sequelize) {
     const auditInit = await import("../Models/Audit/AuditInit.js");
-    console.log("here0");
 
     await auditInit.dropAuditTable(queryInterface, "Environments");
-    console.log("here1");
     await queryInterface.dropTable("Environments");
   },
 };

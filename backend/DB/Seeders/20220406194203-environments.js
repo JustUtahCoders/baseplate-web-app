@@ -47,6 +47,5 @@ module.exports = {
     await queryInterface.bulkDelete("Environments", {
       customerOrgId: sampleCustomerOrgId,
     });
-    console.log("here3");
   },
 };
