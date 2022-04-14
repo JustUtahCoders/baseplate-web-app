@@ -13,8 +13,8 @@ module.exports = (webpackConfigEnv, argv) => {
     output: {
       path: path.resolve(process.cwd(), "dist"),
       filename: isProd
-        ? "foundry-web-app.[contenthash].js"
-        : "foundry-web-app.js",
+        ? "baseplate-web-app.[contenthash].js"
+        : "baseplate-web-app.js",
     },
     mode: "development",
     devtool: "source-map",

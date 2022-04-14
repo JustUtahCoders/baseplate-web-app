@@ -1,6 +1,6 @@
 const bcrypt = require("bcryptjs");
 
-const sampleUserEmail = "sampleuser@single-spa-foundry.com";
+const sampleUserEmail = "sample@baseplate.cloud";
 
 module.exports = {
   async up(queryInterface, Sequelize) {

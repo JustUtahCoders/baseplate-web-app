@@ -30,7 +30,7 @@ describe("DeploymentModel", () => {
     const microfrontend = getMicrofrontend();
 
     deployment = await DeploymentModel.create({
-      cause: DeploymentCause.foundryWebApp,
+      cause: DeploymentCause.baseplateWebApp,
       microfrontendId: microfrontend.id,
       status: DeploymentStatus.success,
     });
@@ -44,7 +44,7 @@ describe("DeploymentModel", () => {
       },
     });
 
-    expect(deployment.cause).toBe(DeploymentCause.foundryWebApp);
+    expect(deployment.cause).toBe(DeploymentCause.baseplateWebApp);
     expect(deployment.status).toBe(DeploymentStatus.success);
   });
 });

@@ -1,9 +1,9 @@
 import { isPlainObject } from "lodash-es";
 import { theGlobal } from "./Global";
 
-export function foundryFetch<ResponseDataType = object>(
+export function baseplateFetch<ResponseDataType = object>(
   url: string,
-  options: FoundryFetchOptions = {}
+  options: BaseplateFetchOptions = {}
 ): Promise<ResponseDataType> {
   if (isPlainObject(options?.body) && !(options?.body instanceof FormData)) {
     options.body = JSON.stringify(options.body);
@@ -32,20 +32,20 @@ export function foundryFetch<ResponseDataType = object>(
   });
 }
 
-export type FoundryFetchOptions = Omit<RequestInit, "body"> & {
+export type BaseplateFetchOptions = Omit<RequestInit, "body"> & {
   body?: object | BodyInit;
 };
 
 declare global {
   interface Window {
-    debugFetch: typeof foundryFetch;
+    debugFetch: typeof baseplateFetch;
   }
 
   namespace NodeJS {
     interface Global {
-      debugFetch: typeof foundryFetch;
+      debugFetch: typeof baseplateFetch;
     }
   }
 }
 
-theGlobal.debugFetch = foundryFetch;
+theGlobal.debugFetch = baseplateFetch;

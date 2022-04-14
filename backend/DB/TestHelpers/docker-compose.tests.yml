@@ -2,13 +2,13 @@ version: "3.1"
 
 services:
   db:
-    container_name: foundry-web-app-tests-db
+    container_name: baseplate-web-app-tests-db
     image: postgres
     restart: always
     environment:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: password
-      POSTGRES_DB: foundry
+      POSTGRES_DB: baseplate
     ports:
       # Non-standard postgres port to avoid collisions
       - "8765:5432"

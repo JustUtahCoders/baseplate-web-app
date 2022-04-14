@@ -47,7 +47,7 @@ export interface MicrofrontendAttributes {
   scope?: string;
   /*
     Each customer has an orgKey property that can be used as the scope. The orgKey
-    is used in foundry-worker to identify which customer the request is for.
+    is used in baseplate-cloudflare-worker to identify which customer the request is for.
   */
   useCustomerOrgKeyAsScope: boolean;
 }

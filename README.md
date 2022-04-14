@@ -1,4 +1,4 @@
-# single-spa foundry web app
+# Baseplate web app
 
 ## Running locally
 
@@ -29,7 +29,7 @@ Then click on "Run and Debug" in VS Code, and press Start for Develop Backend.
 
 ```sh
 docker-compose exec db bash
-psql foundry
+psql baseplate
 # show tables
 \dt
 select * from "Users";

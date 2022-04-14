@@ -1,5 +1,5 @@
 ---
-"@single-spa-foundry/web-app": patch
+"@baseplate-sdk/web-app": patch
 ---
 
 Add tests, improve typescript declarations

@@ -7,7 +7,7 @@ const { Op } = Sequelize;
 export async function findOrCreateLocalUser(): Promise<UserModel> {
   const users = await UserModel.findAll({
     where: {
-      email: "sampleuser@single-spa-foundry.com",
+      email: "sample@baseplate.cloud",
     },
   });
 
