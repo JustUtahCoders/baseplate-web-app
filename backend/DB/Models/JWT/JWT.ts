@@ -1,15 +1,16 @@
-import { modelEvents } from "../../InitDB";
-import { CustomerOrgModel } from "./CustomerOrg";
-import { DefaultModelAttrs } from "./DefaultModelAttrs";
-import { UserModel } from "./User";
-import { BelongsToMethods } from "./SequelizeTSHelpers";
+import { modelEvents } from "../../../InitDB";
+import { CustomerOrgModel } from "../CustomerOrg/CustomerOrg";
+import { DefaultModelAttrs } from "../DefaultModelAttrs";
+import { UserModel } from "../User/User";
+import { BelongsToMethods } from "../SequelizeTSHelpers";
 import S, {
   BelongsToGetAssociationMixin,
   BelongsToSetAssociationMixin,
   BelongsToCreateAssociationMixin,
 } from "sequelize";
+import { currentSchema } from "./JWTSchema";
 
-const { Model, DataTypes } = S;
+const { Model } = S;
 
 export class JWTModel
   extends Model<JWTAttributes, JWTCreationAttributes>
@@ -59,23 +60,10 @@ export type JWTCreationAttributes = Omit<JWTAttributes, "id">;
 export type JWT = JWTAttributes & DefaultModelAttrs;
 
 modelEvents.once("init", (sequelize) => {
-  JWTModel.init(
-    {
-      id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true,
-      },
-      token: DataTypes.STRING,
-      userId: DataTypes.INTEGER,
-      customerOrgId: DataTypes.INTEGER,
-      jwtType: DataTypes.STRING,
-    },
-    {
-      sequelize,
-      modelName: "JWT",
-    }
-  );
+  JWTModel.init(currentSchema, {
+    sequelize,
+    modelName: "JWT",
+  });
 });
 
 modelEvents.once("associate", (sequelize) => {

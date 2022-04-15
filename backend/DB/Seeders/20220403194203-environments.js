@@ -48,4 +48,21 @@ module.exports = {
       customerOrgId: sampleCustomerOrgId,
     });
   },
+
+  async getSampleEnvironment(queryInterface) {
+    const [prodEnv] = await queryInterface.rawSelect(
+      "Environments",
+      {
+        where: {
+          name: "prod",
+        },
+        plain: false,
+      },
+      ["id"]
+    );
+
+    return {
+      sampleEnvironmentId: prodEnv.id,
+    };
+  },
 };

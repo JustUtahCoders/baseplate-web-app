@@ -1,15 +1,15 @@
 import {
   dbHelpers,
   sampleCustomerOrg,
+  sampleEnvironment,
   sampleMicrofrontend,
   sampleUser,
-} from "../TestHelpers/DBTestHelpers";
+} from "../../TestHelpers/DBTestHelpers";
 import {
   DeploymentCause,
   DeploymentModel,
   DeploymentStatus,
 } from "./Deployment";
-import { MicrofrontendModel } from "./Microfrontend";
 
 describe("DeploymentModel", () => {
   let deployment: DeploymentModel;
@@ -24,23 +24,23 @@ describe("DeploymentModel", () => {
 
   const getUser = sampleUser();
   const getCustomerOrg = sampleCustomerOrg(getUser);
-  const getMicrofrontend = sampleMicrofrontend(getCustomerOrg);
+  const getEnvironment = sampleEnvironment(getUser, getCustomerOrg);
 
   it(`can create and retrieve deployments`, async () => {
-    const microfrontend = getMicrofrontend();
-
     try {
       deployment = await DeploymentModel.create({
         cause: DeploymentCause.baseplateWebApp,
-        microfrontendId: microfrontend.id,
         status: DeploymentStatus.success,
+        auditUserId: getUser().id,
+        environmentId: getEnvironment().id,
       });
     } catch (err) {
       console.error(err);
+      throw err;
     }
 
     expect(deployment).toBeTruthy();
-    expect(deployment.microfrontendId).toBe(microfrontend.id);
+    expect(deployment.status).toBe(DeploymentStatus.success);
 
     deployment = await DeploymentModel.findOne({
       where: {

@@ -1,8 +1,9 @@
 import { Model } from "sequelize";
 import { dbReady, sequelize } from "../../InitDB";
-import { CustomerOrgModel } from "../Models/CustomerOrg";
-import { MicrofrontendModel } from "../Models/Microfrontend";
-import { UserModel } from "../Models/User";
+import { CustomerOrgModel } from "../Models/CustomerOrg/CustomerOrg";
+import { EnvironmentModel } from "../Models/Environment/Environment";
+import { MicrofrontendModel } from "../Models/Microfrontend/Microfrontend";
+import { UserModel } from "../Models/User/User";
 
 export function dbHelpers() {
   beforeAll(() => dbReady);
@@ -37,6 +38,7 @@ export function sampleCustomerOrg(
       name: "Coheed and Cambria",
       orgKey: "theheed",
       billingUserId: user.id,
+      auditUserId: user.id,
     });
   });
 
@@ -63,6 +65,26 @@ export function sampleMicrofrontend(
   afterEach(() => safeDestroy(microfrontend));
 
   return () => microfrontend;
+}
+
+export function sampleEnvironment(
+  userGetter: () => UserModel,
+  customerOrgGetter: () => CustomerOrgModel
+): () => EnvironmentModel {
+  let environment: EnvironmentModel;
+
+  beforeEach(async () => {
+    environment = await EnvironmentModel.create({
+      name: "prod",
+      isProd: true,
+      auditUserId: userGetter().id,
+      customerOrgId: customerOrgGetter().id,
+    });
+  });
+
+  afterEach(() => safeDestroy(environment));
+
+  return () => environment;
 }
 
 async function safeDestroy(mod: Model) {

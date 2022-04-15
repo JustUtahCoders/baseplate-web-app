@@ -1,7 +1,7 @@
-import { DefaultModelAttrs } from "./DefaultModelAttrs";
-import { modelEvents } from "../../InitDB";
-import { CustomerOrgModel } from "./CustomerOrg";
-import { BelongsToManyMethods } from "./SequelizeTSHelpers";
+import { DefaultModelAttrs } from "../DefaultModelAttrs";
+import { modelEvents } from "../../../InitDB";
+import { CustomerOrgModel } from "../CustomerOrg/CustomerOrg";
+import { BelongsToManyMethods } from "../SequelizeTSHelpers";
 import S, {
   BelongsToManyGetAssociationsMixin,
   BelongsToManyHasAssociationsMixin,
@@ -16,6 +16,7 @@ import S, {
 } from "sequelize";
 
 const { Model, DataTypes } = S;
+
 export class UserModel
   extends Model<UserAttributes, UserCreationAttributes>
   implements

@@ -2,7 +2,7 @@ import {
   dbHelpers,
   sampleCustomerOrg,
   sampleUser,
-} from "../TestHelpers/DBTestHelpers";
+} from "../../TestHelpers/DBTestHelpers";
 import { MicrofrontendModel } from "./Microfrontend";
 
 describe("MicrofrontendModel", () => {
@@ -26,6 +26,7 @@ describe("MicrofrontendModel", () => {
       customerOrgId: customerOrg.id,
       name: "navbar",
       useCustomerOrgKeyAsScope: true,
+      auditUserId: getUser().id,
     });
 
     expect(microfrontend).toBeTruthy();

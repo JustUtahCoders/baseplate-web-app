@@ -2,136 +2,54 @@
 
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("Microfrontends", {
-      id: {
-        type: Sequelize.INTEGER,
-        primaryKey: true,
-        autoIncrement: true,
-      },
-      customerOrgId: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: "CustomerOrgs",
-          key: "id",
-        },
-        onUpdate: "cascade",
-        onDelete: "cascade",
-      },
-      name: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
-      scope: {
-        type: Sequelize.STRING,
-        allowNull: true,
-      },
-      useCustomerOrgKeyAsScope: {
-        type: Sequelize.BOOLEAN,
-        allowNull: false,
-      },
-      createdAt: {
-        type: Sequelize.DATE,
-        allowNull: false,
-      },
-      updatedAt: {
-        type: Sequelize.DATE,
-        allowNull: false,
-      },
-    });
+    const auditInit = await import("../Models/Audit/AuditInit.js");
 
-    await queryInterface.createTable("Deployments", {
-      id: {
-        type: Sequelize.INTEGER,
-        primaryKey: true,
-        autoIncrement: true,
-      },
-      microfrontendId: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: "Microfrontends",
-          key: "id",
-        },
-        onUpdate: "cascade",
-        onDelete: "cascade",
-      },
-      userId: {
-        type: Sequelize.INTEGER,
-        allowNull: true,
-        references: {
-          model: "Users",
-          key: "id",
-        },
-        onUpdate: "cascade",
-        onDelete: "cascade",
-      },
-      baseplateTokenId: {
-        type: Sequelize.INTEGER,
-        allowNull: true,
-        references: {
-          model: "JWTs",
-          key: "id",
-        },
-        onUpdate: "cascade",
-        onDelete: "cascade",
-      },
-      cause: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
-      status: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
-      createdAt: {
-        type: Sequelize.DATE,
-        allowNull: false,
-      },
-      updatedAt: {
-        type: Sequelize.DATE,
-        allowNull: false,
-      },
-    });
+    await queryInterface.createTable(
+      "Microfrontends",
+      (
+        await import("../Models/Microfrontend/MicrofrontendSchema.js")
+      ).initialSchema
+    );
+    await auditInit.createAuditTable(queryInterface, "Microfrontends");
 
-    await queryInterface.createTable("DeploymentLogs", {
-      id: {
-        type: Sequelize.INTEGER,
-        primaryKey: true,
-        autoIncrement: true,
-      },
-      deploymentId: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: "Deployments",
-          key: "id",
-        },
-        onDelete: "cascade",
-        onUpdate: "cascade",
-      },
-      label: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
-      text: {
-        type: Sequelize.TEXT,
-        allowNull: false,
-      },
-      createdAt: {
-        type: Sequelize.DATE,
-        allowNull: false,
-      },
-      updatedAt: {
-        type: Sequelize.DATE,
-        allowNull: false,
-      },
-    });
+    await queryInterface.createTable(
+      "Deployments",
+      (
+        await import("../Models/Deployment/DeploymentSchema.js")
+      ).initialSchema
+    );
+    await auditInit.createAuditTable(queryInterface, "Deployments");
+
+    await queryInterface.createTable(
+      "DeployedMicrofrontends",
+      (
+        await import(
+          "../Models/DeployedMicrofrontend/DeployedMicrofrontendSchema.js"
+        )
+      ).initialSchema
+    );
+    await auditInit.createAuditTable(queryInterface, "DeployedMicrofrontends");
+
+    await queryInterface.createTable(
+      "DeploymentLogs",
+      (
+        await import("../Models/DeploymentLog/DeploymentLogSchema.js")
+      ).initialSchema
+    );
   },
 
   async down(queryInterface, Sequelize) {
+    const auditInit = await import("../Models/Audit/AuditInit.js");
+
     await queryInterface.dropTable("DeploymentLogs");
+
+    await auditInit.dropAuditTable(queryInterface, "DeployedMicrofrontends");
+    await queryInterface.dropTable("DeployedMicrofrontends");
+
+    await auditInit.dropAuditTable(queryInterface, "Deployments");
     await queryInterface.dropTable("Deployments");
+
+    await auditInit.dropAuditTable(queryInterface, "Microfrontends");
     await queryInterface.dropTable("Microfrontends");
   },
 };

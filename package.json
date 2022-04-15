@@ -21,7 +21,7 @@
     "test": "concurrently \"pnpm:test:*\"",
     "test:frontend": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --config jest.browser.config.js --coverage",
     "test:db": "pnpm run test-db-migrations && pnpm run test-db-code",
-    "prepare-test-db": "bash backend/DB/TestHelpers/StartTestDB.sh",
+    "prepare-test-db": "bash backend/DB/TestHelpers/StartTestDB.sh && cross-env NODE_ENV=db-tests pnpm exec sequelize db:migrate && cross-env NODE_ENV=db-tests pnpm exec sequelize db:seed:all",
     "destroy-test-db": "docker-compose -f backend/DB/TestHelpers/docker-compose.tests.yml down -v",
     "test-db-migrations": "bash backend/DB/TestHelpers/MigrationTests.sh",
     "test-db-code": "cross-env NODE_OPTIONS=--experimental-vm-modules NODE_ENV=db-tests jest --config jest.db.config.js --detectOpenHandles",

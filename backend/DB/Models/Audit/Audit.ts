@@ -38,21 +38,23 @@ export type AuditCreationAttributes<ModelAttributes> = Omit<
 export type Audit<ModelAttributes> = AuditAttributes<ModelAttributes>;
 
 export function initAuditModel(
-  SpecificAuditModel: typeof AuditModel,
+  SpecificAuditModel: any,
   ParentModel: ModelStatic<any>,
   parentModelName: string
 ): void {
+  const ThisModel = SpecificAuditModel as typeof AuditModel;
+
   modelEvents.once("init", (sequelize) => {
     const auditInitOptions = sequelizeOptions(parentModelName);
 
-    SpecificAuditModel.init(auditInitOptions, {
+    ThisModel.init(auditInitOptions, {
       sequelize,
       timestamps: false,
     });
   });
 
   modelEvents.once("associate", (sequelize) => {
-    SpecificAuditModel.belongsTo(ParentModel, {
+    ThisModel.belongsTo(ParentModel, {
       foreignKey: {
         name: "auditItemId",
         allowNull: false,
