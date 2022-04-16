@@ -103,15 +103,13 @@ module.exports = {
     const { sampleUserId, sampleCustomerOrgId } =
       await getSampleUserAndCustomerOrg(queryInterface);
 
-    /*
-      Deleting the microfrontends automatically deletes the deployments,
-      due to our foreign key cascade rules in the migration for mfes/deployments
-    */
     await queryInterface.bulkDelete("Microfrontends", {
       customerOrgId: sampleCustomerOrgId,
       name: {
         [Sequelize.Op.in]: ["settings", "navbar"],
       },
     });
+
+    await queryInterface.bulkDelete("Deployments", {});
   },
 };
