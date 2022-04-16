@@ -1,7 +1,7 @@
 import S from "sequelize";
-import { DefaultModelAttrs } from "./DefaultModelAttrs";
-import { modelEvents } from "../../InitDB";
-import { DeploymentModel } from "./Deployment";
+import { DefaultModelAttrs } from "../DefaultModelAttrs";
+import { modelEvents } from "../../../InitDB";
+import { DeploymentModel } from "../Deployment/Deployment";
 
 const { Model, DataTypes } = S;
 

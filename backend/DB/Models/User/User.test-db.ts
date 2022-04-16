@@ -1,4 +1,4 @@
-import { dbHelpers } from "../TestHelpers/DBTestHelpers";
+import { dbHelpers } from "../../TestHelpers/DBTestHelpers";
 import { UserModel } from "./User";
 
 describe("UserModel", () => {

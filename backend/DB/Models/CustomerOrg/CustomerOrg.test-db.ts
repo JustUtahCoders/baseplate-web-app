@@ -1,4 +1,4 @@
-import { dbHelpers, sampleUser } from "../TestHelpers/DBTestHelpers";
+import { dbHelpers, sampleUser } from "../../TestHelpers/DBTestHelpers";
 import { CustomerOrgModel } from "./CustomerOrg";
 
 describe("CustomerOrgModel", () => {
@@ -20,6 +20,7 @@ describe("CustomerOrgModel", () => {
       name: "Coheed and Cambria",
       orgKey: "theheed",
       billingUserId: user.id,
+      auditUserId: user.id,
     });
 
     expect(customerOrg).toBeTruthy();
@@ -43,6 +44,7 @@ describe("CustomerOrgModel", () => {
       name: "Coheed and Cambria",
       orgKey: "theheed",
       billingUserId: getUser().id,
+      auditUserId: getUser().id,
     });
 
     const billingUser = await customerOrg.getBillingUser();

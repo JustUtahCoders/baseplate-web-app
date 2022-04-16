@@ -28,6 +28,7 @@ module.exports = {
         {
           accountEnabled: true,
           billingUserId: insertedUser.id,
+          auditUserId: insertedUser.id,
           name: "Convex Co-op",
           orgKey: "convex",
           createdAt: new Date(),

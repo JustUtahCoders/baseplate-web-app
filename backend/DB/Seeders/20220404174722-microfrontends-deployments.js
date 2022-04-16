@@ -1,10 +1,13 @@
 "use strict";
 const { getSampleUserAndCustomerOrg } = require("./20220331215707-sample-user");
+const { getSampleEnvironment } = require("./20220403194203-environments");
 
 module.exports = {
   async up(queryInterface, Sequelize) {
     const { sampleUserId, sampleCustomerOrgId } =
       await getSampleUserAndCustomerOrg(queryInterface);
+
+    const { sampleEnvironmentId } = await getSampleEnvironment(queryInterface);
 
     const [navbarMFE, settingsMFE] = await queryInterface.bulkInsert(
       "Microfrontends",
@@ -14,6 +17,7 @@ module.exports = {
           name: "navbar",
           scope: null,
           useCustomerOrgKeyAsScope: true,
+          auditUserId: sampleUserId,
           createdAt: new Date(),
           updatedAt: new Date(),
         },
@@ -22,6 +26,7 @@ module.exports = {
           name: "settings",
           scope: null,
           useCustomerOrgKeyAsScope: true,
+          auditUserId: sampleUserId,
           createdAt: new Date(),
           updatedAt: new Date(),
         },
@@ -31,33 +36,26 @@ module.exports = {
       }
     );
 
-    const [dep1, dep2, dep3] = await queryInterface.bulkInsert(
+    const [dep1, dep2] = await queryInterface.bulkInsert(
       "Deployments",
       [
         {
-          microfrontendId: navbarMFE.id,
           userId: sampleUserId,
           baseplateTokenId: null,
           cause: "baseplateWebApp",
           status: "success",
+          environmentId: sampleEnvironmentId,
+          auditUserId: sampleUserId,
           createdAt: new Date(),
           updatedAt: new Date(),
         },
         {
-          microfrontendId: settingsMFE.id,
           userId: sampleUserId,
           baseplateTokenId: null,
           cause: "deploymentCLI",
           status: "failure",
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-        {
-          microfrontendId: settingsMFE.id,
-          userId: sampleUserId,
-          baseplateTokenId: null,
-          cause: "baseplateWebApp",
-          status: "success",
+          environmentId: sampleEnvironmentId,
+          auditUserId: sampleUserId,
           createdAt: new Date(),
           updatedAt: new Date(),
         },
@@ -98,26 +96,6 @@ module.exports = {
         createdAt: new Date(),
         updatedAt: new Date(),
       },
-      {
-        deploymentId: dep3.id,
-        label: "Upload Static Files",
-        text: `
-          Uploading settings.js to s3
-          Uploading settings.css to s3
-        `.trim(),
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-      {
-        deploymentId: dep3.id,
-        label: "Update Import Map",
-        text: `
-          Updating settings in import map
-          Import Map update complete.
-        `.trim(),
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
     ]);
   },
 
@@ -125,15 +103,13 @@ module.exports = {
     const { sampleUserId, sampleCustomerOrgId } =
       await getSampleUserAndCustomerOrg(queryInterface);
 
-    /*
-      Deleting the microfrontends automatically deletes the deployments,
-      due to our foreign key cascade rules in the migration for mfes/deployments
-    */
     await queryInterface.bulkDelete("Microfrontends", {
       customerOrgId: sampleCustomerOrgId,
       name: {
         [Sequelize.Op.in]: ["settings", "navbar"],
       },
     });
+
+    await queryInterface.bulkDelete("Deployments", {});
   },
 };

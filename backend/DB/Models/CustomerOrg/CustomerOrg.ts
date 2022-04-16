@@ -1,12 +1,12 @@
-import { DefaultModelAttrs } from "./DefaultModelAttrs";
-import { modelEvents } from "../../InitDB";
-import { UserModel } from "./User";
-import { EnvironmentModel } from "./Environment";
+import { DefaultModelAttrs } from "../DefaultModelAttrs";
+import { modelEvents } from "../../../InitDB";
+import { UserModel } from "../User/User";
+import { EnvironmentModel } from "../Environment/Environment";
 import {
   BelongsToMethods,
   BelongsToManyMethods,
   HasManyMethods,
-} from "./SequelizeTSHelpers";
+} from "../SequelizeTSHelpers";
 import S, {
   BelongsToGetAssociationMixin,
   BelongsToSetAssociationMixin,
@@ -32,8 +32,14 @@ import S, {
   HasManyRemoveAssociationsMixin,
   HasManyCreateAssociationMixin,
 } from "sequelize";
+import { initialSchema } from "./CustomerOrgSchema";
+import {
+  AuditModel,
+  AuditTargetAttributes,
+  initAuditModel,
+} from "../Audit/Audit";
 
-const { Model, DataTypes } = S;
+const { Model } = S;
 
 export class CustomerOrgModel
   extends Model<CustomerOrgAttributes, CustomerOrgCreationAttributes>
@@ -41,13 +47,15 @@ export class CustomerOrgModel
     CustomerOrgAttributes,
     BelongsToMethods<{ billingUser: string }, UserModel>,
     BelongsToManyMethods<{ user: string }, UserModel>,
-    HasManyMethods<{ environment: string }, EnvironmentModel>
+    HasManyMethods<{ environment: string }, EnvironmentModel>,
+    BelongsToMethods<{ auditUser: string }, UserModel>
 {
   public id!: number;
   public name!: string;
   public accountEnabled!: boolean;
   public billingUserId!: number;
   public orgKey!: string;
+  public auditUserId!: number;
 
   public getBillingUser!: BelongsToGetAssociationMixin<UserModel>;
   public setBillingUser!: BelongsToSetAssociationMixin<UserModel, number>;
@@ -90,11 +98,15 @@ export class CustomerOrgModel
   >;
   public createEnvironment!: HasManyCreateAssociationMixin<EnvironmentModel>;
 
+  public getAuditUser!: BelongsToGetAssociationMixin<UserModel>;
+  public setAuditUser!: BelongsToSetAssociationMixin<UserModel, number>;
+  public createAuditUser!: BelongsToCreateAssociationMixin<UserModel>;
+
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 }
 
-export interface CustomerOrgAttributes {
+export interface CustomerOrgAttributes extends AuditTargetAttributes {
   id: number;
   name: string;
   accountEnabled: boolean;
@@ -106,36 +118,17 @@ export type CustomerOrgCreationAttributes = Omit<CustomerOrgAttributes, "id">;
 
 export type CustomerOrg = CustomerOrgAttributes & DefaultModelAttrs;
 
+export class CustomerOrgAuditModel extends AuditModel<CustomerOrgAttributes> {}
+
+const modelName = "CustomerOrg";
+
+initAuditModel(CustomerOrgAuditModel, CustomerOrgModel, modelName);
+
 modelEvents.once("init", (sequelize) => {
-  CustomerOrgModel.init(
-    {
-      id: {
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
-        primaryKey: true,
-      },
-      name: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-      accountEnabled: {
-        type: DataTypes.BOOLEAN,
-        allowNull: false,
-      },
-      billingUserId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-      },
-      orgKey: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-    },
-    {
-      sequelize,
-      modelName: "CustomerOrg",
-    }
-  );
+  CustomerOrgModel.init(initialSchema, {
+    sequelize,
+    modelName,
+  });
 });
 
 modelEvents.once("associate", (sequelize) => {
@@ -155,5 +148,13 @@ modelEvents.once("associate", (sequelize) => {
 
   CustomerOrgModel.hasMany(EnvironmentModel, {
     foreignKey: "customerOrgId",
+  });
+
+  CustomerOrgModel.belongsTo(UserModel, {
+    as: "AuditUser",
+    foreignKey: {
+      name: "auditUserId",
+      allowNull: false,
+    },
   });
 });

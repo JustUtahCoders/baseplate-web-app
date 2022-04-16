@@ -1,25 +1,38 @@
-import { modelEvents } from "../../InitDB";
-import { CustomerOrgModel } from "./CustomerOrg";
-import { BelongsToMethods } from "./SequelizeTSHelpers";
+import { modelEvents } from "../../../InitDB";
+import { DefaultModelAttrs } from "../DefaultModelAttrs";
+import { CustomerOrgModel } from "../CustomerOrg/CustomerOrg";
+import { BelongsToMethods } from "../SequelizeTSHelpers";
 import S, {
   BelongsToGetAssociationMixin,
   BelongsToSetAssociationMixin,
   BelongsToCreateAssociationMixin,
 } from "sequelize";
+import { currentSchema } from "./MicrofrontendSchema";
+import {
+  AuditModel,
+  AuditTargetAttributes,
+  initAuditModel,
+} from "../Audit/Audit";
+import { UserModel } from "../User/User";
 
-const { Model, DataTypes } = S;
+const { Model } = S;
 
 export class MicrofrontendModel
   extends Model<MicrofrontendAttributes, MicrofrontendCreationAttributes>
   implements
     MicrofrontendAttributes,
-    BelongsToMethods<{ customerOrg: string }, CustomerOrgModel>
+    BelongsToMethods<{ customerOrg: string }, CustomerOrgModel>,
+    BelongsToMethods<{ auditUser: string }, UserModel>
 {
   public id!: number;
   public customerOrgId!: number;
   public name!: string;
   public scope?: string;
-  public useCustomerOrgKeyAsScope: boolean;
+  public useCustomerOrgKeyAsScope!: boolean;
+  public auditUserId!: number;
+
+  public readonly createdAt!: Date;
+  public readonly updatedAt!: Date;
 
   public getCustomerOrg!: BelongsToGetAssociationMixin<CustomerOrgModel>;
   public setCustomerOrg!: BelongsToSetAssociationMixin<
@@ -28,11 +41,12 @@ export class MicrofrontendModel
   >;
   public createCustomerOrg!: BelongsToCreateAssociationMixin<CustomerOrgModel>;
 
-  public readonly createdAt!: Date;
-  public readonly updatedAt!: Date;
+  public getAuditUser!: BelongsToGetAssociationMixin<UserModel>;
+  public setAuditUser!: BelongsToSetAssociationMixin<UserModel, number>;
+  public createAuditUser!: BelongsToCreateAssociationMixin<UserModel>;
 }
 
-export interface MicrofrontendAttributes {
+export interface MicrofrontendAttributes extends AuditTargetAttributes {
   id: number;
   customerOrgId: number;
   // A lowercase string. For example, "navbar" or "settings"
@@ -59,42 +73,31 @@ export type MicrofrontendCreationAttributes = Omit<
 
 export type Microfrontend = MicrofrontendAttributes & DefaultModelAttrs;
 
+export class MicrofrontendAuditModel extends AuditModel<MicrofrontendAttributes> {}
+
+const modelName = "Microfrontend";
+
+initAuditModel(MicrofrontendAuditModel, MicrofrontendModel, modelName);
+
 modelEvents.once("init", (sequelize) => {
-  MicrofrontendModel.init(
-    {
-      id: {
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
-        primaryKey: true,
-      },
-      customerOrgId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-      },
-      name: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-      scope: {
-        type: DataTypes.STRING,
-        allowNull: true,
-      },
-      useCustomerOrgKeyAsScope: {
-        type: DataTypes.BOOLEAN,
-        allowNull: false,
-      },
-    },
-    {
-      sequelize,
-      modelName: "Microfrontend",
-    }
-  );
+  MicrofrontendModel.init(currentSchema, {
+    sequelize,
+    modelName,
+  });
 });
 
 modelEvents.once("associate", (sequelize) => {
   MicrofrontendModel.belongsTo(CustomerOrgModel, {
     foreignKey: {
       name: "customerOrgId",
+      allowNull: false,
+    },
+  });
+
+  MicrofrontendModel.belongsTo(UserModel, {
+    as: "AuditUser",
+    foreignKey: {
+      name: "auditUserId",
       allowNull: false,
     },
   });

@@ -2,10 +2,14 @@
 
 module.exports = {
   async up(queryInterface, Sequelize) {
-    const environmentInit = await import("../Models/EnvironmentInit.js");
     const auditInit = await import("../Models/Audit/AuditInit.js");
 
-    await queryInterface.createTable("Environments", environmentInit.default);
+    await queryInterface.createTable(
+      "Environments",
+      (
+        await import("../Models/Environment/EnvironmentSchema.js")
+      ).initialSchema
+    );
     await auditInit.createAuditTable(queryInterface, "Environments");
   },
 

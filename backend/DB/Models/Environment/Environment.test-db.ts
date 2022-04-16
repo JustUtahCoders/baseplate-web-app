@@ -2,7 +2,7 @@ import {
   dbHelpers,
   sampleCustomerOrg,
   sampleUser,
-} from "../TestHelpers/DBTestHelpers";
+} from "../../TestHelpers/DBTestHelpers";
 import { EnvironmentModel } from "./Environment";
 
 describe("EnvironmentModel", () => {
