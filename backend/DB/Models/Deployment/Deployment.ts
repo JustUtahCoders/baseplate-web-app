@@ -175,6 +175,7 @@ export enum DeploymentCause {
 }
 
 export enum DeploymentStatus {
+  pending = "pending",
   success = "success",
   failure = "failure",
 }
