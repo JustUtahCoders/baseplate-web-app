@@ -97,6 +97,53 @@ module.exports = {
         updatedAt: new Date(),
       },
     ]);
+
+    await queryInterface.bulkInsert("DeployedMicrofrontends", [
+      {
+        deploymentId: dep1.id,
+        microfrontendId: navbarMFE.id,
+        deploymentChangedMicrofrontend: true,
+        bareImportSpecifier: "@convex/navbar",
+        entryUrl: "https://cdn.baseplate.cloud/convex/navbar/navbar.v1.js",
+        trailingSlashUrl: "https://cdn.baseplate.cloud/convex/navbar/",
+        auditUserId: sampleUserId,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        deploymentId: dep1.id,
+        microfrontendId: settingsMFE.id,
+        deploymentChangedMicrofrontend: true,
+        bareImportSpecifier: "@convex/settings",
+        entryUrl: "https://cdn.baseplate.cloud/convex/settings/settings.v1.js",
+        trailingSlashUrl: "https://cdn.baseplate.cloud/convex/settings/",
+        auditUserId: sampleUserId,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        deploymentId: dep1.id,
+        microfrontendId: navbarMFE.id,
+        deploymentChangedMicrofrontend: true,
+        bareImportSpecifier: "@convex/navbar",
+        entryUrl: "https://cdn.baseplate.cloud/convex/navbar/navbar.v2.js",
+        trailingSlashUrl: "https://cdn.baseplate.cloud/convex/navbar/",
+        auditUserId: sampleUserId,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        deploymentId: dep1.id,
+        microfrontendId: settingsMFE.id,
+        deploymentChangedMicrofrontend: false,
+        bareImportSpecifier: "@convex/settings",
+        entryUrl: "https://cdn.baseplate.cloud/convex/settings/settings.v1.js",
+        trailingSlashUrl: "https://cdn.baseplate.cloud/convex/settings/",
+        auditUserId: sampleUserId,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    ]);
   },
 
   async down(queryInterface, Sequelize) {

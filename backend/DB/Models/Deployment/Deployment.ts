@@ -48,6 +48,26 @@ export class DeploymentModel
   public environmentId!: number;
   public auditUserId!: number;
 
+  public async deriveImportMap(): Promise<ImportMap> {
+    const deployedMicrofrontends = await this.getDeployedMicrofrontends();
+
+    const importMap: ImportMap = {
+      imports: {},
+      scopes: {},
+    };
+
+    deployedMicrofrontends.forEach((deployedMicrofrontend) => {
+      importMap.imports[deployedMicrofrontend.bareImportSpecifier] =
+        deployedMicrofrontend.entryUrl;
+      if (deployedMicrofrontend.trailingSlashUrl) {
+        importMap.imports[deployedMicrofrontend.bareImportSpecifier + "/"] =
+          deployedMicrofrontend.trailingSlashUrl;
+      }
+    });
+
+    return importMap;
+  }
+
   public getUser!: BelongsToGetAssociationMixin<UserModel>;
   public setUser!: BelongsToSetAssociationMixin<UserModel, number>;
   public createUser!: BelongsToCreateAssociationMixin<UserModel>;
@@ -199,4 +219,19 @@ modelEvents.once("associate", (sequelize) => {
       allowNull: false,
     },
   });
+
+  DeploymentModel.hasMany(DeployedMicrofrontendModel, {
+    foreignKey: "deploymentId",
+  });
 });
+
+export interface ImportMap {
+  imports: ModuleMap;
+  scopes: {
+    [key: string]: ModuleMap;
+  };
+}
+
+export interface ModuleMap {
+  [key: string]: string;
+}
