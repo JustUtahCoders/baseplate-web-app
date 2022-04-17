@@ -35,6 +35,10 @@ const schema = {
     type: DataTypes.BOOLEAN,
     allowNull: false,
   },
+  bareImportSpecifier: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
   entryUrl: {
     type: DataTypes.STRING,
     allowNull: false,

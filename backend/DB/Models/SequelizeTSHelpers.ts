@@ -248,3 +248,8 @@ type CreateBelongsToMany<Aliases, OtherModel extends Model> = {
   [Property in keyof Aliases &
     string as `create${Capitalize<Property>}`]: BelongsToManyCreateAssociationMixin<OtherModel>;
 };
+
+export type ModelWithIncludes<MainModel, IncludedModels> = MainModel & {
+  [Property in keyof IncludedModels &
+    string as Property]: IncludedModels[Property];
+};

@@ -3,7 +3,11 @@ import { modelEvents } from "../../../InitDB";
 import { UserModel } from "../User/User";
 import { JWTModel } from "../JWT/JWT";
 import { DeploymentLogModel } from "../DeploymentLog/DeploymentLog";
-import { BelongsToMethods, HasManyMethods } from "../SequelizeTSHelpers";
+import {
+  BelongsToMethods,
+  HasManyMethods,
+  ModelWithIncludes,
+} from "../SequelizeTSHelpers";
 import S, {
   BelongsToGetAssociationMixin,
   BelongsToSetAssociationMixin,
@@ -23,6 +27,8 @@ import { DeployedMicrofrontendModel } from "../DeployedMicrofrontend/DeployedMic
 import { currentSchema } from "./DeploymentSchema";
 import { AuditTargetAttributes } from "../Audit/Audit";
 import { EnvironmentModel } from "../Environment/Environment";
+import { MicrofrontendModel } from "../Microfrontend/Microfrontend";
+import { CustomerOrgModel } from "../CustomerOrg/CustomerOrg";
 
 const { Model } = S;
 
@@ -47,6 +53,26 @@ export class DeploymentModel
   public status!: DeploymentStatus;
   public environmentId!: number;
   public auditUserId!: number;
+
+  public async deriveImportMap(): Promise<ImportMap> {
+    const deployedMicrofrontends = await this.getDeployedMicrofrontends();
+
+    const importMap: ImportMap = {
+      imports: {},
+      scopes: {},
+    };
+
+    deployedMicrofrontends.forEach((deployedMicrofrontend) => {
+      importMap.imports[deployedMicrofrontend.bareImportSpecifier] =
+        deployedMicrofrontend.entryUrl;
+      if (deployedMicrofrontend.trailingSlashUrl) {
+        importMap.imports[deployedMicrofrontend.bareImportSpecifier + "/"] =
+          deployedMicrofrontend.trailingSlashUrl;
+      }
+    });
+
+    return importMap;
+  }
 
   public getUser!: BelongsToGetAssociationMixin<UserModel>;
   public setUser!: BelongsToSetAssociationMixin<UserModel, number>;
@@ -199,4 +225,19 @@ modelEvents.once("associate", (sequelize) => {
       allowNull: false,
     },
   });
+
+  DeploymentModel.hasMany(DeployedMicrofrontendModel, {
+    foreignKey: "deploymentId",
+  });
 });
+
+export interface ImportMap {
+  imports: ModuleMap;
+  scopes: {
+    [key: string]: ModuleMap;
+  };
+}
+
+export interface ModuleMap {
+  [key: string]: string;
+}

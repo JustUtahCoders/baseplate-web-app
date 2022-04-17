@@ -7,14 +7,17 @@ import S, {
 } from "sequelize";
 import { BelongsToMethods } from "../SequelizeTSHelpers";
 import { DeploymentModel } from "../Deployment/Deployment";
-import { MicrofrontendModel } from "../Microfrontend/Microfrontend";
+import {
+  Microfrontend,
+  MicrofrontendModel,
+} from "../Microfrontend/Microfrontend";
 import { currentSchema } from "./DeployedMicrofrontendSchema";
 import {
   AuditModel,
   AuditTargetAttributes,
   initAuditModel,
 } from "../Audit/Audit";
-import { UserModel } from "../User";
+import { UserModel } from "../User/User";
 
 const { Model } = S;
 
@@ -32,6 +35,7 @@ export class DeployedMicrofrontendModel
   public id!: number;
   public microfrontendId!: number;
   public deploymentId!: number;
+  public bareImportSpecifier: string;
   public entryUrl!: string;
   public trailingSlashUrl!: string;
   public deploymentChangedMicrofrontend!: boolean;
@@ -59,6 +63,7 @@ export interface DeployedMicrofrontendAttributes extends AuditTargetAttributes {
   id: number;
   deploymentId: number;
   microfrontendId: number;
+  bareImportSpecifier: string;
   entryUrl: string;
   trailingSlashUrl: string;
   deploymentChangedMicrofrontend: boolean;
@@ -107,3 +112,7 @@ initAuditModel(
   DeployedMicrofrontendModel,
   modelName
 );
+
+export type DeployedMicrofrontendWithMicrofrontend = DeployedMicrofrontend & {
+  microfrontend: Microfrontend;
+};
