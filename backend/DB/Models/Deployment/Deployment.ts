@@ -3,11 +3,7 @@ import { modelEvents } from "../../../InitDB";
 import { UserModel } from "../User/User";
 import { JWTModel } from "../JWT/JWT";
 import { DeploymentLogModel } from "../DeploymentLog/DeploymentLog";
-import {
-  BelongsToMethods,
-  HasManyMethods,
-  ModelWithIncludes,
-} from "../SequelizeTSHelpers";
+import { BelongsToMethods, HasManyMethods } from "../SequelizeTSHelpers";
 import S, {
   BelongsToGetAssociationMixin,
   BelongsToSetAssociationMixin,
@@ -27,8 +23,6 @@ import { DeployedMicrofrontendModel } from "../DeployedMicrofrontend/DeployedMic
 import { currentSchema } from "./DeploymentSchema";
 import { AuditTargetAttributes } from "../Audit/Audit";
 import { EnvironmentModel } from "../Environment/Environment";
-import { MicrofrontendModel } from "../Microfrontend/Microfrontend";
-import { CustomerOrgModel } from "../CustomerOrg/CustomerOrg";
 
 const { Model } = S;
 

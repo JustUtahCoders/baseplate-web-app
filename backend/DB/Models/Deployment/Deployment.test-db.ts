@@ -109,5 +109,7 @@ describe("DeploymentModel", () => {
       },
       scopes: {},
     });
+
+    await microfrontend.destroy();
   });
 });

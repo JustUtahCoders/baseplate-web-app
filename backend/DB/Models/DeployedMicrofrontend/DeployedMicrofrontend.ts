@@ -7,10 +7,7 @@ import S, {
 } from "sequelize";
 import { BelongsToMethods } from "../SequelizeTSHelpers";
 import { DeploymentModel } from "../Deployment/Deployment";
-import {
-  Microfrontend,
-  MicrofrontendModel,
-} from "../Microfrontend/Microfrontend";
+import { MicrofrontendModel } from "../Microfrontend/Microfrontend";
 import { currentSchema } from "./DeployedMicrofrontendSchema";
 import {
   AuditModel,
@@ -112,7 +109,3 @@ initAuditModel(
   DeployedMicrofrontendModel,
   modelName
 );
-
-export type DeployedMicrofrontendWithMicrofrontend = DeployedMicrofrontend & {
-  microfrontend: Microfrontend;
-};
