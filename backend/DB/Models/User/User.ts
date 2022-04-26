@@ -14,6 +14,7 @@ import S, {
   BelongsToManyCreateAssociationMixin,
   BelongsToManyCountAssociationsMixin,
 } from "sequelize";
+import { currentSchema } from "./UserSchema.js";
 
 const { Model, DataTypes } = S;
 
@@ -80,24 +81,10 @@ export type UserCreationAttributes = Omit<UserAttributes, "id">;
 export type User = UserAttributes & DefaultModelAttrs;
 
 modelEvents.once("init", (sequelize) => {
-  UserModel.init(
-    {
-      id: {
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
-        primaryKey: true,
-      },
-      givenName: DataTypes.STRING,
-      familyName: DataTypes.STRING,
-      email: DataTypes.STRING,
-      password: DataTypes.STRING,
-      googleAuthToken: DataTypes.STRING,
-    },
-    {
-      sequelize,
-      modelName: "User",
-    }
-  );
+  UserModel.init(currentSchema, {
+    sequelize,
+    modelName: "User",
+  });
 });
 
 modelEvents.once("associate", (sequelize) => {

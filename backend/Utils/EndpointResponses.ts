@@ -10,12 +10,13 @@ export function notFound(res: Response, msg: EndpointErrorMessage) {
 export function invalidRequest(res: Response, errors: EndpointErrorMessage) {
   let msg;
 
-  if (Array.isArray((errors as Result<ValidationError>).array)) {
-    res.status;
+  if ((errors as Result<ValidationError>).array) {
     msg = (errors as Result<ValidationError>).array();
   } else {
     msg = errors;
   }
+
+  console.log("invalid request", msg);
 
   res.status(400).json({
     errors: Array.isArray(msg) ? msg : [msg],

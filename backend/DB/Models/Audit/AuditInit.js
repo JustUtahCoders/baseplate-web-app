@@ -20,17 +20,18 @@ const dropTriggerSqlPromise = fs.readFile(
 export function sequelizeOptions(parentModelName) {
   return {
     id: {
-      type: S.DataTypes.INTEGER,
-      autoIncrement: true,
+      type: S.DataTypes.UUID,
+      allowNull: false,
+      defaultValue: S.literal("gen_random_uuid()"),
       primaryKey: true,
     },
     auditUserId: {
-      type: S.DataTypes.INTEGER,
+      type: S.DataTypes.UUID,
       // null necessary for delete
       allowNull: true,
     },
     auditItemId: {
-      type: S.DataTypes.INTEGER,
+      type: S.DataTypes.UUID,
       // null necessary for delete
       allowNull: true,
       // This isn't a foreign key so that we can have this column exist even

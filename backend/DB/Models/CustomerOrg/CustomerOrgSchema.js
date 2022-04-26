@@ -7,8 +7,9 @@ const { DataTypes } = S;
  */
 const schema = {
   id: {
-    type: DataTypes.INTEGER,
-    autoIncrement: true,
+    type: DataTypes.UUID,
+    allowNull: false,
+    defaultValue: S.literal("gen_random_uuid()"),
     primaryKey: true,
   },
   name: {
@@ -20,7 +21,7 @@ const schema = {
     allowNull: false,
   },
   billingUserId: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.UUID,
     allowNull: false,
     references: {
       model: "Users",
@@ -35,7 +36,7 @@ const schema = {
     unique: true,
   },
   auditUserId: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.UUID,
     allowNull: false,
     references: {
       model: "Users",

@@ -18,7 +18,7 @@ module.exports = {
 
     await queryInterface.createTable("UserCustomerOrgs", {
       userId: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.UUID,
         allowNull: false,
         references: {
           model: "Users",
@@ -28,7 +28,7 @@ module.exports = {
         onDelete: "cascade",
       },
       customerOrgId: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.UUID,
         allowNull: false,
         references: {
           model: "CustomerOrgs",
