@@ -24,12 +24,12 @@ if (process.env.NODE_ENV !== "db-tests") {
     kill(pid, "SIGTERM");
     process.exit();
   });
-}
 
-if (
-  process.env.NODE_ENV !== "production" &&
-  process.env.BASEPLATE_OPEN === "true"
-) {
-  delete process.env.BASEPLATE_OPEN;
-  open(fullUrl);
+  if (
+    process.env.NODE_ENV !== "production" &&
+    process.env.BASEPLATE_OPEN === "true"
+  ) {
+    delete process.env.BASEPLATE_OPEN;
+    open(fullUrl);
+  }
 }
