@@ -1,4 +1,4 @@
-import { router } from "../Router.js";
-import { renderWebApp } from "./RenderWebApp.js";
+import { router } from "../Router";
+import { renderWebApp } from "./RenderWebApp";
 
 router.use(renderWebApp);

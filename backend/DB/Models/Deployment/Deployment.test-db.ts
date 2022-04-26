@@ -2,7 +2,6 @@ import {
   dbHelpers,
   sampleCustomerOrg,
   sampleEnvironment,
-  sampleMicrofrontend,
   sampleUser,
 } from "../../TestHelpers/DBTestHelpers";
 import { MicrofrontendModel } from "../Microfrontend/Microfrontend";

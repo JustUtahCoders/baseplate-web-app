@@ -45,7 +45,7 @@ const schema = {
   },
   trailingSlashUrl: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
   auditUserId: {
     type: DataTypes.INTEGER,

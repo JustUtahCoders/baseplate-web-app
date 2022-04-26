@@ -1,4 +1,4 @@
-import { router } from "../Router.js";
+import { router } from "../Router";
 import { body, validationResult } from "express-validator";
 import { findUserByEmail } from "../Users/Users";
 import {
@@ -6,8 +6,8 @@ import {
   invalidRequest,
   serverApiError,
 } from "../Utils/EndpointResponses";
-import { sendEmail, baseUrl } from "../Utils/EmailUtils.js";
-import { makeJWT } from "../Utils/JWTUtils.js";
+import { sendEmail, baseUrl } from "../Utils/EmailUtils";
+import { makeJWT } from "../Utils/JWTUtils";
 import { JWTModel, JWTType } from "../DB/Models/JWT/JWT";
 
 function getResetPasswordBody(baseUrl: string, token: string): string {

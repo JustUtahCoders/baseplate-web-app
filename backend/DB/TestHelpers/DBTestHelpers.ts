@@ -4,6 +4,9 @@ import { CustomerOrgModel } from "../Models/CustomerOrg/CustomerOrg";
 import { EnvironmentModel } from "../Models/Environment/Environment";
 import { MicrofrontendModel } from "../Models/Microfrontend/Microfrontend";
 import { UserModel } from "../Models/User/User";
+import bcrypt from "bcryptjs";
+import { JWTModel, JWTType } from "../Models/JWT/JWT";
+import { makeJWT } from "../../Utils/JWTUtils";
 
 export function dbHelpers() {
   beforeAll(() => dbReady);
@@ -18,6 +21,7 @@ export function sampleUser(): () => UserModel {
       email: "claudiosanchez@coheedandcambria.com",
       givenName: "Claudio",
       familyName: "Sanchez",
+      password: await bcrypt.hash("password", 1),
     });
   });
   afterEach(() => safeDestroy(user));
@@ -48,6 +52,7 @@ export function sampleCustomerOrg(
 }
 
 export function sampleMicrofrontend(
+  userGetter: () => UserModel,
   customerOrgGetter: () => CustomerOrgModel
 ): () => MicrofrontendModel {
   let microfrontend: MicrofrontendModel;
@@ -59,6 +64,7 @@ export function sampleMicrofrontend(
       customerOrgId: customerOrg.id,
       name: "navbar",
       useCustomerOrgKeyAsScope: true,
+      auditUserId: userGetter().id,
     });
   });
 
@@ -85,6 +91,28 @@ export function sampleEnvironment(
   afterEach(() => safeDestroy(environment));
 
   return () => environment;
+}
+
+export function sampleBaseplateToken(
+  getUser: () => UserModel,
+  getCustomerOrg: () => CustomerOrgModel
+): () => JWTModel {
+  let baseplateToken: JWTModel;
+
+  beforeEach(async () => {
+    baseplateToken = await JWTModel.create({
+      customerOrgId: getCustomerOrg().id,
+      userId: getUser().id,
+      jwtType: JWTType.baseplateApiToken,
+      token: makeJWT({
+        hello: "there",
+      }),
+    });
+  });
+
+  afterEach(() => safeDestroy(baseplateToken));
+
+  return () => baseplateToken;
 }
 
 async function safeDestroy(mod: Model) {
