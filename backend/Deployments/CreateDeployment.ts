@@ -21,11 +21,11 @@ router.post<Record<string, any>, DeploymentAttributes, RequestBody>(
   "/api/deployments",
 
   body("baseplateToken").isString().optional(),
-  body("environmentId").isInt(),
-  body("customerOrgId").isInt(),
+  body("environmentId").isUUID(),
+  body("customerOrgId").isUUID(),
   body("cause").isIn(Object.values(DeploymentCause)),
   body("changedMicrofrontends").isArray(),
-  body("changedMicrofrontends.*.microfrontendId").isInt(),
+  body("changedMicrofrontends.*.microfrontendId").isUUID(),
   body("changedMicrofrontends.*.entryUrl").isString(),
   body("changedMicrofrontends.*.trailingSlashUrl").isString().optional(),
 
@@ -35,8 +35,8 @@ router.post<Record<string, any>, DeploymentAttributes, RequestBody>(
       return invalidRequest(res, errors);
     }
 
-    // TODO - get the real user id
-    let userId = 1;
+    // TODO - get the user id from session
+    let userId;
     const { customerOrgId } = req.body;
 
     // TODO - verify user access to customer org and deployments

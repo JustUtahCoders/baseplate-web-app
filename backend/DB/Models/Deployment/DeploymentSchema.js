@@ -7,12 +7,13 @@ const { DataTypes } = S;
  */
 const schema = {
   id: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.UUID,
+    allowNull: false,
+    defaultValue: S.literal("gen_random_uuid()"),
     primaryKey: true,
-    autoIncrement: true,
   },
   userId: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.UUID,
     allowNull: true,
     references: {
       model: "Users",
@@ -22,7 +23,7 @@ const schema = {
     onDelete: "cascade",
   },
   baseplateTokenId: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.UUID,
     allowNull: true,
     references: {
       model: "JWTs",
@@ -40,7 +41,7 @@ const schema = {
     allowNull: false,
   },
   environmentId: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.UUID,
     allowNull: false,
     references: {
       model: "Environments",
@@ -48,7 +49,7 @@ const schema = {
     },
   },
   auditUserId: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.UUID,
     allowNull: false,
     references: {
       model: "Users",

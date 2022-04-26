@@ -7,12 +7,13 @@ const { DataTypes } = S;
  */
 const schema = {
   id: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.UUID,
+    allowNull: false,
+    defaultValue: S.literal("gen_random_uuid()"),
     primaryKey: true,
-    autoIncrement: true,
   },
   deploymentId: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.UUID,
     allowNull: false,
     references: {
       model: "Deployments",
