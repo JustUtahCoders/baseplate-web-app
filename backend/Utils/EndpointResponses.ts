@@ -16,8 +16,6 @@ export function invalidRequest(res: Response, errors: EndpointErrorMessage) {
     msg = errors;
   }
 
-  console.log("invalid request", msg);
-
   res.status(400).json({
     errors: Array.isArray(msg) ? msg : [msg],
   });
