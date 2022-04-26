@@ -5,7 +5,7 @@ import S, {
   BelongsToSetAssociationMixin,
   BelongsToCreateAssociationMixin,
 } from "sequelize";
-import { BelongsToMethods } from "../SequelizeTSHelpers";
+import { BaseplateUUID, BelongsToMethods } from "../SequelizeTSHelpers";
 import { CustomerOrgModel } from "../CustomerOrg/CustomerOrg";
 import { currentSchema } from "./EnvironmentSchema";
 import {
@@ -25,12 +25,12 @@ export class EnvironmentModel
     BelongsToMethods<{ customerOrg: string }, CustomerOrgModel>,
     BelongsToMethods<{ auditUser: string }, UserModel>
 {
-  public id!: number;
-  public customerOrgId!: number;
+  public id!: BaseplateUUID;
+  public customerOrgId!: BaseplateUUID;
   public name!: string;
   public isProd!: boolean;
 
-  public auditUserId!: number;
+  public auditUserId!: BaseplateUUID;
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
@@ -48,9 +48,9 @@ export class EnvironmentModel
 }
 
 export interface EnvironmentAttributes extends AuditTargetAttributes {
-  id: number;
-  customerOrgId: number;
-  name: string;
+  id: BaseplateUUID;
+  customerOrgId: BaseplateUUID;
+  name: BaseplateUUID;
   isProd: boolean;
 }
 

@@ -5,8 +5,7 @@ import { EnvironmentModel } from "../Models/Environment/Environment";
 import { MicrofrontendModel } from "../Models/Microfrontend/Microfrontend";
 import { UserModel } from "../Models/User/User";
 import bcrypt from "bcryptjs";
-import { JWTModel, JWTType } from "../Models/JWT/JWT";
-import { makeJWT } from "../../Utils/JWTUtils";
+import { AuthTokenModel, AuthTokenType } from "../Models/AuthToken/AuthToken";
 
 export function dbHelpers() {
   beforeAll(() => dbReady);
@@ -96,17 +95,14 @@ export function sampleEnvironment(
 export function sampleBaseplateToken(
   getUser: () => UserModel,
   getCustomerOrg: () => CustomerOrgModel
-): () => JWTModel {
-  let baseplateToken: JWTModel;
+): () => AuthTokenModel {
+  let baseplateToken: AuthTokenModel;
 
   beforeEach(async () => {
-    baseplateToken = await JWTModel.create({
+    baseplateToken = await AuthTokenModel.create({
       customerOrgId: getCustomerOrg().id,
       userId: getUser().id,
-      jwtType: JWTType.baseplateApiToken,
-      token: makeJWT({
-        hello: "there",
-      }),
+      authTokenType: AuthTokenType.baseplateApiToken,
     });
   });
 

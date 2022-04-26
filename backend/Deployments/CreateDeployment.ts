@@ -11,11 +11,15 @@ import {
   DeploymentStatus,
 } from "../DB/Models/Deployment/Deployment";
 import { EnvironmentModel } from "../DB/Models/Environment/Environment";
-import { JWTModel, JWTType } from "../DB/Models/JWT/JWT";
+import {
+  AuthTokenModel,
+  AuthTokenType,
+} from "../DB/Models/AuthToken/AuthToken";
 import { MicrofrontendModel } from "../DB/Models/Microfrontend/Microfrontend";
 import { router } from "../Router";
 import { invalidRequest, serverApiError } from "../Utils/EndpointResponses";
 import { writeCloudflareKV } from "./CloudflareKV";
+import { BaseplateUUID } from "../DB/Models/SequelizeTSHelpers";
 
 router.post<Record<string, any>, DeploymentAttributes, RequestBody>(
   "/api/deployments",
@@ -46,13 +50,13 @@ router.post<Record<string, any>, DeploymentAttributes, RequestBody>(
       return invalidRequest(res, `No such customer org '${customerOrgId}'`);
     }
 
-    let baseplateTokenId: number | undefined;
+    let baseplateTokenId: BaseplateUUID | undefined;
 
     if (req.body.baseplateToken) {
-      const token = await JWTModel.findOne({
+      const token = await AuthTokenModel.findOne({
         where: {
-          jwtType: JWTType.baseplateApiToken,
-          token: req.body.baseplateToken,
+          authTokenType: AuthTokenType.baseplateApiToken,
+          id: req.body.baseplateToken,
           // TODO uncomment to ensure the token is from this user
           // userId,
         },
@@ -197,15 +201,15 @@ router.post<Record<string, any>, DeploymentAttributes, RequestBody>(
 );
 
 interface RequestBody {
-  baseplateToken?: string;
-  environmentId: number;
-  customerOrgId: number;
+  baseplateToken?: BaseplateUUID;
+  environmentId: BaseplateUUID;
+  customerOrgId: BaseplateUUID;
   cause: DeploymentCause;
   changedMicrofrontends: ChangedMicrofrontend[];
 }
 
 interface ChangedMicrofrontend {
-  microfrontendId: number;
+  microfrontendId: BaseplateUUID;
   entryUrl: string;
   trailingSlashUrl?: string;
 }

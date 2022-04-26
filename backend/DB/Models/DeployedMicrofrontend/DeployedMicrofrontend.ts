@@ -5,7 +5,7 @@ import S, {
   BelongsToSetAssociationMixin,
   BelongsToCreateAssociationMixin,
 } from "sequelize";
-import { BelongsToMethods } from "../SequelizeTSHelpers";
+import { BaseplateUUID, BelongsToMethods } from "../SequelizeTSHelpers";
 import { DeploymentModel } from "../Deployment/Deployment";
 import { MicrofrontendModel } from "../Microfrontend/Microfrontend";
 import { currentSchema } from "./DeployedMicrofrontendSchema";
@@ -29,14 +29,14 @@ export class DeployedMicrofrontendModel
     BelongsToMethods<{ microfrontend: string }, MicrofrontendModel>,
     BelongsToMethods<{ auditUser: string }, UserModel>
 {
-  public id!: number;
-  public microfrontendId!: number;
-  public deploymentId!: number;
+  public id!: BaseplateUUID;
+  public microfrontendId!: BaseplateUUID;
+  public deploymentId!: BaseplateUUID;
   public bareImportSpecifier: string;
   public entryUrl!: string;
   public trailingSlashUrl!: string;
   public deploymentChangedMicrofrontend!: boolean;
-  public auditUserId!: number;
+  public auditUserId!: BaseplateUUID;
 
   public getDeployment!: BelongsToGetAssociationMixin<DeploymentModel>;
   public setDeployment!: BelongsToSetAssociationMixin<DeploymentModel, number>;
@@ -57,10 +57,10 @@ export class DeployedMicrofrontendModel
 export class DeployedMicrofrontendAuditModel extends AuditModel<DeployedMicrofrontendAttributes> {}
 
 export interface DeployedMicrofrontendAttributes extends AuditTargetAttributes {
-  id: number;
-  deploymentId: number;
-  microfrontendId: number;
-  bareImportSpecifier: string;
+  id: BaseplateUUID;
+  deploymentId: BaseplateUUID;
+  microfrontendId: BaseplateUUID;
+  bareImportSpecifier: BaseplateUUID;
   entryUrl: string;
   trailingSlashUrl?: string;
   deploymentChangedMicrofrontend: boolean;

@@ -1,5 +1,6 @@
 import S, { ModelStatic } from "sequelize";
 import { modelEvents } from "../../../InitDB";
+import { BaseplateUUID } from "../SequelizeTSHelpers";
 import { sequelizeOptions } from "./AuditInit";
 
 const { DataTypes, Model } = S;
@@ -8,18 +9,18 @@ export class AuditModel<ModelAttributes> extends Model<
   AuditAttributes<ModelAttributes>,
   AuditCreationAttributes<ModelAttributes>
 > {
-  public id!: number;
-  public auditUserId!: number;
-  public auditItemId!: number;
+  public id!: BaseplateUUID;
+  public auditUserId!: BaseplateUUID;
+  public auditItemId!: BaseplateUUID;
   public auditTimestamp!: Date;
   public oldRowData: Partial<ModelAttributes>;
   public newRowData: Partial<ModelAttributes>;
 }
 
 export interface AuditAttributes<ModelAttributes> {
-  id: number;
-  auditUserId: number;
-  auditItemId: number;
+  id: BaseplateUUID;
+  auditUserId: BaseplateUUID;
+  auditItemId: BaseplateUUID;
   auditEventType: string;
   auditTimestamp: Date;
   oldRowData: Partial<ModelAttributes>;
@@ -27,7 +28,7 @@ export interface AuditAttributes<ModelAttributes> {
 }
 
 export interface AuditTargetAttributes {
-  auditUserId: number;
+  auditUserId: BaseplateUUID;
 }
 
 export type AuditCreationAttributes<ModelAttributes> = Omit<

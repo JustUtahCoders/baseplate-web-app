@@ -253,3 +253,5 @@ export type ModelWithIncludes<MainModel, IncludedModels> = MainModel & {
   [Property in keyof IncludedModels &
     string as Property]: IncludedModels[Property];
 };
+
+export type BaseplateUUID = string;

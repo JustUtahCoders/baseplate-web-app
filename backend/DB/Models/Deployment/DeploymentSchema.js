@@ -26,7 +26,7 @@ const schema = {
     type: DataTypes.UUID,
     allowNull: true,
     references: {
-      model: "JWTs",
+      model: "AuthTokens",
       key: "id",
     },
     onUpdate: "cascade",

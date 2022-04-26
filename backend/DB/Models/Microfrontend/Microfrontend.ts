@@ -1,7 +1,7 @@
 import { modelEvents } from "../../../InitDB";
 import { DefaultModelAttrs } from "../DefaultModelAttrs";
 import { CustomerOrgModel } from "../CustomerOrg/CustomerOrg";
-import { BelongsToMethods } from "../SequelizeTSHelpers";
+import { BaseplateUUID, BelongsToMethods } from "../SequelizeTSHelpers";
 import S, {
   BelongsToGetAssociationMixin,
   BelongsToSetAssociationMixin,
@@ -24,12 +24,12 @@ export class MicrofrontendModel
     BelongsToMethods<{ customerOrg: string }, CustomerOrgModel>,
     BelongsToMethods<{ auditUser: string }, UserModel>
 {
-  public id!: number;
-  public customerOrgId!: number;
+  public id!: BaseplateUUID;
+  public customerOrgId!: BaseplateUUID;
   public name!: string;
   public scope?: string;
   public useCustomerOrgKeyAsScope!: boolean;
-  public auditUserId!: number;
+  public auditUserId!: BaseplateUUID;
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
@@ -47,8 +47,8 @@ export class MicrofrontendModel
 }
 
 export interface MicrofrontendAttributes extends AuditTargetAttributes {
-  id: number;
-  customerOrgId: number;
+  id: BaseplateUUID;
+  customerOrgId: BaseplateUUID;
   // A lowercase string. For example, "navbar" or "settings"
   name: string;
   /*
