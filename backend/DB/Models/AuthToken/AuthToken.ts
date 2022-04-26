@@ -2,29 +2,28 @@ import { modelEvents } from "../../../InitDB";
 import { CustomerOrgModel } from "../CustomerOrg/CustomerOrg";
 import { DefaultModelAttrs } from "../DefaultModelAttrs";
 import { UserModel } from "../User/User";
-import { BelongsToMethods } from "../SequelizeTSHelpers";
+import { BaseplateUUID, BelongsToMethods } from "../SequelizeTSHelpers";
 import S, {
   BelongsToGetAssociationMixin,
   BelongsToSetAssociationMixin,
   BelongsToCreateAssociationMixin,
 } from "sequelize";
-import { currentSchema } from "./JWTSchema";
+import { currentSchema } from "./AuthTokenSchema";
 
 const { Model } = S;
 
-export class JWTModel
-  extends Model<JWTAttributes, JWTCreationAttributes>
+export class AuthTokenModel
+  extends Model<AuthTokenAttributes, AuthTokenCreationAttributes>
   implements
-    JWTAttributes,
+    AuthTokenAttributes,
     DefaultModelAttrs,
     BelongsToMethods<{ user: string }, UserModel>,
     BelongsToMethods<{ customerOrg: string }, CustomerOrgModel>
 {
-  public id!: number;
-  public token!: string;
-  public userId!: number;
-  public customerOrgId?: number;
-  public jwtType!: JWTType;
+  public id!: BaseplateUUID;
+  public userId!: BaseplateUUID;
+  public customerOrgId?: BaseplateUUID;
+  public authTokenType!: AuthTokenType;
 
   public getUser!: BelongsToGetAssociationMixin<UserModel>;
   public setUser!: BelongsToSetAssociationMixin<UserModel, number>;
@@ -41,40 +40,39 @@ export class JWTModel
   public readonly updatedAt!: Date;
 }
 
-export interface JWTAttributes {
-  id: number;
-  token: string;
-  userId: number;
-  customerOrgId?: number;
-  jwtType: JWTType;
+export interface AuthTokenAttributes {
+  id: BaseplateUUID;
+  userId: BaseplateUUID;
+  customerOrgId?: BaseplateUUID;
+  authTokenType: AuthTokenType;
 }
 
-export enum JWTType {
+export enum AuthTokenType {
   loginMFAEmail = "loginMFAEmail",
   passwordReset = "passwordReset",
   baseplateApiToken = "baseplateApiToken",
 }
 
-export type JWTCreationAttributes = Omit<JWTAttributes, "id">;
+export type AuthTokenCreationAttributes = Omit<AuthTokenAttributes, "id">;
 
-export type JWT = JWTAttributes & DefaultModelAttrs;
+export type AuthToken = AuthTokenAttributes & DefaultModelAttrs;
 
 modelEvents.once("init", (sequelize) => {
-  JWTModel.init(currentSchema, {
+  AuthTokenModel.init(currentSchema, {
     sequelize,
-    modelName: "JWT",
+    modelName: "AuthToken",
   });
 });
 
 modelEvents.once("associate", (sequelize) => {
-  JWTModel.belongsTo(UserModel, {
+  AuthTokenModel.belongsTo(UserModel, {
     foreignKey: {
       name: "userId",
       allowNull: false,
     },
   });
 
-  JWTModel.belongsTo(CustomerOrgModel, {
+  AuthTokenModel.belongsTo(CustomerOrgModel, {
     foreignKey: {
       name: "customerOrgId",
       allowNull: false,

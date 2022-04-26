@@ -19,9 +19,7 @@ import {
 import { OAuth2Strategy as GoogleStrategy } from "passport-google-oauth";
 import Keygrip from "keygrip";
 import { serverApiError } from "../Utils/EndpointResponses";
-import { JWTModel } from "../DB/Models/JWT/JWT";
-import { verify } from "jsonwebtoken";
-import { verifyJWT } from "../Utils/JWTUtils";
+import { User } from "../DB/Models/User/User";
 
 let passportStrategy = new Strategy(async function (email, password, done) {
   try {
@@ -126,7 +124,3 @@ passport.serializeUser(function (user, done) {
 passport.deserializeUser<User>(function (user, done) {
   done(null, user);
 });
-
-interface User {
-  id: string;
-}

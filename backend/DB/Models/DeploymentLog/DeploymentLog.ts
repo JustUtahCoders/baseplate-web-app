@@ -2,6 +2,7 @@ import S from "sequelize";
 import { DefaultModelAttrs } from "../DefaultModelAttrs";
 import { modelEvents } from "../../../InitDB";
 import { DeploymentModel } from "../Deployment/Deployment";
+import { BaseplateUUID } from "../SequelizeTSHelpers";
 
 const { Model, DataTypes } = S;
 
@@ -9,8 +10,8 @@ export class DeploymentLogModel
   extends Model<DeploymentLogAttributes, DeploymentLogCreationAttributes>
   implements DeploymentLogAttributes
 {
-  public id!: number;
-  public deploymentId!: number;
+  public id!: BaseplateUUID;
+  public deploymentId!: BaseplateUUID;
   public label!: string;
   public text!: string;
 
@@ -19,8 +20,8 @@ export class DeploymentLogModel
 }
 
 export interface DeploymentLogAttributes {
-  id: number;
-  deploymentId: number;
+  id: BaseplateUUID;
+  deploymentId: BaseplateUUID;
   label: string;
   text: string;
 }

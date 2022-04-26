@@ -1,7 +1,7 @@
 import { DefaultModelAttrs } from "../DefaultModelAttrs";
 import { modelEvents } from "../../../InitDB";
 import { CustomerOrgModel } from "../CustomerOrg/CustomerOrg";
-import { BelongsToManyMethods } from "../SequelizeTSHelpers";
+import { BaseplateUUID, BelongsToManyMethods } from "../SequelizeTSHelpers";
 import S, {
   BelongsToManyGetAssociationsMixin,
   BelongsToManyHasAssociationsMixin,
@@ -24,7 +24,7 @@ export class UserModel
     UserAttributes,
     BelongsToManyMethods<{ customerOrg: string }, CustomerOrgModel>
 {
-  public id!: number;
+  public id!: BaseplateUUID;
   public givenName!: string;
   public familyName!: string;
   public email!: string;
@@ -68,7 +68,7 @@ export class UserModel
 }
 
 export interface UserAttributes {
-  id: number;
+  id: BaseplateUUID;
   givenName: string;
   familyName: string;
   email: string;

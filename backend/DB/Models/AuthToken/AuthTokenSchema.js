@@ -3,7 +3,7 @@ import S from "sequelize";
 const { DataTypes } = S;
 
 /**
- * @type {import('sequelize').ModelAttributes<import('./JWT').JWTModel, import('./JWT').JWTAttributes>}
+ * @type {import('sequelize').ModelAttributes<import('./AuthToken').AuthTokenModel, import('./AuthToken').AuthTokenAttributes>}
  */
 const schema = {
   id: {
@@ -11,10 +11,6 @@ const schema = {
     allowNull: false,
     defaultValue: S.literal("gen_random_uuid()"),
     primaryKey: true,
-  },
-  token: {
-    type: DataTypes.STRING,
-    allowNull: false,
   },
   userId: {
     type: DataTypes.UUID,
@@ -36,7 +32,7 @@ const schema = {
     onUpdate: "cascade",
     onDelete: "cascade",
   },
-  jwtType: {
+  authTokenType: {
     type: DataTypes.STRING,
     allowNull: false,
   },

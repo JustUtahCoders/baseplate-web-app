@@ -38,7 +38,7 @@ describe(`POST /api/deployments`, () => {
     const response = await request(app)
       .post("/api/deployments")
       .send({
-        baseplateToken: getBaseplateToken().token,
+        baseplateToken: getBaseplateToken().id,
         environmentId: getEnvironment().id,
         customerOrgId: getCustomerOrg().id,
         cause: "manualAPICall",
@@ -51,6 +51,7 @@ describe(`POST /api/deployments`, () => {
         ],
       });
 
+    console.log(response.body);
     expect(response.statusCode).toBe(200);
     expect(response.body.status).toBe("success");
 

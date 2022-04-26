@@ -1,9 +1,13 @@
 import { DefaultModelAttrs } from "../DefaultModelAttrs";
 import { modelEvents } from "../../../InitDB";
 import { UserModel } from "../User/User";
-import { JWTModel } from "../JWT/JWT";
+import { AuthTokenModel } from "../AuthToken/AuthToken";
 import { DeploymentLogModel } from "../DeploymentLog/DeploymentLog";
-import { BelongsToMethods, HasManyMethods } from "../SequelizeTSHelpers";
+import {
+  BaseplateUUID,
+  BelongsToMethods,
+  HasManyMethods,
+} from "../SequelizeTSHelpers";
 import S, {
   BelongsToGetAssociationMixin,
   BelongsToSetAssociationMixin,
@@ -31,7 +35,7 @@ export class DeploymentModel
   implements
     DeploymentAttributes,
     BelongsToMethods<{ user: string }, UserModel>,
-    BelongsToMethods<{ baseplateToken: string }, JWTModel>,
+    BelongsToMethods<{ baseplateToken: string }, AuthTokenModel>,
     HasManyMethods<{ deploymentLog: string }, DeploymentLogModel>,
     HasManyMethods<
       { deployedMicrofrontend: string },
@@ -40,13 +44,13 @@ export class DeploymentModel
     BelongsToMethods<{ auditUser: string }, UserModel>,
     BelongsToMethods<{ environment: string }, EnvironmentModel>
 {
-  public id!: number;
-  public userId?: number;
-  public baseplateTokenId?: number;
+  public id!: BaseplateUUID;
+  public userId?: BaseplateUUID;
+  public baseplateTokenId?: BaseplateUUID;
   public cause!: DeploymentCause;
   public status!: DeploymentStatus;
-  public environmentId!: number;
-  public auditUserId!: number;
+  public environmentId!: BaseplateUUID;
+  public auditUserId!: BaseplateUUID;
 
   public async deriveImportMap(): Promise<ImportMap> {
     const deployedMicrofrontends = await this.getDeployedMicrofrontends();
@@ -72,9 +76,12 @@ export class DeploymentModel
   public setUser!: BelongsToSetAssociationMixin<UserModel, number>;
   public createUser!: BelongsToCreateAssociationMixin<UserModel>;
 
-  public getBaseplateToken!: BelongsToGetAssociationMixin<JWTModel>;
-  public setBaseplateToken!: BelongsToSetAssociationMixin<JWTModel, number>;
-  public createBaseplateToken!: BelongsToCreateAssociationMixin<JWTModel>;
+  public getBaseplateToken!: BelongsToGetAssociationMixin<AuthTokenModel>;
+  public setBaseplateToken!: BelongsToSetAssociationMixin<
+    AuthTokenModel,
+    number
+  >;
+  public createBaseplateToken!: BelongsToCreateAssociationMixin<AuthTokenModel>;
 
   public getEnvironment!: BelongsToGetAssociationMixin<EnvironmentModel>;
   public setEnvironment!: BelongsToSetAssociationMixin<
@@ -156,10 +163,10 @@ export class DeploymentModel
 }
 
 export interface DeploymentAttributes extends AuditTargetAttributes {
-  id: number;
-  userId?: number;
-  baseplateTokenId?: number;
-  environmentId: number;
+  id: BaseplateUUID;
+  userId?: BaseplateUUID;
+  baseplateTokenId?: BaseplateUUID;
+  environmentId: BaseplateUUID;
   cause: DeploymentCause;
   status: DeploymentStatus;
 }
@@ -195,7 +202,7 @@ modelEvents.once("associate", (sequelize) => {
     },
   });
 
-  DeploymentModel.belongsTo(JWTModel, {
+  DeploymentModel.belongsTo(AuthTokenModel, {
     foreignKey: {
       name: "baseplateTokenId",
       allowNull: true,

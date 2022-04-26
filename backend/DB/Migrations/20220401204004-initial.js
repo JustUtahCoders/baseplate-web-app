@@ -48,15 +48,15 @@ module.exports = {
     });
 
     await queryInterface.createTable(
-      "JWTs",
+      "AuthTokens",
       (
-        await import("../Models/JWT/JWTSchema.js")
+        await import("../Models/AuthToken/AuthTokenSchema.js")
       ).initialSchema
     );
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("JWTs");
+    await queryInterface.dropTable("AuthTokens");
     await queryInterface.dropTable("UserCustomerOrgs");
     await queryInterface.dropTable("CustomerOrgs");
     await queryInterface.dropTable("Users");

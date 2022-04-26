@@ -6,6 +6,7 @@ import {
   BelongsToMethods,
   BelongsToManyMethods,
   HasManyMethods,
+  BaseplateUUID,
 } from "../SequelizeTSHelpers";
 import S, {
   BelongsToGetAssociationMixin,
@@ -50,12 +51,12 @@ export class CustomerOrgModel
     HasManyMethods<{ environment: string }, EnvironmentModel>,
     BelongsToMethods<{ auditUser: string }, UserModel>
 {
-  public id!: number;
+  public id!: BaseplateUUID;
   public name!: string;
   public accountEnabled!: boolean;
-  public billingUserId!: number;
+  public billingUserId!: BaseplateUUID;
   public orgKey!: string;
-  public auditUserId!: number;
+  public auditUserId!: BaseplateUUID;
 
   public getBillingUser!: BelongsToGetAssociationMixin<UserModel>;
   public setBillingUser!: BelongsToSetAssociationMixin<UserModel, number>;
@@ -107,10 +108,10 @@ export class CustomerOrgModel
 }
 
 export interface CustomerOrgAttributes extends AuditTargetAttributes {
-  id: number;
-  name: string;
+  id: BaseplateUUID;
+  name: BaseplateUUID;
   accountEnabled: boolean;
-  billingUserId: number;
+  billingUserId: BaseplateUUID;
   orgKey: string;
 }
 
