@@ -1,8 +1,8 @@
 import { Response } from "express";
 import { createElement } from "react";
 import ReactDOMServer from "react-dom/server.js";
-import { App, AppProps, RouterContext } from "../../frontend/App.js";
-import { serverApiError } from "../Utils/EndpointResponses.js";
+import { App, AppProps, RouterContext } from "../../frontend/App";
+import { serverApiError } from "../Utils/EndpointResponses";
 
 export const renderWebApp = async (req, res: Response) => {
   const routerContext: RouterContext = {};

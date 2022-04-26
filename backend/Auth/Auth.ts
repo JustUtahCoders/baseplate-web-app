@@ -5,7 +5,7 @@ This is where we will authenticate users.
 [x] Until we have login working, this should be turned off when the IS_RUNNING_LOCALLY env variable is set.
 */
 
-import { router } from "../Router.js";
+import { router } from "../Router";
 import cookieSession from "cookie-session";
 import passport from "passport";
 import util from "util";
@@ -18,7 +18,10 @@ import {
 } from "../Users/Users";
 import { OAuth2Strategy as GoogleStrategy } from "passport-google-oauth";
 import Keygrip from "keygrip";
-import { serverApiError } from "../Utils/EndpointResponses.js";
+import { serverApiError } from "../Utils/EndpointResponses";
+import { JWTModel } from "../DB/Models/JWT/JWT";
+import { verify } from "jsonwebtoken";
+import { verifyJWT } from "../Utils/JWTUtils";
 
 let passportStrategy = new Strategy(async function (email, password, done) {
   try {
@@ -105,7 +108,12 @@ router.use("/", async (req, res, next) => {
       serverApiError(res, "Server error during login");
     }
   } else if (req.url && req.url.includes("/api")) {
-    res.status(401).json({ message: "Unauthorized" });
+    const baseplateToken = req.body.baseplateToken || req.query.baseplateToken;
+    if (baseplateToken) {
+      next();
+    } else {
+      res.status(401).json({ message: "Unauthorized" });
+    }
   } else {
     res.status(302).redirect("/login");
   }

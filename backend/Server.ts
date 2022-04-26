@@ -1,28 +1,30 @@
 import express from "express";
-import { router } from "./Router.js";
+import { router } from "./Router";
 import bodyParser from "body-parser";
-import "./InitDB.js";
-import "./RouteImports.js";
+import "./InitDB";
+import "./RouteImports";
 import kill from "tree-kill";
 import open from "open";
 
-const app = express();
+export const app = express();
 app.use(bodyParser.json());
 app.use(router);
 
-const port = process.env.PORT || 7600;
+if (process.env.NODE_ENV !== "db-tests") {
+  const port = process.env.PORT || 7600;
 
-app.listen(port);
+  app.listen(port);
 
-const fullUrl = `http://localhost:${port}`;
-console.log(`Listening on ${fullUrl}`);
+  const fullUrl = `http://localhost:${port}`;
+  console.log(`Listening on ${fullUrl}`);
 
-// https://github.com/remy/nodemon/issues/1247
-const pid = process.pid;
-process.on("SIGINT", function () {
-  kill(pid, "SIGTERM");
-  process.exit();
-});
+  // https://github.com/remy/nodemon/issues/1247
+  const pid = process.pid;
+  process.on("SIGINT", function () {
+    kill(pid, "SIGTERM");
+    process.exit();
+  });
+}
 
 if (
   process.env.NODE_ENV !== "production" &&

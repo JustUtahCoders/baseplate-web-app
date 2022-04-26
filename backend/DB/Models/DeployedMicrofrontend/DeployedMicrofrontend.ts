@@ -62,7 +62,7 @@ export interface DeployedMicrofrontendAttributes extends AuditTargetAttributes {
   microfrontendId: number;
   bareImportSpecifier: string;
   entryUrl: string;
-  trailingSlashUrl: string;
+  trailingSlashUrl?: string;
   deploymentChangedMicrofrontend: boolean;
 }
 

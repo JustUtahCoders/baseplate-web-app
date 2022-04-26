@@ -1,4 +1,3 @@
-import { JWT } from ".pnpm/google-auth-library@7.14.0/node_modules/google-auth-library";
 import { body, validationResult } from "express-validator";
 import { CustomerOrgModel } from "../DB/Models/CustomerOrg/CustomerOrg";
 import {
@@ -6,7 +5,7 @@ import {
   DeployedMicrofrontendModel,
 } from "../DB/Models/DeployedMicrofrontend/DeployedMicrofrontend";
 import {
-  DeploymentAttributes,
+  Deployment,
   DeploymentCause,
   DeploymentModel,
   DeploymentStatus,
@@ -18,16 +17,17 @@ import { router } from "../Router";
 import { invalidRequest, serverApiError } from "../Utils/EndpointResponses";
 import { writeCloudflareKV } from "./CloudflareKV";
 
-router.post<Record<string, any>, DeploymentAttributes, RequestBody>(
+router.post<Record<string, any>, Deployment, RequestBody>(
   "/api/deployments",
 
   body("baseplateToken").isString().optional(),
   body("environmentId").isInt(),
-  body("cause").isIn([Object.values(DeploymentCause)]),
+  body("customerOrgId").isInt(),
+  body("cause").isIn(Object.values(DeploymentCause)),
   body("changedMicrofrontends").isArray(),
-  body("changedMicrofrontends.microfrontendId").isInt(),
-  body("changedMicrofrontends.entryUrl").isInt(),
-  body("changedMicrofrontends.trailingSlashUrl").isInt().optional(),
+  body("changedMicrofrontends.*.microfrontendId").isInt(),
+  body("changedMicrofrontends.*.entryUrl").isString(),
+  body("changedMicrofrontends.*.trailingSlashUrl").isString().optional(),
 
   async (req, res) => {
     const errors = validationResult(req);
@@ -35,10 +35,16 @@ router.post<Record<string, any>, DeploymentAttributes, RequestBody>(
       return invalidRequest(res, errors);
     }
 
-    const userId = 1;
-    const customerOrgId = 1;
+    // TODO - get the real user id
+    let userId = 1;
+    const { customerOrgId } = req.body;
 
+    // TODO - verify user access to customer org and deployments
     const customerOrg = await CustomerOrgModel.findByPk(customerOrgId);
+
+    if (!customerOrg) {
+      return invalidRequest(res, `No such customer org '${customerOrgId}'`);
+    }
 
     let baseplateTokenId: number | undefined;
 
@@ -47,16 +53,19 @@ router.post<Record<string, any>, DeploymentAttributes, RequestBody>(
         where: {
           jwtType: JWTType.baseplateApiToken,
           token: req.body.baseplateToken,
-          userId,
+          // userId,
         },
       });
 
       if (token) {
         baseplateTokenId = token.id;
+        userId = token.userId;
       } else {
         return invalidRequest(res, `Invalid baseplate token`);
       }
     }
+
+    console.log("userId", userId, customerOrgId);
 
     const environment = await EnvironmentModel.findByPk(req.body.environmentId);
 
@@ -64,14 +73,22 @@ router.post<Record<string, any>, DeploymentAttributes, RequestBody>(
       return invalidRequest(res, `Invalid environment`);
     }
 
-    const deployment = await DeploymentModel.create({
-      auditUserId: userId,
-      baseplateTokenId,
-      cause: req.body.cause,
-      environmentId: req.body.environmentId,
-      status: DeploymentStatus.pending,
-      userId: customerOrgId,
-    });
+    console.log("here5");
+
+    try {
+      const deployment = await DeploymentModel.create({
+        auditUserId: userId,
+        baseplateTokenId,
+        cause: req.body.cause,
+        environmentId: req.body.environmentId,
+        status: DeploymentStatus.pending,
+        userId: customerOrgId,
+      });
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+    console.log("here6");
 
     const allMicrofrontends = await MicrofrontendModel.findAll({
       where: {
@@ -95,49 +112,52 @@ router.post<Record<string, any>, DeploymentAttributes, RequestBody>(
     }
 
     const unchangedDeployedMicrofrontends: DeployedMicrofrontendCreationAttributes[] =
-      await Promise.all(
-        allMicrofrontends.map(async (microfrontend) => {
-          const changedMicrofrontend = req.body.changedMicrofrontends.find(
-            (changedMicrofrontend) =>
-              changedMicrofrontend.microfrontendId === microfrontend.id
-          );
+      (
+        await Promise.all(
+          allMicrofrontends.map(async (microfrontend) => {
+            const changedMicrofrontend = req.body.changedMicrofrontends.find(
+              (changedMicrofrontend) =>
+                changedMicrofrontend.microfrontendId === microfrontend.id
+            );
 
-          if (!changedMicrofrontend) {
-            const lastDeployment = await DeployedMicrofrontendModel.findOne({
-              where: {
-                microfrontendId: microfrontend.id,
-              },
-              order: [["createdAt", "DESC"]],
-            });
+            if (!changedMicrofrontend) {
+              const lastDeployment = await DeployedMicrofrontendModel.findOne({
+                where: {
+                  microfrontendId: microfrontend.id,
+                },
+                order: [["createdAt", "DESC"]],
+              });
 
-            if (lastDeployment) {
-              return {
-                deploymentId: deployment.id,
-                microfrontendId: microfrontend.id,
-                bareImportSpecifier: lastDeployment.bareImportSpecifier,
-                entryUrl: lastDeployment.entryUrl,
-                trailingSlashUrl: lastDeployment.trailingSlashUrl,
-                deploymentChangedMicrofrontend: false,
-                auditUserId: userId,
-              };
+              if (lastDeployment) {
+                return {
+                  deploymentId: deployment.id,
+                  microfrontendId: microfrontend.id,
+                  bareImportSpecifier: lastDeployment.bareImportSpecifier,
+                  entryUrl: lastDeployment.entryUrl,
+                  trailingSlashUrl: lastDeployment.trailingSlashUrl,
+                  deploymentChangedMicrofrontend: false,
+                  auditUserId: userId,
+                };
+              }
             }
-          }
 
-          return null;
-        })
-      );
+            return null;
+          })
+        )
+      ).filter(Boolean) as DeployedMicrofrontendCreationAttributes[];
 
     const changedDeployedMicrofrontends: DeployedMicrofrontendCreationAttributes[] =
       req.body.changedMicrofrontends.map((changedMicrofrontend) => {
         const microfrontend = allMicrofrontends.find(
           (microfrontend) =>
             microfrontend.id === changedMicrofrontend.microfrontendId
-        );
+        ) as MicrofrontendModel;
         const npmScope = microfrontend.useCustomerOrgKeyAsScope
           ? customerOrg.orgKey
           : microfrontend.scope;
         const bareImportSpecifier = `@${npmScope}/${microfrontend.name}`;
 
+        // TODO - confirm entryUrl is publicly reachable
         return {
           auditUserId: userId,
           bareImportSpecifier,
@@ -188,6 +208,7 @@ router.post<Record<string, any>, DeploymentAttributes, RequestBody>(
 interface RequestBody {
   baseplateToken?: string;
   environmentId: number;
+  customerOrgId: number;
   cause: DeploymentCause;
   changedMicrofrontends: ChangedMicrofrontend[];
 }

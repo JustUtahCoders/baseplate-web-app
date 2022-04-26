@@ -9,9 +9,10 @@ export async function writeCloudflareKV(
   const r = await fetch(
     `https://api.cloudflare.com/client/v4/accounts/${process.env.CLOUDFLARE_ACCOUNT_ID}/storage/kv/namespaces/${process.env.CLOUDFLARE_NAMESPACE_ID}/values/${key}`,
     {
+      method: "PUT",
       headers: {
-        "x-auth-email": process.env.CLOUDFLARE_AUTH_EMAIL,
-        "x-auth-key": process.env.CLOUDFLARE_AUTH_KEY,
+        "x-auth-email": process.env.CLOUDFLARE_AUTH_EMAIL!,
+        authorization: `Bearer ${process.env.CLOUDFLARE_AUTH_KEY}`,
         "content-type": isJson ? "application/json" : "text/plain",
       },
       body: isJson ? JSON.stringify(value) : (value as string),

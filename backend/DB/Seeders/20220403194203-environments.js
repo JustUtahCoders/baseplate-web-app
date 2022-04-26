@@ -11,7 +11,7 @@ module.exports = {
       [
         {
           customerOrgId: sampleCustomerOrgId,
-          name: "prod",
+          name: "__main__",
           isProd: true,
           auditUserId: sampleUserId,
           createdAt: new Date(),
@@ -54,7 +54,7 @@ module.exports = {
       "Environments",
       {
         where: {
-          name: "prod",
+          name: "__main__",
         },
         plain: false,
       },
