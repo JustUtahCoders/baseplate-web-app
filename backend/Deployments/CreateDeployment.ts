@@ -5,7 +5,7 @@ import {
   DeployedMicrofrontendModel,
 } from "../DB/Models/DeployedMicrofrontend/DeployedMicrofrontend";
 import {
-  Deployment,
+  DeploymentAttributes,
   DeploymentCause,
   DeploymentModel,
   DeploymentStatus,
@@ -17,7 +17,7 @@ import { router } from "../Router";
 import { invalidRequest, serverApiError } from "../Utils/EndpointResponses";
 import { writeCloudflareKV } from "./CloudflareKV";
 
-router.post<Record<string, any>, Deployment, RequestBody>(
+router.post<Record<string, any>, DeploymentAttributes, RequestBody>(
   "/api/deployments",
 
   body("baseplateToken").isString().optional(),
@@ -53,12 +53,10 @@ router.post<Record<string, any>, Deployment, RequestBody>(
         where: {
           jwtType: JWTType.baseplateApiToken,
           token: req.body.baseplateToken,
+          // TODO uncomment to ensure the token is from this user
           // userId,
         },
       });
-
-      console.log("TOKEN --------");
-      console.log(token?.userId);
 
       if (token) {
         baseplateTokenId = token.id;
@@ -68,15 +66,11 @@ router.post<Record<string, any>, Deployment, RequestBody>(
       }
     }
 
-    console.log("userId", userId, customerOrgId);
-
     const environment = await EnvironmentModel.findByPk(req.body.environmentId);
 
     if (!environment) {
       return invalidRequest(res, `Invalid environment`);
     }
-
-    console.log("here5");
 
     const deployment = await DeploymentModel.create({
       auditUserId: userId,
@@ -86,7 +80,6 @@ router.post<Record<string, any>, Deployment, RequestBody>(
       status: DeploymentStatus.pending,
       userId,
     });
-    console.log("here6");
 
     const allMicrofrontends = await MicrofrontendModel.findAll({
       where: {

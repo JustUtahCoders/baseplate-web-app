@@ -1,5 +1,8 @@
 import { isPlainObject } from "lodash-es";
 
+/**
+ * See https://api.cloudflare.com/#workers-kv-namespace-write-key-value-pair
+ */
 export async function writeCloudflareKV(
   key: string,
   value: string | object

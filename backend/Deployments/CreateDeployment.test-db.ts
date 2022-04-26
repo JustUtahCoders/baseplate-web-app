@@ -1,4 +1,5 @@
 import request from "supertest";
+import { DeploymentModel } from "../DB/Models/Deployment/Deployment";
 import {
   dbHelpers,
   sampleBaseplateToken,
@@ -52,5 +53,25 @@ describe(`POST /api/deployments`, () => {
 
     expect(response.statusCode).toBe(200);
     expect(response.body.status).toBe("success");
+
+    const deployment = await DeploymentModel.findByPk(response.body.id);
+    expect(deployment).toBeTruthy();
+    expect(deployment.status).toBe("success");
+    const deployedMicrofrontends = await deployment.getDeployedMicrofrontends();
+
+    expect(deployedMicrofrontends.length).toBe(1);
+    expect(deployedMicrofrontends[0].entryUrl).toBe(
+      "https://cdn.baseplate.cloud/convex/apps/navbar/navbar.v2.js"
+    );
+
+    const importMap = await deployment.deriveImportMap();
+
+    expect(importMap).toEqual({
+      imports: {
+        [`@${getCustomerOrg().orgKey}/${getMicrofrontend().name}`]:
+          "https://cdn.baseplate.cloud/convex/apps/navbar/navbar.v2.js",
+      },
+      scopes: {},
+    });
   });
 });

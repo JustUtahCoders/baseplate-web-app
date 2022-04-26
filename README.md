@@ -5,6 +5,12 @@
 First, install [pnpm](https://pnpm.io/) and [Docker](https://www.docker.com/)
 
 ```sh
+# Create .env files
+cp .env.example .env.dev
+
+# Now fill in values of .env.dev
+
+# Now pnpm install
 pnpm install
 pnpm run develop
 
