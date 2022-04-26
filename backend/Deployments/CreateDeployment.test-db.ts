@@ -9,6 +9,8 @@ import {
 } from "../DB/TestHelpers/DBTestHelpers";
 import { app } from "../Server";
 
+const mockFetch = fetch as jest.Mock;
+
 describe(`POST /api/deployments`, () => {
   dbHelpers();
 
@@ -18,8 +20,20 @@ describe(`POST /api/deployments`, () => {
   const getMicrofrontend = sampleMicrofrontend(getUser, getCustomerOrg);
   const getBaseplateToken = sampleBaseplateToken(getUser, getCustomerOrg);
 
+  beforeEach(() => {
+    mockFetch.mockReset();
+  });
+
   it(`successfully deploys`, async () => {
-    console.log("here1");
+    mockFetch.mockReturnValueOnce({
+      ok: true,
+      async json() {
+        return {
+          success: true,
+        };
+      },
+    });
+
     const response = await request(app)
       .post("/api/deployments")
       .send({
@@ -36,7 +50,6 @@ describe(`POST /api/deployments`, () => {
         ],
       });
 
-    console.log("here2", JSON.stringify(response.body));
     expect(response.statusCode).toBe(200);
     expect(response.body.status).toBe("success");
   });

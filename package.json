@@ -27,7 +27,7 @@
     "prepare-test-db": "bash backend/DB/TestHelpers/StartTestDB.sh && cross-env NODE_ENV=db-tests pnpm exec sequelize db:migrate && cross-env NODE_ENV=db-tests pnpm exec sequelize db:seed:all",
     "destroy-test-db": "docker-compose -f backend/DB/TestHelpers/docker-compose.tests.yml down -v",
     "test-db-migrations": "bash backend/DB/TestHelpers/MigrationTests.sh",
-    "test-db-code": "cross-env NODE_OPTIONS=--experimental-vm-modules NODE_ENV=db-tests jest --config jest.db.config.js --detectOpenHandles",
+    "test-db-code": "cross-env \"NODE_OPTIONS=--experimental-vm-modules --experimental-fetch\" NODE_ENV=db-tests jest --config jest.db.config.js --detectOpenHandles",
     "prepare": "husky install"
   },
   "repository": {
@@ -55,6 +55,7 @@
     "@babel/preset-typescript": "^7.16.7",
     "@changesets/changelog-github": "^0.4.3",
     "@changesets/cli": "^2.21.1",
+    "@jest/globals": "^28.0.0",
     "@jest/types": "^28.0.0",
     "@node-loader/core": "^2.0.0",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.4",

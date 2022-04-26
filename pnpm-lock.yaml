@@ -9,6 +9,7 @@ specifiers:
   '@babel/preset-typescript': ^7.16.7
   '@changesets/changelog-github': ^0.4.3
   '@changesets/cli': ^2.21.1
+  '@jest/globals': ^28.0.0
   '@jest/types': ^28.0.0
   '@node-loader/core': ^2.0.0
   '@pmmmwh/react-refresh-webpack-plugin': ^0.5.4
@@ -144,6 +145,7 @@ devDependencies:
   '@babel/preset-typescript': 7.16.7_@babel+core@7.17.8
   '@changesets/changelog-github': 0.4.3
   '@changesets/cli': 2.21.1
+  '@jest/globals': 28.0.0
   '@jest/types': 28.0.0
   '@node-loader/core': 2.0.0
   '@pmmmwh/react-refresh-webpack-plugin': 0.5.4_cb46ffc29cbac33b1cd7a2454d0f4425
@@ -6615,7 +6617,7 @@ packages:
   /jsonfile/4.0.0:
     resolution: {integrity: sha1-h3Gq4HmbZAdrdmQPygWPnBDjPss=}
     optionalDependencies:
-      graceful-fs: 4.2.9
+      graceful-fs: 4.2.10
     dev: true
 
   /jsonfile/6.1.0:
@@ -6623,7 +6625,7 @@ packages:
     dependencies:
       universalify: 2.0.0
     optionalDependencies:
-      graceful-fs: 4.2.9
+      graceful-fs: 4.2.10
     dev: true
 
   /jsonwebtoken/8.5.1:

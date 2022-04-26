@@ -57,6 +57,9 @@ router.post<Record<string, any>, Deployment, RequestBody>(
         },
       });
 
+      console.log("TOKEN --------");
+      console.log(token?.userId);
+
       if (token) {
         baseplateTokenId = token.id;
         userId = token.userId;
@@ -75,19 +78,14 @@ router.post<Record<string, any>, Deployment, RequestBody>(
 
     console.log("here5");
 
-    try {
-      const deployment = await DeploymentModel.create({
-        auditUserId: userId,
-        baseplateTokenId,
-        cause: req.body.cause,
-        environmentId: req.body.environmentId,
-        status: DeploymentStatus.pending,
-        userId: customerOrgId,
-      });
-    } catch (err) {
-      console.error(err);
-      throw err;
-    }
+    const deployment = await DeploymentModel.create({
+      auditUserId: userId,
+      baseplateTokenId,
+      cause: req.body.cause,
+      environmentId: req.body.environmentId,
+      status: DeploymentStatus.pending,
+      userId,
+    });
     console.log("here6");
 
     const allMicrofrontends = await MicrofrontendModel.findAll({
