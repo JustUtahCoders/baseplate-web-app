@@ -3,7 +3,7 @@ import S from "sequelize";
 const { DataTypes } = S;
 
 /**
- * @type {import('sequelize').ModelAttributes<import('./Microfrontend').MicrofrontendModel, import('./Microfrontend').MicrofrontendAttributes>}
+ * @type {import('sequelize').ModelAttributes<import('./AccountPermission').AccountPermissionModel, import('./AccountPermission').AccountPermissionAttributes>}
  */
 const schema = {
   id: {
@@ -19,30 +19,36 @@ const schema = {
       model: "CustomerOrgs",
       key: "id",
     },
-    onUpdate: "cascade",
     onDelete: "cascade",
+    onUpdate: "cascade",
   },
-  name: {
-    type: DataTypes.STRING,
+  accountId: {
+    type: DataTypes.UUID,
     allowNull: false,
-  },
-  scope: {
-    type: DataTypes.STRING,
-    allowNull: true,
-  },
-  useCustomerOrgKeyAsScope: {
-    type: DataTypes.BOOLEAN,
-    allowNull: false,
+    // No foreign key here because it could reference either Users or AuthTokens table
   },
   auditAccountId: {
     type: DataTypes.UUID,
     allowNull: false,
+  },
+  permissionId: {
+    type: DataTypes.UUID,
+    allowNull: false,
     references: {
-      model: "Users",
+      model: "Permissions",
       key: "id",
     },
-    onUpdate: "cascade",
     onDelete: "cascade",
+    onUpdate: "cascade",
+  },
+  entityId: {
+    type: DataTypes.UUID,
+    allowNull: true,
+    // No foreign key here because it could reference any of many tables
+  },
+  dateRevoked: {
+    type: DataTypes.DATE,
+    allowNull: true,
   },
   createdAt: {
     type: DataTypes.DATE,

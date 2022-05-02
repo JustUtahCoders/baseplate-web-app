@@ -20,7 +20,7 @@ describe("CustomerOrgModel", () => {
       name: "Coheed and Cambria",
       orgKey: "theheed",
       billingUserId: user.id,
-      auditUserId: user.id,
+      auditAccountId: user.id,
     });
 
     expect(customerOrg).toBeTruthy();
@@ -44,7 +44,7 @@ describe("CustomerOrgModel", () => {
       name: "Coheed and Cambria",
       orgKey: "theheed",
       billingUserId: getUser().id,
-      auditUserId: getUser().id,
+      auditAccountId: getUser().id,
     });
 
     const billingUser = await customerOrg.getBillingUser();

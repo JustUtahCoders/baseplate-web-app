@@ -17,18 +17,14 @@ module.exports = {
           name: "navbar",
           scope: null,
           useCustomerOrgKeyAsScope: true,
-          auditUserId: sampleUserId,
-          createdAt: new Date(),
-          updatedAt: new Date(),
+          auditAccountId: sampleUserId,
         },
         {
           customerOrgId: sampleCustomerOrgId,
           name: "settings",
           scope: null,
           useCustomerOrgKeyAsScope: true,
-          auditUserId: sampleUserId,
-          createdAt: new Date(),
-          updatedAt: new Date(),
+          auditAccountId: sampleUserId,
         },
       ],
       {
@@ -45,9 +41,7 @@ module.exports = {
           cause: "baseplateWebApp",
           status: "success",
           environmentId: sampleEnvironmentId,
-          auditUserId: sampleUserId,
-          createdAt: new Date(),
-          updatedAt: new Date(),
+          auditAccountId: sampleUserId,
         },
         {
           userId: sampleUserId,
@@ -55,9 +49,7 @@ module.exports = {
           cause: "deploymentCLI",
           status: "failure",
           environmentId: sampleEnvironmentId,
-          auditUserId: sampleUserId,
-          createdAt: new Date(),
-          updatedAt: new Date(),
+          auditAccountId: sampleUserId,
         },
       ],
       {
@@ -73,8 +65,6 @@ module.exports = {
           Uploading navbar.js to s3
           Uploading navbar.css to s3
         `.trim(),
-        createdAt: new Date(),
-        updatedAt: new Date(),
       },
       {
         deploymentId: dep1.id,
@@ -83,8 +73,6 @@ module.exports = {
           Updating navbar in import map.
           Import Map update complete.
         `.trim(),
-        createdAt: new Date(),
-        updatedAt: new Date(),
       },
       {
         deploymentId: dep2.id,
@@ -93,8 +81,6 @@ module.exports = {
           Uploading navbar.js to s3
           Error communicating with s3. Check credentials.
         `.trim(),
-        createdAt: new Date(),
-        updatedAt: new Date(),
       },
     ]);
 
@@ -106,9 +92,7 @@ module.exports = {
         bareImportSpecifier: "@convex/navbar",
         entryUrl: "https://cdn.baseplate.cloud/convex/navbar/navbar.v1.js",
         trailingSlashUrl: "https://cdn.baseplate.cloud/convex/navbar/",
-        auditUserId: sampleUserId,
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        auditAccountId: sampleUserId,
       },
       {
         deploymentId: dep1.id,
@@ -117,9 +101,7 @@ module.exports = {
         bareImportSpecifier: "@convex/settings",
         entryUrl: "https://cdn.baseplate.cloud/convex/settings/settings.v1.js",
         trailingSlashUrl: "https://cdn.baseplate.cloud/convex/settings/",
-        auditUserId: sampleUserId,
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        auditAccountId: sampleUserId,
       },
       {
         deploymentId: dep1.id,
@@ -128,9 +110,7 @@ module.exports = {
         bareImportSpecifier: "@convex/navbar",
         entryUrl: "https://cdn.baseplate.cloud/convex/navbar/navbar.v2.js",
         trailingSlashUrl: "https://cdn.baseplate.cloud/convex/navbar/",
-        auditUserId: sampleUserId,
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        auditAccountId: sampleUserId,
       },
       {
         deploymentId: dep1.id,
@@ -139,9 +119,7 @@ module.exports = {
         bareImportSpecifier: "@convex/settings",
         entryUrl: "https://cdn.baseplate.cloud/convex/settings/settings.v1.js",
         trailingSlashUrl: "https://cdn.baseplate.cloud/convex/settings/",
-        auditUserId: sampleUserId,
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        auditAccountId: sampleUserId,
       },
     ]);
   },

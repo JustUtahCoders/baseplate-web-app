@@ -5,21 +5,25 @@ import { sequelizeOptions } from "./AuditInit";
 
 const { DataTypes, Model } = S;
 
-export class AuditModel<ModelAttributes> extends Model<
-  AuditAttributes<ModelAttributes>,
-  AuditCreationAttributes<ModelAttributes>
-> {
+export class AuditModel<ModelAttributes>
+  extends Model<
+    AuditAttributes<ModelAttributes>,
+    AuditCreationAttributes<ModelAttributes>
+  >
+  implements AuditAttributes<ModelAttributes>
+{
   public id!: BaseplateUUID;
-  public auditUserId!: BaseplateUUID;
+  public auditAccountId!: BaseplateUUID;
   public auditItemId!: BaseplateUUID;
   public auditTimestamp!: Date;
+  public auditEventType!: string;
   public oldRowData: Partial<ModelAttributes>;
   public newRowData: Partial<ModelAttributes>;
 }
 
 export interface AuditAttributes<ModelAttributes> {
   id: BaseplateUUID;
-  auditUserId: BaseplateUUID;
+  auditAccountId: BaseplateUUID;
   auditItemId: BaseplateUUID;
   auditEventType: string;
   auditTimestamp: Date;
@@ -28,7 +32,7 @@ export interface AuditAttributes<ModelAttributes> {
 }
 
 export interface AuditTargetAttributes {
-  auditUserId: BaseplateUUID;
+  auditAccountId: BaseplateUUID;
 }
 
 export type AuditCreationAttributes<ModelAttributes> = Omit<

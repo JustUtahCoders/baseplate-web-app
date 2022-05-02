@@ -77,7 +77,7 @@ router.post<Record<string, any>, DeploymentAttributes, RequestBody>(
     }
 
     const deployment = await DeploymentModel.create({
-      auditUserId: userId,
+      auditAccountId: userId,
       baseplateTokenId,
       cause: req.body.cause,
       environmentId: req.body.environmentId,
@@ -131,7 +131,7 @@ router.post<Record<string, any>, DeploymentAttributes, RequestBody>(
                   entryUrl: lastDeployment.entryUrl,
                   trailingSlashUrl: lastDeployment.trailingSlashUrl,
                   deploymentChangedMicrofrontend: false,
-                  auditUserId: userId,
+                  auditAccountId: userId,
                 };
               }
             }
@@ -154,7 +154,7 @@ router.post<Record<string, any>, DeploymentAttributes, RequestBody>(
 
         // TODO - confirm entryUrl is publicly reachable
         return {
-          auditUserId: userId,
+          auditAccountId: userId,
           bareImportSpecifier,
           deploymentChangedMicrofrontend: true,
           deploymentId: deployment.id,

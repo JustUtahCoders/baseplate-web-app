@@ -34,15 +34,13 @@ export class DeploymentModel
   extends Model<DeploymentAttributes, DeploymentCreationAttributes>
   implements
     DeploymentAttributes,
-    BelongsToMethods<{ user: string }, UserModel>,
-    BelongsToMethods<{ baseplateToken: string }, AuthTokenModel>,
-    HasManyMethods<{ deploymentLog: string }, DeploymentLogModel>,
-    HasManyMethods<
-      { deployedMicrofrontend: string },
-      DeployedMicrofrontendModel
-    >,
-    BelongsToMethods<{ auditUser: string }, UserModel>,
-    BelongsToMethods<{ environment: string }, EnvironmentModel>
+    BelongsToMethods<{
+      user: UserModel;
+      baseplateToken: AuthTokenModel;
+      environment: EnvironmentModel;
+    }>,
+    HasManyMethods<{ deploymentLog: DeploymentLogModel }>,
+    HasManyMethods<{ deployedMicrofrontend: DeployedMicrofrontendModel }>
 {
   public id!: BaseplateUUID;
   public userId?: BaseplateUUID;
@@ -50,7 +48,7 @@ export class DeploymentModel
   public cause!: DeploymentCause;
   public status!: DeploymentStatus;
   public environmentId!: BaseplateUUID;
-  public auditUserId!: BaseplateUUID;
+  public auditAccountId!: BaseplateUUID;
 
   public async deriveImportMap(): Promise<ImportMap> {
     const deployedMicrofrontends = await this.getDeployedMicrofrontends();
@@ -154,10 +152,6 @@ export class DeploymentModel
   >;
   public createDeployedMicrofrontend!: HasManyCreateAssociationMixin<DeployedMicrofrontendModel>;
 
-  public getAuditUser!: BelongsToGetAssociationMixin<UserModel>;
-  public setAuditUser!: BelongsToSetAssociationMixin<UserModel, number>;
-  public createAuditUser!: BelongsToCreateAssociationMixin<UserModel>;
-
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 }
@@ -211,14 +205,6 @@ modelEvents.once("associate", (sequelize) => {
 
   DeploymentModel.hasMany(DeploymentLogModel, {
     foreignKey: "deploymentId",
-  });
-
-  DeploymentModel.belongsTo(UserModel, {
-    as: "AuditUser",
-    foreignKey: {
-      name: "auditUserId",
-      allowNull: false,
-    },
   });
 
   DeploymentModel.belongsTo(EnvironmentModel, {

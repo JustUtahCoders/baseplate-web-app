@@ -25,9 +25,10 @@ export class DeployedMicrofrontendModel
   >
   implements
     DeployedMicrofrontendAttributes,
-    BelongsToMethods<{ deployment: string }, DeploymentModel>,
-    BelongsToMethods<{ microfrontend: string }, MicrofrontendModel>,
-    BelongsToMethods<{ auditUser: string }, UserModel>
+    BelongsToMethods<{
+      deployment: DeploymentModel;
+      microfrontend: MicrofrontendModel;
+    }>
 {
   public id!: BaseplateUUID;
   public microfrontendId!: BaseplateUUID;
@@ -36,7 +37,7 @@ export class DeployedMicrofrontendModel
   public entryUrl!: string;
   public trailingSlashUrl!: string;
   public deploymentChangedMicrofrontend!: boolean;
-  public auditUserId!: BaseplateUUID;
+  public auditAccountId!: BaseplateUUID;
 
   public getDeployment!: BelongsToGetAssociationMixin<DeploymentModel>;
   public setDeployment!: BelongsToSetAssociationMixin<DeploymentModel, number>;
@@ -48,10 +49,6 @@ export class DeployedMicrofrontendModel
     number
   >;
   public createMicrofrontend!: BelongsToCreateAssociationMixin<MicrofrontendModel>;
-
-  public getAuditUser!: BelongsToGetAssociationMixin<UserModel>;
-  public setAuditUser!: BelongsToSetAssociationMixin<UserModel, number>;
-  public createAuditUser!: BelongsToCreateAssociationMixin<UserModel>;
 }
 
 export class DeployedMicrofrontendAuditModel extends AuditModel<DeployedMicrofrontendAttributes> {}
@@ -91,14 +88,6 @@ modelEvents.once("associate", (sequelize) => {
   DeployedMicrofrontendModel.belongsTo(DeploymentModel, {
     foreignKey: {
       name: "deploymentId",
-      allowNull: false,
-    },
-  });
-
-  DeployedMicrofrontendModel.belongsTo(UserModel, {
-    as: "AuditUser",
-    foreignKey: {
-      name: "auditUserId",
       allowNull: false,
     },
   });

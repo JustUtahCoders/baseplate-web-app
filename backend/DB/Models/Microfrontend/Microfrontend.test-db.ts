@@ -26,7 +26,7 @@ describe("MicrofrontendModel", () => {
       customerOrgId: customerOrg.id,
       name: "navbar",
       useCustomerOrgKeyAsScope: true,
-      auditUserId: getUser().id,
+      auditAccountId: getUser().id,
     });
 
     expect(microfrontend).toBeTruthy();

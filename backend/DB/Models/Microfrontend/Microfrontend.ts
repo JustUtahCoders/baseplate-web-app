@@ -13,7 +13,6 @@ import {
   AuditTargetAttributes,
   initAuditModel,
 } from "../Audit/Audit";
-import { UserModel } from "../User/User";
 
 const { Model } = S;
 
@@ -21,15 +20,14 @@ export class MicrofrontendModel
   extends Model<MicrofrontendAttributes, MicrofrontendCreationAttributes>
   implements
     MicrofrontendAttributes,
-    BelongsToMethods<{ customerOrg: string }, CustomerOrgModel>,
-    BelongsToMethods<{ auditUser: string }, UserModel>
+    BelongsToMethods<{ customerOrg: CustomerOrgModel }>
 {
   public id!: BaseplateUUID;
   public customerOrgId!: BaseplateUUID;
   public name!: string;
   public scope?: string;
   public useCustomerOrgKeyAsScope!: boolean;
-  public auditUserId!: BaseplateUUID;
+  public auditAccountId!: BaseplateUUID;
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
@@ -40,10 +38,6 @@ export class MicrofrontendModel
     number
   >;
   public createCustomerOrg!: BelongsToCreateAssociationMixin<CustomerOrgModel>;
-
-  public getAuditUser!: BelongsToGetAssociationMixin<UserModel>;
-  public setAuditUser!: BelongsToSetAssociationMixin<UserModel, number>;
-  public createAuditUser!: BelongsToCreateAssociationMixin<UserModel>;
 }
 
 export interface MicrofrontendAttributes extends AuditTargetAttributes {
@@ -90,14 +84,6 @@ modelEvents.once("associate", (sequelize) => {
   MicrofrontendModel.belongsTo(CustomerOrgModel, {
     foreignKey: {
       name: "customerOrgId",
-      allowNull: false,
-    },
-  });
-
-  MicrofrontendModel.belongsTo(UserModel, {
-    as: "AuditUser",
-    foreignKey: {
-      name: "auditUserId",
       allowNull: false,
     },
   });

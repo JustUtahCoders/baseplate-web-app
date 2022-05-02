@@ -22,15 +22,14 @@ export class EnvironmentModel
   implements
     DefaultModelAttrs,
     EnvironmentAttributes,
-    BelongsToMethods<{ customerOrg: string }, CustomerOrgModel>,
-    BelongsToMethods<{ auditUser: string }, UserModel>
+    BelongsToMethods<{ customerOrg: CustomerOrgModel }>
 {
   public id!: BaseplateUUID;
   public customerOrgId!: BaseplateUUID;
   public name!: string;
   public isProd!: boolean;
 
-  public auditUserId!: BaseplateUUID;
+  public auditAccountId!: BaseplateUUID;
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
@@ -41,10 +40,6 @@ export class EnvironmentModel
     number
   >;
   public createCustomerOrg!: BelongsToCreateAssociationMixin<CustomerOrgModel>;
-
-  public getAuditUser!: BelongsToGetAssociationMixin<UserModel>;
-  public setAuditUser!: BelongsToSetAssociationMixin<UserModel, number>;
-  public createAuditUser!: BelongsToCreateAssociationMixin<UserModel>;
 }
 
 export interface EnvironmentAttributes extends AuditTargetAttributes {
@@ -75,14 +70,6 @@ modelEvents.once("associate", () => {
   EnvironmentModel.belongsTo(CustomerOrgModel, {
     foreignKey: {
       name: "customerOrgId",
-      allowNull: false,
-    },
-  });
-
-  EnvironmentModel.belongsTo(UserModel, {
-    as: "AuditUser",
-    foreignKey: {
-      name: "auditUserId",
       allowNull: false,
     },
   });

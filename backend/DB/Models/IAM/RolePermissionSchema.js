@@ -3,7 +3,7 @@ import S from "sequelize";
 const { DataTypes } = S;
 
 /**
- * @type {import('sequelize').ModelAttributes<import('./User').UserModel, import('./User').UserAttributes>}
+ * @type {import('sequelize').ModelAttributes<import('./RolePermission').RolePermissionModel, import('./RolePermission').RolePermissionAttributes>}
  */
 const schema = {
   id: {
@@ -12,25 +12,25 @@ const schema = {
     defaultValue: S.literal("gen_random_uuid()"),
     primaryKey: true,
   },
-  givenName: {
-    type: DataTypes.STRING,
+  permissionId: {
+    type: DataTypes.UUID,
     allowNull: false,
+    references: {
+      model: "Permissions",
+      key: "id",
+    },
+    onDelete: "cascade",
+    onUpdate: "cascade",
   },
-  familyName: {
-    type: DataTypes.STRING,
-    allowNull: true,
-  },
-  email: {
-    type: DataTypes.STRING,
+  roleId: {
+    type: DataTypes.UUID,
     allowNull: false,
-  },
-  password: {
-    type: DataTypes.STRING,
-    allowNull: true,
-  },
-  googleAuthToken: {
-    type: DataTypes.STRING,
-    allowNull: true,
+    references: {
+      model: "Roles",
+      key: "id",
+    },
+    onDelete: "cascade",
+    onUpdate: "cascade",
   },
   createdAt: {
     type: DataTypes.DATE,

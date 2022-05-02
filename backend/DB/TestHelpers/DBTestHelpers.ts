@@ -41,7 +41,7 @@ export function sampleCustomerOrg(
       name: "Coheed and Cambria",
       orgKey: "theheed",
       billingUserId: user.id,
-      auditUserId: user.id,
+      auditAccountId: user.id,
     });
   });
 
@@ -63,7 +63,7 @@ export function sampleMicrofrontend(
       customerOrgId: customerOrg.id,
       name: "navbar",
       useCustomerOrgKeyAsScope: true,
-      auditUserId: userGetter().id,
+      auditAccountId: userGetter().id,
     });
   });
 
@@ -82,7 +82,7 @@ export function sampleEnvironment(
     environment = await EnvironmentModel.create({
       name: "prod",
       isProd: true,
-      auditUserId: userGetter().id,
+      auditAccountId: userGetter().id,
       customerOrgId: customerOrgGetter().id,
     });
   });

@@ -17,11 +17,10 @@ export class AuthTokenModel
   implements
     AuthTokenAttributes,
     DefaultModelAttrs,
-    BelongsToMethods<{ user: string }, UserModel>,
-    BelongsToMethods<{ customerOrg: string }, CustomerOrgModel>
+    BelongsToMethods<{ user: UserModel; customerOrg: CustomerOrgModel }>
 {
   public id!: BaseplateUUID;
-  public userId!: BaseplateUUID;
+  public userId?: BaseplateUUID;
   public customerOrgId?: BaseplateUUID;
   public authTokenType!: AuthTokenType;
 
@@ -42,7 +41,7 @@ export class AuthTokenModel
 
 export interface AuthTokenAttributes {
   id: BaseplateUUID;
-  userId: BaseplateUUID;
+  userId?: BaseplateUUID;
   customerOrgId?: BaseplateUUID;
   authTokenType: AuthTokenType;
 }
@@ -51,6 +50,7 @@ export enum AuthTokenType {
   loginMFAEmail = "loginMFAEmail",
   passwordReset = "passwordReset",
   baseplateApiToken = "baseplateApiToken",
+  webAppCodeAccess = "webAppCodeAccess",
 }
 
 export type AuthTokenCreationAttributes = Omit<AuthTokenAttributes, "id">;
