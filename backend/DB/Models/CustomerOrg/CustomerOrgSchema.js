@@ -35,7 +35,7 @@ const schema = {
     allowNull: false,
     unique: true,
   },
-  auditUserId: {
+  auditAccountId: {
     type: DataTypes.UUID,
     allowNull: false,
     references: {
@@ -48,10 +48,12 @@ const schema = {
   createdAt: {
     type: DataTypes.DATE,
     allowNull: false,
+    defaultValue: S.literal("CURRENT_TIMESTAMP"),
   },
   updatedAt: {
     type: DataTypes.DATE,
     allowNull: false,
+    defaultValue: S.literal("CURRENT_TIMESTAMP"),
   },
 };
 

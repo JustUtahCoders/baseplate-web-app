@@ -46,17 +46,16 @@ export class CustomerOrgModel
   extends Model<CustomerOrgAttributes, CustomerOrgCreationAttributes>
   implements
     CustomerOrgAttributes,
-    BelongsToMethods<{ billingUser: string }, UserModel>,
-    BelongsToManyMethods<{ user: string }, UserModel>,
-    HasManyMethods<{ environment: string }, EnvironmentModel>,
-    BelongsToMethods<{ auditUser: string }, UserModel>
+    BelongsToMethods<{ billingUser: UserModel }>,
+    BelongsToManyMethods<{ user: UserModel }>,
+    HasManyMethods<{ environment: EnvironmentModel }>
 {
   public id!: BaseplateUUID;
   public name!: string;
   public accountEnabled!: boolean;
   public billingUserId!: BaseplateUUID;
   public orgKey!: string;
-  public auditUserId!: BaseplateUUID;
+  public auditAccountId!: BaseplateUUID;
 
   public getBillingUser!: BelongsToGetAssociationMixin<UserModel>;
   public setBillingUser!: BelongsToSetAssociationMixin<UserModel, number>;
@@ -98,10 +97,6 @@ export class CustomerOrgModel
     number
   >;
   public createEnvironment!: HasManyCreateAssociationMixin<EnvironmentModel>;
-
-  public getAuditUser!: BelongsToGetAssociationMixin<UserModel>;
-  public setAuditUser!: BelongsToSetAssociationMixin<UserModel, number>;
-  public createAuditUser!: BelongsToCreateAssociationMixin<UserModel>;
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
@@ -149,13 +144,5 @@ modelEvents.once("associate", (sequelize) => {
 
   CustomerOrgModel.hasMany(EnvironmentModel, {
     foreignKey: "customerOrgId",
-  });
-
-  CustomerOrgModel.belongsTo(UserModel, {
-    as: "AuditUser",
-    foreignKey: {
-      name: "auditUserId",
-      allowNull: false,
-    },
   });
 });

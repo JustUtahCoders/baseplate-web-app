@@ -3,7 +3,7 @@ import S from "sequelize";
 const { DataTypes } = S;
 
 /**
- * @type {import('sequelize').ModelAttributes<import('./User').UserModel, import('./User').UserAttributes>}
+ * @type {import('sequelize').ModelAttributes<import('./Role').RoleModel, import('./Role').RoleAttributes>}
  */
 const schema = {
   id: {
@@ -12,25 +12,39 @@ const schema = {
     defaultValue: S.literal("gen_random_uuid()"),
     primaryKey: true,
   },
-  givenName: {
-    type: DataTypes.STRING,
+  name: {
+    type: DataTypes.TEXT,
     allowNull: false,
   },
-  familyName: {
-    type: DataTypes.STRING,
-    allowNull: true,
-  },
-  email: {
-    type: DataTypes.STRING,
+  humanReadableName: {
+    type: DataTypes.TEXT,
     allowNull: false,
   },
-  password: {
-    type: DataTypes.STRING,
+  requiresEntityId: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+  },
+  description: {
+    type: DataTypes.TEXT,
+    allowNull: false,
+  },
+  customerOrgId: {
+    type: DataTypes.UUID,
+    allowNull: true,
+    references: {
+      model: "CustomerOrgs",
+      key: "id",
+    },
+    onDelete: "cascade",
+    onUpdate: "cascade",
+  },
+  deprecationDate: {
+    type: DataTypes.DATE,
     allowNull: true,
   },
-  googleAuthToken: {
-    type: DataTypes.STRING,
-    allowNull: true,
+  auditAccountId: {
+    type: DataTypes.UUID,
+    allowNull: false,
   },
   createdAt: {
     type: DataTypes.DATE,

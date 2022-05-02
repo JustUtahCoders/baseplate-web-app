@@ -28,225 +28,232 @@ import {
   BelongsToManyCreateAssociationMixin,
 } from "sequelize";
 
-export type BelongsToMethods<Aliases, OtherModel extends Model> = GetBelongsTo<
-  Aliases,
-  OtherModel
-> &
-  SetBelongsTo<Aliases, OtherModel> &
-  CreateBelongsTo<Aliases, OtherModel>;
-
-type GetBelongsTo<Aliases, OtherModel extends Model> = {
-  [Property in keyof Aliases &
-    string as `get${Capitalize<Property>}`]: BelongsToGetAssociationMixin<OtherModel>;
+export type ModelMap = {
+  [key: string]: Model;
 };
 
-type SetBelongsTo<Aliases, OtherModel extends Model> = {
+export type BelongsToMethods<Aliases extends ModelMap> = GetBelongsTo<Aliases> &
+  SetBelongsTo<Aliases> &
+  CreateBelongsTo<Aliases>;
+
+type GetBelongsTo<Aliases extends ModelMap> = {
+  [Property in keyof Aliases &
+    string as `get${Capitalize<Property>}`]: BelongsToGetAssociationMixin<
+    Aliases[Property]
+  >;
+};
+
+type SetBelongsTo<Aliases extends ModelMap> = {
   [Property in keyof Aliases &
     string as `set${Capitalize<Property>}`]: BelongsToSetAssociationMixin<
-    OtherModel,
+    Aliases[Property],
     number
   >;
 };
-type CreateBelongsTo<Aliases, OtherModel extends Model> = {
+type CreateBelongsTo<Aliases extends ModelMap> = {
   [Property in keyof Aliases &
-    string as `create${Capitalize<Property>}`]: BelongsToCreateAssociationMixin<OtherModel>;
+    string as `create${Capitalize<Property>}`]: BelongsToCreateAssociationMixin<
+    Aliases[Property]
+  >;
 };
 
-export type HasOneMethods<Aliases, OtherModel extends Model> = GetHasOne<
-  Aliases,
-  OtherModel
-> &
-  SetHasOne<Aliases, OtherModel> &
-  CreateHasOne<Aliases, OtherModel>;
+export type HasOneMethods<Aliases extends ModelMap> = GetHasOne<Aliases> &
+  SetHasOne<Aliases> &
+  CreateHasOne<Aliases>;
 
-type GetHasOne<Aliases, OtherModel extends Model> = {
+type GetHasOne<Aliases extends ModelMap> = {
   [Property in keyof Aliases &
-    string as `get${Capitalize<Property>}`]: HasOneGetAssociationMixin<OtherModel>;
+    string as `get${Capitalize<Property>}`]: HasOneGetAssociationMixin<
+    Aliases[Property]
+  >;
 };
 
-type SetHasOne<Aliases, OtherModel extends Model> = {
+type SetHasOne<Aliases extends ModelMap> = {
   [Property in keyof Aliases &
     string as `set${Capitalize<Property>}`]: HasOneSetAssociationMixin<
-    OtherModel,
+    Aliases[Property],
     number
   >;
 };
-type CreateHasOne<Aliases, OtherModel extends Model> = {
+type CreateHasOne<Aliases extends ModelMap> = {
   [Property in keyof Aliases &
-    string as `create${Capitalize<Property>}`]: HasOneCreateAssociationMixin<OtherModel>;
+    string as `create${Capitalize<Property>}`]: HasOneCreateAssociationMixin<
+    Aliases[Property]
+  >;
 };
 
-export type HasManyMethods<Aliases, OtherModel extends Model> = GetHasMany<
-  Aliases,
-  OtherModel
-> &
-  CountHasMany<Aliases, OtherModel> &
-  HasHasMany<Aliases, OtherModel> &
-  HasHasManyPlural<Aliases, OtherModel> &
-  SetHasMany<Aliases, OtherModel> &
-  AddHasMany<Aliases, OtherModel> &
-  AddHasManyPlural<Aliases, OtherModel> &
-  RemoveHasMany<Aliases, OtherModel> &
-  RemoveHasManyPlural<Aliases, OtherModel> &
-  CreateHasMany<Aliases, OtherModel>;
+export type HasManyMethods<Aliases extends ModelMap> = GetHasMany<Aliases> &
+  CountHasMany<Aliases> &
+  HasHasMany<Aliases> &
+  HasHasManyPlural<Aliases> &
+  SetHasMany<Aliases> &
+  AddHasMany<Aliases> &
+  AddHasManyPlural<Aliases> &
+  RemoveHasMany<Aliases> &
+  RemoveHasManyPlural<Aliases> &
+  CreateHasMany<Aliases>;
 
-type GetHasMany<Aliases, OtherModel extends Model> = {
+type GetHasMany<Aliases extends ModelMap> = {
   [Property in keyof Aliases &
-    string as `get${Capitalize<Property>}s`]: HasManyGetAssociationsMixin<OtherModel>;
+    string as `get${Capitalize<Property>}s`]: HasManyGetAssociationsMixin<
+    Aliases[Property]
+  >;
 };
 
-type CountHasMany<Aliases, OtherModel extends Model> = {
+type CountHasMany<Aliases extends ModelMap> = {
   [Property in keyof Aliases &
     string as `count${Capitalize<Property>}s`]: HasManyCountAssociationsMixin;
 };
 
-type HasHasMany<Aliases, OtherModel extends Model> = {
+type HasHasMany<Aliases extends ModelMap> = {
   [Property in keyof Aliases &
     string as `has${Capitalize<Property>}`]: HasManyHasAssociationMixin<
-    OtherModel,
+    Aliases[Property],
     number
   >;
 };
 
-type HasHasManyPlural<Aliases, OtherModel extends Model> = {
+type HasHasManyPlural<Aliases extends ModelMap> = {
   [Property in keyof Aliases &
     string as `has${Capitalize<Property>}s`]: HasManyHasAssociationsMixin<
-    OtherModel,
+    Aliases[Property],
     number
   >;
 };
 
-type SetHasMany<Aliases, OtherModel extends Model> = {
+type SetHasMany<Aliases extends ModelMap> = {
   [Property in keyof Aliases &
     string as `set${Capitalize<Property>}s`]: HasManySetAssociationsMixin<
-    OtherModel,
+    Aliases[Property],
     number
   >;
 };
 
-type AddHasMany<Aliases, OtherModel extends Model> = {
+type AddHasMany<Aliases extends ModelMap> = {
   [Property in keyof Aliases &
     string as `add${Capitalize<Property>}`]: HasManyAddAssociationMixin<
-    OtherModel,
+    Aliases[Property],
     number
   >;
 };
 
-type AddHasManyPlural<Aliases, OtherModel extends Model> = {
+type AddHasManyPlural<Aliases extends ModelMap> = {
   [Property in keyof Aliases &
     string as `add${Capitalize<Property>}s`]: HasManyAddAssociationsMixin<
-    OtherModel,
+    Aliases[Property],
     number
   >;
 };
 
-type RemoveHasMany<Aliases, OtherModel extends Model> = {
+type RemoveHasMany<Aliases extends ModelMap> = {
   [Property in keyof Aliases &
     string as `remove${Capitalize<Property>}`]: HasManyRemoveAssociationMixin<
-    OtherModel,
+    Aliases[Property],
     number
   >;
 };
 
-type RemoveHasManyPlural<Aliases, OtherModel extends Model> = {
+type RemoveHasManyPlural<Aliases extends ModelMap> = {
   [Property in keyof Aliases &
     string as `remove${Capitalize<Property>}s`]: HasManyRemoveAssociationsMixin<
-    OtherModel,
+    Aliases[Property],
     number
   >;
 };
 
-type CreateHasMany<Aliases, OtherModel extends Model> = {
+type CreateHasMany<Aliases extends ModelMap> = {
   [Property in keyof Aliases &
     string as `create${Capitalize<Property>}`]: HasManyCreateAssociationMixin<
-    OtherModel,
+    Aliases[Property],
     number
   >;
 };
 
-export type BelongsToManyMethods<
-  Aliases,
-  OtherModel extends Model
-> = GetBelongsToMany<Aliases, OtherModel> &
-  CountBelongsToMany<Aliases, OtherModel> &
-  HasBelongsToMany<Aliases, OtherModel> &
-  HasBelongsToManyPlural<Aliases, OtherModel> &
-  SetBelongsToMany<Aliases, OtherModel> &
-  AddBelongsToMany<Aliases, OtherModel> &
-  AddBelongsToManyPlural<Aliases, OtherModel> &
-  RemoveBelongsToMany<Aliases, OtherModel> &
-  RemoveBelongsToManyPlural<Aliases, OtherModel> &
-  CreateBelongsToMany<Aliases, OtherModel>;
+export type BelongsToManyMethods<Aliases extends ModelMap> =
+  GetBelongsToMany<Aliases> &
+    CountBelongsToMany<Aliases> &
+    HasBelongsToMany<Aliases> &
+    HasBelongsToManyPlural<Aliases> &
+    SetBelongsToMany<Aliases> &
+    AddBelongsToMany<Aliases> &
+    AddBelongsToManyPlural<Aliases> &
+    RemoveBelongsToMany<Aliases> &
+    RemoveBelongsToManyPlural<Aliases> &
+    CreateBelongsToMany<Aliases>;
 
-type GetBelongsToMany<Aliases, OtherModel extends Model> = {
+type GetBelongsToMany<Aliases extends ModelMap> = {
   [Property in keyof Aliases &
-    string as `get${Capitalize<Property>}s`]: BelongsToManyGetAssociationsMixin<OtherModel>;
+    string as `get${Capitalize<Property>}s`]: BelongsToManyGetAssociationsMixin<
+    Aliases[Property]
+  >;
 };
 
-type CountBelongsToMany<Aliases, OtherModel extends Model> = {
+type CountBelongsToMany<Aliases extends ModelMap> = {
   [Property in keyof Aliases &
     string as `count${Capitalize<Property>}s`]: BelongsToManyCountAssociationsMixin;
 };
 
-type HasBelongsToMany<Aliases, OtherModel extends Model> = {
+type HasBelongsToMany<Aliases extends ModelMap> = {
   [Property in keyof Aliases &
     string as `has${Capitalize<Property>}`]: BelongsToManyHasAssociationMixin<
-    OtherModel,
+    Aliases[Property],
     number
   >;
 };
 
-type HasBelongsToManyPlural<Aliases, OtherModel extends Model> = {
+type HasBelongsToManyPlural<Aliases extends ModelMap> = {
   [Property in keyof Aliases &
     string as `has${Capitalize<Property>}s`]: BelongsToManyHasAssociationsMixin<
-    OtherModel,
+    Aliases[Property],
     number
   >;
 };
 
-type SetBelongsToMany<Aliases, OtherModel extends Model> = {
+type SetBelongsToMany<Aliases extends ModelMap> = {
   [Property in keyof Aliases &
     string as `set${Capitalize<Property>}s`]: BelongsToManySetAssociationsMixin<
-    OtherModel,
+    Aliases[Property],
     number
   >;
 };
 
-type AddBelongsToMany<Aliases, OtherModel extends Model> = {
+type AddBelongsToMany<Aliases extends ModelMap> = {
   [Property in keyof Aliases &
     string as `add${Capitalize<Property>}`]: BelongsToManyAddAssociationMixin<
-    OtherModel,
+    Aliases[Property],
     number
   >;
 };
 
-type AddBelongsToManyPlural<Aliases, OtherModel extends Model> = {
+type AddBelongsToManyPlural<Aliases extends ModelMap> = {
   [Property in keyof Aliases &
     string as `add${Capitalize<Property>}s`]: BelongsToManyAddAssociationsMixin<
-    OtherModel,
+    Aliases[Property],
     number
   >;
 };
 
-type RemoveBelongsToMany<Aliases, OtherModel extends Model> = {
+type RemoveBelongsToMany<Aliases extends ModelMap> = {
   [Property in keyof Aliases &
     string as `remove${Capitalize<Property>}`]: BelongsToManyRemoveAssociationMixin<
-    OtherModel,
+    Aliases[Property],
     number
   >;
 };
 
-type RemoveBelongsToManyPlural<Aliases, OtherModel extends Model> = {
+type RemoveBelongsToManyPlural<Aliases extends ModelMap> = {
   [Property in keyof Aliases &
     string as `remove${Capitalize<Property>}s`]: BelongsToManyRemoveAssociationsMixin<
-    OtherModel,
+    Aliases[Property],
     number
   >;
 };
 
-type CreateBelongsToMany<Aliases, OtherModel extends Model> = {
+type CreateBelongsToMany<Aliases extends ModelMap> = {
   [Property in keyof Aliases &
-    string as `create${Capitalize<Property>}`]: BelongsToManyCreateAssociationMixin<OtherModel>;
+    string as `create${Capitalize<Property>}`]: BelongsToManyCreateAssociationMixin<
+    Aliases[Property]
+  >;
 };
 
 export type ModelWithIncludes<MainModel, IncludedModels> = MainModel & {

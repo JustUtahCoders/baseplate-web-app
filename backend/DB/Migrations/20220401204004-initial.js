@@ -40,10 +40,12 @@ module.exports = {
       createdAt: {
         type: Sequelize.DATE,
         allowNull: false,
+        defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
       },
       updatedAt: {
         type: Sequelize.DATE,
         allowNull: false,
+        defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
       },
     });
 
@@ -53,6 +55,14 @@ module.exports = {
         await import("../Models/AuthToken/AuthTokenSchema.js")
       ).initialSchema
     );
+
+    await queryInterface.bulkInsert("AuthTokens", [
+      {
+        userId: null,
+        customerOrgId: null,
+        authTokenType: "webAppCodeAccess",
+      },
+    ]);
   },
 
   async down(queryInterface, Sequelize) {

@@ -31,7 +31,7 @@ describe("DeploymentModel", () => {
       deployment = await DeploymentModel.create({
         cause: DeploymentCause.baseplateWebApp,
         status: DeploymentStatus.success,
-        auditUserId: getUser().id,
+        auditAccountId: getUser().id,
         environmentId: getEnvironment().id,
       });
     } catch (err) {
@@ -57,7 +57,7 @@ describe("DeploymentModel", () => {
       deployment = await DeploymentModel.create({
         cause: DeploymentCause.baseplateWebApp,
         status: DeploymentStatus.success,
-        auditUserId: getUser().id,
+        auditAccountId: getUser().id,
         environmentId: getEnvironment().id,
       });
     } catch (err) {
@@ -71,14 +71,14 @@ describe("DeploymentModel", () => {
     });
 
     const microfrontend = await MicrofrontendModel.create({
-      auditUserId: getUser().id,
+      auditAccountId: getUser().id,
       customerOrgId: getCustomerOrg().id,
       name: "navbar",
       useCustomerOrgKeyAsScope: true,
     });
 
     await deployment.createDeployedMicrofrontend({
-      auditUserId: getUser().id,
+      auditAccountId: getUser().id,
       microfrontendId: microfrontend.id,
       deploymentChangedMicrofrontend: true,
       bareImportSpecifier: "@convex/navbar",
@@ -87,7 +87,7 @@ describe("DeploymentModel", () => {
     });
 
     await deployment.createDeployedMicrofrontend({
-      auditUserId: getUser().id,
+      auditAccountId: getUser().id,
       microfrontendId: microfrontend.id,
       deploymentChangedMicrofrontend: true,
       bareImportSpecifier: "@convex/settings",

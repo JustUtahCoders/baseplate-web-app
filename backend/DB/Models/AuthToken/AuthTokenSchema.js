@@ -14,7 +14,7 @@ const schema = {
   },
   userId: {
     type: DataTypes.UUID,
-    allowNull: false,
+    allowNull: true,
     references: {
       model: "Users",
       key: "id",
@@ -39,10 +39,12 @@ const schema = {
   createdAt: {
     type: DataTypes.DATE,
     allowNull: false,
+    defaultValue: S.literal("CURRENT_TIMESTAMP"),
   },
   updatedAt: {
     type: DataTypes.DATE,
     allowNull: false,
+    defaultValue: S.literal("CURRENT_TIMESTAMP"),
   },
 };
 

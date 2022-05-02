@@ -13,13 +13,13 @@ describe("UserModel", () => {
 
   it(`can create and retrieve users`, async () => {
     user = await UserModel.create({
-      email: "sample@baseplate.com",
+      email: "sample@baseplate.cloud",
       givenName: "Base",
       familyName: "Plate",
     });
 
     expect(user).toBeTruthy();
-    expect(user.email).toBe("sample@baseplate.com");
+    expect(user.email).toBe("sample@baseplate.cloud");
 
     user = await UserModel.findOne({
       where: {
@@ -28,7 +28,7 @@ describe("UserModel", () => {
     });
 
     expect(user).toBeTruthy();
-    expect(user.email).toBe("sample@baseplate.com");
+    expect(user.email).toBe("sample@baseplate.cloud");
     expect(user.givenName).toBe("Base");
     expect(user.familyName).toBe("Plate");
 

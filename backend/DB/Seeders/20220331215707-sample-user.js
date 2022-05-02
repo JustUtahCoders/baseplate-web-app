@@ -1,38 +1,51 @@
 const bcrypt = require("bcryptjs");
 
-const sampleUserEmail = "sample@baseplate.cloud";
+const orgOwnerUserEmail = "owner@baseplate.cloud";
+const mfeOwnerUserEmail = "mfe@baseplate.cloud";
+const devUserEmail = "dev@baseplate.cloud";
 
 module.exports = {
   async up(queryInterface, Sequelize) {
-    const [insertedUser] = await queryInterface.bulkInsert(
-      "Users",
-      [
+    const [orgOwnerUser, mfeOwnerUser, devUser] =
+      await queryInterface.bulkInsert(
+        "Users",
+        [
+          {
+            givenName: "OrgOwner",
+            familyName: "Sample",
+            email: orgOwnerUserEmail,
+            password: await bcrypt.hash("password", 5),
+            googleAuthToken: null,
+          },
+          {
+            givenName: "MFEOwner",
+            familyName: "Sample",
+            email: mfeOwnerUserEmail,
+            password: await bcrypt.hash("password", 5),
+            googleAuthToken: null,
+          },
+          {
+            givenName: "Dev",
+            familyName: "Sample",
+            email: devUserEmail,
+            password: await bcrypt.hash("password", 5),
+            googleAuthToken: null,
+          },
+        ],
         {
-          givenName: "Sample",
-          familyName: "User",
-          email: sampleUserEmail,
-          password: await bcrypt.hash("password", 5),
-          googleAuthToken: null,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-      ],
-      {
-        returning: true,
-      }
-    );
+          returning: true,
+        }
+      );
 
     const [insertedCustomerOrg] = await queryInterface.bulkInsert(
       "CustomerOrgs",
       [
         {
           accountEnabled: true,
-          billingUserId: insertedUser.id,
-          auditUserId: insertedUser.id,
+          billingUserId: orgOwnerUser.id,
+          auditAccountId: orgOwnerUser.id,
           name: "Convex Co-op",
           orgKey: "convex",
-          createdAt: new Date(),
-          updatedAt: new Date(),
         },
       ],
       {
@@ -42,10 +55,16 @@ module.exports = {
 
     await queryInterface.bulkInsert("UserCustomerOrgs", [
       {
-        userId: insertedUser.id,
+        userId: orgOwnerUser.id,
         customerOrgId: insertedCustomerOrg.id,
-        createdAt: new Date(),
-        updatedAt: new Date(),
+      },
+      {
+        userId: mfeOwnerUser.id,
+        customerOrgId: insertedCustomerOrg.id,
+      },
+      {
+        userId: devUser.id,
+        customerOrgId: insertedCustomerOrg.id,
       },
     ]);
   },
@@ -56,7 +75,7 @@ module.exports = {
     });
 
     await queryInterface.bulkDelete("Users", {
-      email: [sampleUserEmail],
+      email: [orgOwnerUserEmail],
     });
   },
 
@@ -76,8 +95,29 @@ module.exports = {
       "Users",
       {
         where: {
-          givenName: "Sample",
-          familyName: "User",
+          email: orgOwnerUserEmail,
+        },
+        plain: false,
+      },
+      ["id"]
+    );
+
+    const [mfeOwnerUser] = await queryInterface.rawSelect(
+      "Users",
+      {
+        where: {
+          email: mfeOwnerUserEmail,
+        },
+        plain: false,
+      },
+      ["id"]
+    );
+
+    const [devUser] = await queryInterface.rawSelect(
+      "Users",
+      {
+        where: {
+          email: mfeOwnerUserEmail,
         },
         plain: false,
       },
@@ -86,6 +126,8 @@ module.exports = {
 
     return {
       sampleUserId: sampleUser.id,
+      mfeOwnerUserId: mfeOwnerUser.id,
+      devUserId: devUser.id,
       sampleCustomerOrgId: sampleCustomerOrg.id,
     };
   },

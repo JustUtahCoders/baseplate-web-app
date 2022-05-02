@@ -25,7 +25,7 @@ export function sequelizeOptions(parentModelName) {
       defaultValue: S.literal("gen_random_uuid()"),
       primaryKey: true,
     },
-    auditUserId: {
+    auditAccountId: {
       type: S.DataTypes.UUID,
       // null necessary for delete
       allowNull: true,

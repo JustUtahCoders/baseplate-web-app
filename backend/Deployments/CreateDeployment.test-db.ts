@@ -51,7 +51,6 @@ describe(`POST /api/deployments`, () => {
         ],
       });
 
-    console.log(response.body);
     expect(response.statusCode).toBe(200);
     expect(response.body.status).toBe("success");
 

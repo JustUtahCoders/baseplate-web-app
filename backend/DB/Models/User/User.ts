@@ -15,6 +15,8 @@ import S, {
   BelongsToManyCountAssociationsMixin,
 } from "sequelize";
 import { currentSchema } from "./UserSchema.js";
+import { AccountPermissionModel } from "../IAM/AccountPermission";
+import { AccountRoleModel } from "../IAM/AccountRole";
 
 const { Model, DataTypes } = S;
 
@@ -22,7 +24,11 @@ export class UserModel
   extends Model<UserAttributes, UserCreationAttributes>
   implements
     UserAttributes,
-    BelongsToManyMethods<{ customerOrg: string }, CustomerOrgModel>
+    BelongsToManyMethods<{
+      customerOrg: CustomerOrgModel;
+      role: AccountRoleModel;
+      permission: AccountPermissionModel;
+    }>
 {
   public id!: BaseplateUUID;
   public givenName!: string;
@@ -63,6 +69,55 @@ export class UserModel
   >;
   public createCustomerOrg!: BelongsToManyCreateAssociationMixin<CustomerOrgModel>;
 
+  public getRoles!: BelongsToManyGetAssociationsMixin<AccountRoleModel>;
+  public countRoles!: BelongsToManyCountAssociationsMixin;
+  public hasRole!: BelongsToManyHasAssociationMixin<AccountRoleModel, number>;
+  public hasRoles!: BelongsToManyHasAssociationsMixin<AccountRoleModel, number>;
+  public setRoles!: BelongsToManySetAssociationsMixin<AccountRoleModel, number>;
+  public addRole!: BelongsToManyAddAssociationMixin<AccountRoleModel, number>;
+  public addRoles!: BelongsToManyAddAssociationsMixin<AccountRoleModel, number>;
+  public removeRole!: BelongsToManyRemoveAssociationMixin<
+    AccountRoleModel,
+    number
+  >;
+  public removeRoles!: BelongsToManyRemoveAssociationsMixin<
+    AccountRoleModel,
+    number
+  >;
+  public createRole!: BelongsToManyCreateAssociationMixin<AccountRoleModel>;
+
+  public getPermissions!: BelongsToManyGetAssociationsMixin<AccountPermissionModel>;
+  public countPermissions!: BelongsToManyCountAssociationsMixin;
+  public hasPermission!: BelongsToManyHasAssociationMixin<
+    AccountPermissionModel,
+    number
+  >;
+  public hasPermissions!: BelongsToManyHasAssociationsMixin<
+    AccountPermissionModel,
+    number
+  >;
+  public setPermissions!: BelongsToManySetAssociationsMixin<
+    AccountPermissionModel,
+    number
+  >;
+  public addPermission!: BelongsToManyAddAssociationMixin<
+    AccountPermissionModel,
+    number
+  >;
+  public addPermissions!: BelongsToManyAddAssociationsMixin<
+    AccountPermissionModel,
+    number
+  >;
+  public removePermission!: BelongsToManyRemoveAssociationMixin<
+    AccountPermissionModel,
+    number
+  >;
+  public removePermissions!: BelongsToManyRemoveAssociationsMixin<
+    AccountPermissionModel,
+    number
+  >;
+  public createPermission!: BelongsToManyCreateAssociationMixin<AccountPermissionModel>;
+
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 }
@@ -92,5 +147,15 @@ modelEvents.once("associate", (sequelize) => {
     through: "UserCustomerOrgs",
     foreignKey: "userId",
     otherKey: "customerOrgId",
+  });
+
+  UserModel.hasMany(AccountPermissionModel, {
+    as: "permission",
+    foreignKey: "accountId",
+  });
+
+  UserModel.hasMany(AccountRoleModel, {
+    as: "role",
+    foreignKey: "accountId",
   });
 });

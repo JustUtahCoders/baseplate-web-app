@@ -7,7 +7,7 @@ BEGIN
 
   if (TG_OP = 'INSERT') then
     INSERT INTO "MODELNAMEAudit" (
-      "auditUserId",
+      "auditAccountId",
       "auditItemId",
       "auditEventType",
       "auditTimestamp",
@@ -16,7 +16,7 @@ BEGIN
     )
     VALUES
     (
-      NEW."auditUserId",
+      NEW."auditAccountId",
       NEW.id,
       'INSERT',
       CURRENT_TIMESTAMP,
@@ -29,7 +29,7 @@ BEGIN
 
   if (TG_OP = 'UPDATE') then
     INSERT INTO "MODELNAMEAudit" (
-      "auditUserId",
+      "auditAccountId",
       "auditItemId",
       "auditEventType",
       "auditTimestamp",
@@ -38,7 +38,7 @@ BEGIN
     )
     VALUES
     (
-      NEW."auditUserId",
+      NEW."auditAccountId",
       NEW.id,
       'UPDATE',
       CURRENT_TIMESTAMP,
@@ -51,7 +51,7 @@ BEGIN
 
   if (TG_OP = 'DELETE') then
     INSERT INTO "MODELNAMEAudit" (
-      "auditUserId",
+      "auditAccountId",
       "auditItemId",
       "auditEventType",
       "auditTimestamp",

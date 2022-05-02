@@ -27,7 +27,7 @@ describe("EnvironmentModel", () => {
       customerOrgId: customerOrg.id,
       isProd: true,
       name: "prod",
-      auditUserId: user.id,
+      auditAccountId: user.id,
     });
 
     expect(environment).toBeTruthy();
