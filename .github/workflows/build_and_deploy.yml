@@ -24,7 +24,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - uses: pnpm/action-setup@v2.0.1
         with:
-          version: 6.32.7
+          version: 7.0.0
       - name: Cache pnpm modules
         uses: actions/cache@v2
         with:
