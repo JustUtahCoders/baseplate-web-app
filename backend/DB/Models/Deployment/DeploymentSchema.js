@@ -12,25 +12,9 @@ const schema = {
     defaultValue: S.literal("gen_random_uuid()"),
     primaryKey: true,
   },
-  userId: {
+  accountId: {
     type: DataTypes.UUID,
-    allowNull: true,
-    references: {
-      model: "Users",
-      key: "id",
-    },
-    onUpdate: "cascade",
-    onDelete: "cascade",
-  },
-  baseplateTokenId: {
-    type: DataTypes.UUID,
-    allowNull: true,
-    references: {
-      model: "AuthTokens",
-      key: "id",
-    },
-    onUpdate: "cascade",
-    onDelete: "cascade",
+    allowNull: false,
   },
   cause: {
     type: DataTypes.STRING,
@@ -51,12 +35,6 @@ const schema = {
   auditAccountId: {
     type: DataTypes.UUID,
     allowNull: false,
-    references: {
-      model: "Users",
-      key: "id",
-    },
-    onUpdate: "cascade",
-    onDelete: "cascade",
   },
   createdAt: {
     type: DataTypes.DATE,

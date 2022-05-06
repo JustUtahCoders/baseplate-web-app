@@ -36,16 +36,14 @@ module.exports = {
       "Deployments",
       [
         {
-          userId: sampleUserId,
-          baseplateTokenId: null,
+          accountId: sampleUserId,
           cause: "baseplateWebApp",
           status: "success",
           environmentId: sampleEnvironmentId,
           auditAccountId: sampleUserId,
         },
         {
-          userId: sampleUserId,
-          baseplateTokenId: null,
+          accountId: sampleUserId,
           cause: "deploymentCLI",
           status: "failure",
           environmentId: sampleEnvironmentId,

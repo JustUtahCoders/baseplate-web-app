@@ -72,6 +72,6 @@ modelEvents.once("init", (sequelize) => {
 modelEvents.once("associate", () => {
   AccountPermissionModel.belongsTo(PermissionModel, {
     as: "permission",
-    foreignKey: "id",
+    foreignKey: "permissionId",
   });
 });

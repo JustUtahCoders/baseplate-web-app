@@ -6,24 +6,31 @@ import { MicrofrontendModel } from "../Models/Microfrontend/Microfrontend";
 import { UserModel } from "../Models/User/User";
 import bcrypt from "bcryptjs";
 import { AuthTokenModel, AuthTokenType } from "../Models/AuthToken/AuthToken";
+import { RoleModel } from "../Models/IAM/Role";
+import { AccountPermissionModel } from "../Models/IAM/AccountPermission";
 
 export function dbHelpers() {
   beforeAll(() => dbReady);
-  afterAll(() => sequelize.close());
+  afterAll(() => {
+    sequelize.close();
+  });
 }
 
 export function sampleUser(): () => UserModel {
   let user: UserModel;
 
-  beforeEach(async () => {
-    user = await UserModel.create({
-      email: "claudiosanchez@coheedandcambria.com",
-      givenName: "Claudio",
-      familyName: "Sanchez",
-      password: await bcrypt.hash("password", 1),
-    });
-  });
-  afterEach(() => safeDestroy(user));
+  beforeEach(
+    safeCreate(async () => {
+      user = await UserModel.create({
+        email: "claudiosanchez@coheedandcambria.com",
+        givenName: "Claudio",
+        familyName: "Sanchez",
+        password: await bcrypt.hash("password", 1),
+      });
+    })
+  );
+
+  // afterEach(() => safeDestroy(user))
 
   return () => user;
 }
@@ -33,19 +40,21 @@ export function sampleCustomerOrg(
 ): () => CustomerOrgModel {
   let customerOrg: CustomerOrgModel;
 
-  beforeEach(async () => {
-    const user = userGetter();
+  beforeEach(
+    safeCreate(async () => {
+      const user = userGetter();
 
-    customerOrg = await CustomerOrgModel.create({
-      accountEnabled: true,
-      name: "Coheed and Cambria",
-      orgKey: "theheed",
-      billingUserId: user.id,
-      auditAccountId: user.id,
-    });
-  });
+      customerOrg = await CustomerOrgModel.create({
+        accountEnabled: true,
+        name: "Coheed and Cambria",
+        orgKey: new Date().toISOString(),
+        billingUserId: user.id,
+        auditAccountId: user.id,
+      });
+    })
+  );
 
-  afterEach(() => safeDestroy(customerOrg));
+  // afterEach(() => safeDestroy(customerOrg))
 
   return () => customerOrg;
 }
@@ -67,7 +76,7 @@ export function sampleMicrofrontend(
     });
   });
 
-  afterEach(() => safeDestroy(microfrontend));
+  // afterEach(() => safeDestroy(microfrontend))
 
   return () => microfrontend;
 }
@@ -78,16 +87,18 @@ export function sampleEnvironment(
 ): () => EnvironmentModel {
   let environment: EnvironmentModel;
 
-  beforeEach(async () => {
-    environment = await EnvironmentModel.create({
-      name: "prod",
-      isProd: true,
-      auditAccountId: userGetter().id,
-      customerOrgId: customerOrgGetter().id,
-    });
-  });
+  beforeEach(
+    safeCreate(async () => {
+      environment = await EnvironmentModel.create({
+        name: "prod",
+        isProd: true,
+        auditAccountId: userGetter().id,
+        customerOrgId: customerOrgGetter().id,
+      });
+    })
+  );
 
-  afterEach(() => safeDestroy(environment));
+  // afterEach(() => safeDestroy(environment))
 
   return () => environment;
 }
@@ -98,25 +109,73 @@ export function sampleBaseplateToken(
 ): () => AuthTokenModel {
   let baseplateToken: AuthTokenModel;
 
-  beforeEach(async () => {
-    baseplateToken = await AuthTokenModel.create({
-      customerOrgId: getCustomerOrg().id,
-      userId: getUser().id,
-      authTokenType: AuthTokenType.baseplateApiToken,
-    });
-  });
+  beforeEach(
+    safeCreate(async () => {
+      console.log("user", getUser().id, "customerOrg", getCustomerOrg().id);
+      await AuthTokenModel.truncate({
+        cascade: true,
+      });
 
-  afterEach(() => safeDestroy(baseplateToken));
+      baseplateToken = await AuthTokenModel.create({
+        customerOrgId: getCustomerOrg().id,
+        userId: getUser().id,
+        authTokenType: AuthTokenType.baseplateApiToken,
+      });
+
+      const role = await RoleModel.findOne({
+        where: {
+          name: "customerOrgs.owner",
+        },
+      });
+
+      if (!role) {
+        throw Error(`Database is not properly seeded`);
+      }
+
+      const rolePermissions = await role.getPermissions();
+
+      AccountPermissionModel.bulkCreate(
+        rolePermissions.map((rolePermission) => ({
+          accountId: baseplateToken.id,
+          auditAccountId: baseplateToken.id,
+          customerOrgId: getCustomerOrg().id,
+          permissionId: rolePermission.id,
+          entityId: null,
+          dateRevoked: null,
+        }))
+      );
+    })
+  );
+
+  // afterEach(() => safeDestroy(baseplateToken))
 
   return () => baseplateToken;
 }
 
-async function safeDestroy(mod: Model) {
-  try {
-    await mod.destroy();
-  } catch (err) {
-    // Better stacktrace
-    console.error(err);
-    throw err;
-  }
+// async function safeDestroy(mod: Model) {
+//   try {
+//     await mod.destroy({
+//       cascade: true
+//     });
+//   } catch (err) {
+//     // Better stacktrace
+//     console.error(err);
+//     throw err;
+//   }
+// }
+
+function safeCreate(fn: () => Promise<void>): () => Promise<void> {
+  return async () => {
+    try {
+      await fn();
+    } catch (err) {
+      // Better stacktrace
+      console.error(err);
+      throw err;
+    }
+  };
+}
+
+export function createOrgKey() {
+  return new Date().toISOString();
 }

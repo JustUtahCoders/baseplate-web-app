@@ -1,6 +1,5 @@
 import { DefaultModelAttrs } from "../DefaultModelAttrs";
 import { modelEvents } from "../../../InitDB";
-import { UserModel } from "../User/User";
 import { AuthTokenModel } from "../AuthToken/AuthToken";
 import { DeploymentLogModel } from "../DeploymentLog/DeploymentLog";
 import {
@@ -34,17 +33,11 @@ export class DeploymentModel
   extends Model<DeploymentAttributes, DeploymentCreationAttributes>
   implements
     DeploymentAttributes,
-    BelongsToMethods<{
-      user: UserModel;
-      baseplateToken: AuthTokenModel;
-      environment: EnvironmentModel;
-    }>,
     HasManyMethods<{ deploymentLog: DeploymentLogModel }>,
     HasManyMethods<{ deployedMicrofrontend: DeployedMicrofrontendModel }>
 {
   public id!: BaseplateUUID;
-  public userId?: BaseplateUUID;
-  public baseplateTokenId?: BaseplateUUID;
+  public accountId!: BaseplateUUID;
   public cause!: DeploymentCause;
   public status!: DeploymentStatus;
   public environmentId!: BaseplateUUID;
@@ -69,10 +62,6 @@ export class DeploymentModel
 
     return importMap;
   }
-
-  public getUser!: BelongsToGetAssociationMixin<UserModel>;
-  public setUser!: BelongsToSetAssociationMixin<UserModel, number>;
-  public createUser!: BelongsToCreateAssociationMixin<UserModel>;
 
   public getBaseplateToken!: BelongsToGetAssociationMixin<AuthTokenModel>;
   public setBaseplateToken!: BelongsToSetAssociationMixin<
@@ -158,8 +147,7 @@ export class DeploymentModel
 
 export interface DeploymentAttributes extends AuditTargetAttributes {
   id: BaseplateUUID;
-  userId?: BaseplateUUID;
-  baseplateTokenId?: BaseplateUUID;
+  accountId: BaseplateUUID;
   environmentId: BaseplateUUID;
   cause: DeploymentCause;
   status: DeploymentStatus;
@@ -189,20 +177,6 @@ modelEvents.once("init", (sequelize) => {
 });
 
 modelEvents.once("associate", (sequelize) => {
-  DeploymentModel.belongsTo(UserModel, {
-    foreignKey: {
-      name: "userId",
-      allowNull: true,
-    },
-  });
-
-  DeploymentModel.belongsTo(AuthTokenModel, {
-    foreignKey: {
-      name: "baseplateTokenId",
-      allowNull: true,
-    },
-  });
-
   DeploymentModel.hasMany(DeploymentLogModel, {
     foreignKey: "deploymentId",
   });

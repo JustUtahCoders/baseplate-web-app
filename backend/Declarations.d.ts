@@ -1,3 +1,4 @@
+import { BaseplateAccount } from "./Utils/IAMUtils";
 declare global {
   namespace NodeJS {
     interface ProcessEnv {
@@ -7,6 +8,10 @@ declare global {
       CLOUDFLARE_AUTH_KEY: string;
     }
   }
-}
 
-export {};
+  namespace Express {
+    export interface Request {
+      baseplateAccount: BaseplateAccount;
+    }
+  }
+}
