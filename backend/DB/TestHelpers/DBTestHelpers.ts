@@ -30,8 +30,6 @@ export function sampleUser(): () => UserModel {
     })
   );
 
-  // afterEach(() => safeDestroy(user))
-
   return () => user;
 }
 
@@ -76,8 +74,6 @@ export function sampleMicrofrontend(
     });
   });
 
-  // afterEach(() => safeDestroy(microfrontend))
-
   return () => microfrontend;
 }
 
@@ -97,8 +93,6 @@ export function sampleEnvironment(
       });
     })
   );
-
-  // afterEach(() => safeDestroy(environment))
 
   return () => environment;
 }
@@ -147,22 +141,8 @@ export function sampleBaseplateToken(
     })
   );
 
-  // afterEach(() => safeDestroy(baseplateToken))
-
   return () => baseplateToken;
 }
-
-// async function safeDestroy(mod: Model) {
-//   try {
-//     await mod.destroy({
-//       cascade: true
-//     });
-//   } catch (err) {
-//     // Better stacktrace
-//     console.error(err);
-//     throw err;
-//   }
-// }
 
 function safeCreate(fn: () => Promise<void>): () => Promise<void> {
   return async () => {
@@ -177,5 +157,6 @@ function safeCreate(fn: () => Promise<void>): () => Promise<void> {
 }
 
 export function createOrgKey() {
+  // We need something unique, this seems like a way to do that
   return new Date().toISOString();
 }
