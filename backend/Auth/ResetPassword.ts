@@ -1,6 +1,5 @@
 import { router } from "../Router";
 import { body, validationResult } from "express-validator";
-import { findUserByEmail } from "../Users/Users";
 import {
   created,
   invalidRequest,
@@ -11,6 +10,7 @@ import {
   AuthTokenModel,
   AuthTokenType,
 } from "../DB/Models/AuthToken/AuthToken";
+import { UserModel } from "../DB/Models/User/User";
 
 function getResetPasswordBody(baseUrl: string, token: string): string {
   return `<div style="width: 60vw; margin: 4rem auto auto auto; color: #403F3D;">
@@ -40,7 +40,11 @@ router.post(
     }
 
     let userEmail = req.body.email;
-    const user = await findUserByEmail(userEmail);
+    const user = await UserModel.findOne({
+      where: {
+        email: userEmail,
+      },
+    });
 
     if (user) {
       const payload = { userId: user.id, email: userEmail };

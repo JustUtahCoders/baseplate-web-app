@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { Login } from "./Auth/Login";
 import { ResetPassword } from "./Auth/ResetPassword";
 import { ResetPasswordEmailSent } from "./Auth/ResetPasswordEmailSent";
+import { FinishAccountCreation } from "./Auth/FinishAccountCreation";
 
 const queryClient = new QueryClient();
 
@@ -47,7 +48,11 @@ export function App(props: AppProps) {
             path="/reset-password-email-sent"
             component={ResetPasswordEmailSent}
           />
-          <Route path="/" render={() => <div>Home</div>} />
+          <Route
+            path="/finish-account-creation"
+            component={FinishAccountCreation}
+          />
+          <Route path="/" exact render={() => <div>Home</div>} />
         </Router>
         {props.jsFiles.map((jsFile) => (
           <script key={jsFile} src={`${props.assetBase}/${jsFile}`}></script>

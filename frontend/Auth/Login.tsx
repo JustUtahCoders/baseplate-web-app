@@ -45,10 +45,10 @@ export function Login(props: RouterProps) {
     },
     {
       onSuccess: async (data, variables, context) => {
-        history.push("/home");
+        history.push("/app");
       },
       onError: (error, variables, context) => {
-        console.log(error);
+        throw error;
       },
     }
   );
@@ -105,17 +105,10 @@ export function Login(props: RouterProps) {
         <Anchor
           kind={ButtonKind.secondary}
           className="w-full"
-          href="/auth/google"
+          href="/auth/github"
         >
-          Continue with Google
+          Continue with Github
         </Anchor>
-
-        <p className="text-center text-xs text-gray-600 py-8">
-          New to Baseplate?{" "}
-          <Anchor kind={ButtonKind.classic} href="/create-account">
-            Create an account
-          </Anchor>
-        </p>
       </form>
     </div>
   );

@@ -35,7 +35,7 @@ export class UserModel
   public familyName!: string;
   public email!: string;
   public password: string | null;
-  public googleAuthToken: string | null;
+  public githubProfileId: string | null;
 
   public getCustomerOrgs!: BelongsToManyGetAssociationsMixin<CustomerOrgModel>;
   public countCustomerOrgs!: BelongsToManyCountAssociationsMixin;
@@ -128,7 +128,7 @@ export interface UserAttributes {
   familyName: string;
   email: string;
   password: string | null;
-  googleAuthToken: string | null;
+  githubProfileId: string | null;
 }
 
 export type UserCreationAttributes = Omit<UserAttributes, "id">;

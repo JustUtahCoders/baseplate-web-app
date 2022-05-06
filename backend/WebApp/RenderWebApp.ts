@@ -38,6 +38,8 @@ export const renderWebApp = async (req, res: Response) => {
     return res.redirect(routerContext.url);
   }
 
+  res.write("<!DOCTYPE html><html>");
+
   stream.on("error", (err) => {
     console.log("ERROR", err);
     res.end();
@@ -47,8 +49,6 @@ export const renderWebApp = async (req, res: Response) => {
     res.write("</html>");
     res.end();
   });
-
-  res.write("<!DOCTYPE html><html>");
 
   stream.pipe(res, { end: false });
 };

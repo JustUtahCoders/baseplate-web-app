@@ -10,10 +10,12 @@ import cookieSession from "cookie-session";
 import passport from "passport";
 import { Strategy } from "passport-local";
 import { renderWebApp } from "../WebApp/RenderWebApp";
-import { findUser, findOrCreateGoogleUser } from "../Users/Users";
-import { OAuth2Strategy as GoogleStrategy } from "passport-google-oauth";
 import Keygrip from "keygrip";
-import { notLoggedIn } from "../Utils/EndpointResponses";
+import {
+  invalidRequest,
+  notLoggedIn,
+  validationResponseMiddleware,
+} from "../Utils/EndpointResponses";
 import { User, UserModel } from "../DB/Models/User/User";
 import { AuthTokenModel } from "../DB/Models/AuthToken/AuthToken";
 import {
@@ -22,44 +24,84 @@ import {
 } from "../DB/Models/SequelizeTSHelpers";
 import { AccountPermissionModel } from "../DB/Models/IAM/AccountPermission";
 import { PermissionModel } from "../DB/Models/IAM/Permission";
+import { Strategy as GithubStrategy } from "passport-github";
+import { body } from "express-validator";
+import { Op } from "sequelize";
 
-let passportStrategy = new Strategy(async function (email, password, done) {
-  try {
-    let user = await findUser(email, password);
-    if (user) {
-      return done(null, user);
-    } else {
-      return done(null, false);
-    }
-  } catch (error) {
-    return done(error);
-  }
-});
-
-if (process.env.GOOGLE_CLIENT_ID) {
-  passport.use(
-    new GoogleStrategy(
-      {
-        clientID: process.env.GOOGLE_CLIENT_ID,
-        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-        callbackURL:
-          process.env.GOOGLE_CALLBACK_URL ||
-          "http://localhost:7600/auth/google/callback",
-      },
-      async function (accessToken, refreshToken, profile, done) {
-        findOrCreateGoogleUser(profile)
-          .then((user) => {
-            return done(null, user);
-          })
-          .catch((error) => {
-            return done(error);
-          });
+passport.use(
+  new Strategy(async function (email, password, done) {
+    try {
+      const user = await UserModel.findAll({
+        where: {
+          email,
+          password,
+        },
+      });
+      if (user) {
+        return done(null, user);
+      } else {
+        return done(null, false);
       }
-    )
-  );
-}
+    } catch (error) {
+      return done(error);
+    }
+  })
+);
 
-passport.use(passportStrategy);
+passport.use(
+  new GithubStrategy(
+    {
+      clientID: process.env.GITHUB_CLIENT_ID,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET,
+    },
+    async (accessToken, refreshToken, profile, cb) => {
+      const email = profile.emails?.values[0];
+      const names = profile.displayName.split(" ");
+      const givenName = names[0] ?? "";
+      const familyName = names[1] ?? "";
+
+      let user = await UserModel.findOne({
+        where: {
+          [Op.or]: [
+            {
+              githubProfileId: String(profile.id),
+            },
+            email && {
+              email,
+            },
+          ].filter(Boolean),
+        },
+      });
+
+      if (user && !user.githubProfileId) {
+        await user.update({
+          githubProfileId: profile.id,
+        });
+      }
+
+      if (!user && email && familyName && givenName) {
+        user = await UserModel.create({
+          email,
+          familyName,
+          givenName,
+          githubProfileId: profile.id,
+          password: null,
+        });
+      }
+
+      if (user) {
+        cb(null, user);
+      } else {
+        cb(null, {
+          finishAccountCreation: true,
+          frontendQuery: `githubAccessToken=${accessToken}&email=${
+            email ?? ""
+          }&givenName=${givenName ?? ""}&familyName=${familyName ?? ""}`,
+        });
+      }
+    }
+  )
+);
 
 router.use(
   cookieSession({
@@ -79,18 +121,58 @@ router.post("/login", passport.authenticate("local"), (req, res, next) => {
 
 router.get("/login", renderWebApp);
 
+router.get("/auth/github", passport.authenticate("github"));
 router.get(
-  "/auth/google",
-  passport.authenticate("google", {
-    scope: ["https://www.googleapis.com/auth/plus.login", "email"],
-  })
+  "/auth/github/callback",
+  passport.authenticate("github", { failureRedirect: "/login" }),
+  async (req, res) => {
+    const user = req?.session?.passport?.user;
+    if (!user) {
+      res.redirect("/login");
+    } else if (user.finishAccountCreation) {
+      res.redirect(`/finish-account-creation?${user.frontendQuery}`);
+    } else {
+      res.redirect("/app");
+    }
+  }
 );
 
-router.get(
-  "/auth/google/callback",
-  passport.authenticate("google", { failureRedirect: "/login" }),
-  function (req, res) {
-    res.redirect("/");
+router.post(
+  "/auth/github/finish-account-creation",
+  body("githubAccessToken").isString(),
+  body("email").isEmail(),
+  body("givenName").isString(),
+  body("familyName").isString(),
+  validationResponseMiddleware,
+  async (req, res) => {
+    const githubApiResponse = await fetch(`https://api.github.com/user`, {
+      headers: {
+        Authorization: `token ${req.body.githubAccessToken}`,
+      },
+    });
+
+    if (!githubApiResponse.ok) {
+      return invalidRequest(res, `Invalid github token`);
+    }
+
+    const githubUser = await githubApiResponse.json();
+
+    await UserModel.findOrCreate({
+      where: {
+        githubProfileId: String(githubUser.id),
+      },
+      defaults: {
+        email: req.body.email,
+        familyName: req.body.familyName,
+        givenName: req.body.givenName,
+        githubProfileId: githubUser.id,
+        password: null,
+      },
+    });
+
+    res.json({
+      success: true,
+    });
   }
 );
 
@@ -172,7 +254,7 @@ router.use("/", async (req, res, next) => {
   // At this point, we know they're not logged in
   if (req.url.startsWith("/api/")) {
     return notLoggedIn(res, `Authentication required to access baseplate api`);
-  } else if (req.url.startsWith("/app/")) {
+  } else if (req.url.startsWith("/app")) {
     return res.status(302).redirect("/login");
   } else {
     next();

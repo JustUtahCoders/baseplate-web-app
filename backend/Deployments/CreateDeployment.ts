@@ -1,4 +1,4 @@
-import { body } from "express-validator";
+import { body, param } from "express-validator";
 import { CustomerOrgModel } from "../DB/Models/CustomerOrg/CustomerOrg";
 import {
   DeployedMicrofrontendCreationAttributes,
@@ -30,6 +30,7 @@ router.post<Record<string, any>, DeploymentAttributes, RequestBody>(
   "/api/orgs/:customerOrgId/deployments",
 
   // Request validation
+  param("customerOrgId").isUUID(),
   body("baseplateToken").isString().optional(),
   body("environmentId").isUUID(),
   body("cause").isIn(Object.values(DeploymentCause)),
