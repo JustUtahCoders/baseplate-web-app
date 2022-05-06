@@ -36,6 +36,10 @@ const schema = {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  dateRevoked: {
+    type: DataTypes.DATE,
+    allowNull: true,
+  },
   createdAt: {
     type: DataTypes.DATE,
     allowNull: false,

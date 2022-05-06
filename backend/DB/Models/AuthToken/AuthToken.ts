@@ -23,6 +23,7 @@ export class AuthTokenModel
   public userId?: BaseplateUUID;
   public customerOrgId?: BaseplateUUID;
   public authTokenType!: AuthTokenType;
+  public dateRevoked?: Date;
 
   public getUser!: BelongsToGetAssociationMixin<UserModel>;
   public setUser!: BelongsToSetAssociationMixin<UserModel, number>;
@@ -44,6 +45,7 @@ export interface AuthTokenAttributes {
   userId?: BaseplateUUID;
   customerOrgId?: BaseplateUUID;
   authTokenType: AuthTokenType;
+  dateRevoked?: Date;
 }
 
 export enum AuthTokenType {

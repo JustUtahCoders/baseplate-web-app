@@ -113,7 +113,6 @@ router.use("/", async (req, res, next) => {
       | undefined;
 
   if (accountId) {
-    console.log("Getting account permissions");
     // Start db query for account permissions, but do not await it here so that
     // we can also concurrently look up the user / authtoken
     accountPermissionsPromise = AccountPermissionModel.findAll({
@@ -145,6 +144,12 @@ router.use("/", async (req, res, next) => {
   } else if (baseplateToken) {
     const maybeAuthToken = await AuthTokenModel.findByPk(baseplateToken);
     if (maybeAuthToken) {
+      if (
+        maybeAuthToken.dateRevoked &&
+        new Date() < maybeAuthToken.dateRevoked
+      ) {
+        return notLoggedIn(res, `Baseplate token is expired`);
+      }
       serviceAccount = maybeAuthToken;
       isLoggedIn = true;
     } else {
