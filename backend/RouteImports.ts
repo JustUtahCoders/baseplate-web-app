@@ -9,5 +9,8 @@ import "./Deployments/CreateDeployment";
 // The default API Handler responds with a 404
 import "./ApiNotFound";
 
+// Seed debugger
+import "./Utils/GetSeedUUIDs";
+
 // WebApp should be at the bottom, as it's the default route
 import "./WebApp/WebApp";

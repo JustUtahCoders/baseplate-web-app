@@ -127,6 +127,29 @@ module.exports = {
       );
 
     await queryInterface.bulkInsert("AccountPermissions", allAccountPerms);
+
+    const [baseplateApiToken] = await queryInterface.bulkInsert(
+      "AuthTokens",
+      [
+        {
+          userId: sampleUserId,
+          customerOrgId: sampleCustomerOrgId,
+          authTokenType: "baseplateApiToken",
+        },
+      ],
+      {
+        returning: true,
+      }
+    );
+
+    const tokenPermissions = orgOwnerPerms.map((p) => ({
+      customerOrgId: sampleCustomerOrgId,
+      accountId: baseplateApiToken.id,
+      permissionId: p.permissionId,
+      auditAccountId: baseplateWebAppToken,
+    }));
+
+    await queryInterface.bulkInsert("AccountPermissions", allAccountPerms);
   },
 
   async down(queryInterface, Sequelize) {

@@ -31,6 +31,7 @@ describe("DeploymentModel", () => {
       deployment = await DeploymentModel.create({
         cause: DeploymentCause.baseplateWebApp,
         status: DeploymentStatus.success,
+        accountId: getUser().id,
         auditAccountId: getUser().id,
         environmentId: getEnvironment().id,
       });
@@ -57,6 +58,7 @@ describe("DeploymentModel", () => {
       deployment = await DeploymentModel.create({
         cause: DeploymentCause.baseplateWebApp,
         status: DeploymentStatus.success,
+        accountId: getUser().id,
         auditAccountId: getUser().id,
         environmentId: getEnvironment().id,
       });

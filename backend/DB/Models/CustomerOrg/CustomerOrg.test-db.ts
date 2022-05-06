@@ -1,4 +1,8 @@
-import { dbHelpers, sampleUser } from "../../TestHelpers/DBTestHelpers";
+import {
+  createOrgKey,
+  dbHelpers,
+  sampleUser,
+} from "../../TestHelpers/DBTestHelpers";
 import { CustomerOrgModel } from "./CustomerOrg";
 
 describe("CustomerOrgModel", () => {
@@ -14,11 +18,12 @@ describe("CustomerOrgModel", () => {
 
   it(`can create and retrieve customerOrgs`, async () => {
     const user = getUser();
+    const orgKey = createOrgKey();
 
     customerOrg = await CustomerOrgModel.create({
       accountEnabled: true,
       name: "Coheed and Cambria",
-      orgKey: "theheed",
+      orgKey,
       billingUserId: user.id,
       auditAccountId: user.id,
     });
@@ -34,15 +39,17 @@ describe("CustomerOrgModel", () => {
 
     expect(customerOrg).toBeTruthy();
     expect(customerOrg.name).toBe("Coheed and Cambria");
-    expect(customerOrg.orgKey).toBe("theheed");
+    expect(customerOrg.orgKey).toBe(orgKey);
     expect(customerOrg.accountEnabled).toBe(true);
   });
 
   it(`can retrieve the associated user`, async () => {
+    const orgKey = createOrgKey();
+
     customerOrg = await CustomerOrgModel.create({
       accountEnabled: true,
       name: "Coheed and Cambria",
-      orgKey: "theheed",
+      orgKey,
       billingUserId: getUser().id,
       auditAccountId: getUser().id,
     });

@@ -36,11 +36,10 @@ describe(`POST /api/deployments`, () => {
     });
 
     const response = await request(app)
-      .post("/api/deployments")
+      .post(`/api/orgs/${getCustomerOrg().id}/deployments`)
       .send({
         baseplateToken: getBaseplateToken().id,
         environmentId: getEnvironment().id,
-        customerOrgId: getCustomerOrg().id,
         cause: "manualAPICall",
         changedMicrofrontends: [
           {

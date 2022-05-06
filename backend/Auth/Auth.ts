@@ -8,18 +8,20 @@ This is where we will authenticate users.
 import { router } from "../Router";
 import cookieSession from "cookie-session";
 import passport from "passport";
-import util from "util";
 import { Strategy } from "passport-local";
 import { renderWebApp } from "../WebApp/RenderWebApp";
-import {
-  findOrCreateLocalUser,
-  findUser,
-  findOrCreateGoogleUser,
-} from "../Users/Users";
+import { findUser, findOrCreateGoogleUser } from "../Users/Users";
 import { OAuth2Strategy as GoogleStrategy } from "passport-google-oauth";
 import Keygrip from "keygrip";
-import { serverApiError } from "../Utils/EndpointResponses";
-import { User } from "../DB/Models/User/User";
+import { notLoggedIn } from "../Utils/EndpointResponses";
+import { User, UserModel } from "../DB/Models/User/User";
+import { AuthTokenModel } from "../DB/Models/AuthToken/AuthToken";
+import {
+  BaseplateUUID,
+  ModelWithIncludes,
+} from "../DB/Models/SequelizeTSHelpers";
+import { AccountPermissionModel } from "../DB/Models/IAM/AccountPermission";
+import { PermissionModel } from "../DB/Models/IAM/Permission";
 
 let passportStrategy = new Strategy(async function (email, password, done) {
   try {
@@ -93,27 +95,87 @@ router.get(
 );
 
 router.use("/", async (req, res, next) => {
-  if (req?.session?.passport?.user?.id) {
-    return next();
-  } else if (process.env.IS_RUNNING_LOCALLY) {
-    const localUser = await findOrCreateLocalUser();
-    try {
-      const login = util.promisify(req.login).bind(req);
-      await login(localUser);
-      next();
-    } catch (err) {
-      console.error(err);
-      serverApiError(res, "Server error during login");
-    }
-  } else if (req.url && req.url.includes("/api")) {
-    const baseplateToken = req.body.baseplateToken || req.query.baseplateToken;
-    if (baseplateToken) {
-      next();
+  const userId = req?.session?.passport?.user?.id;
+  const isUsingCookie = Boolean(userId);
+  const baseplateToken = req.body.baseplateToken || req.query.baseplateToken;
+
+  let accountId: BaseplateUUID | undefined = userId || baseplateToken,
+    user: UserModel | undefined,
+    serviceAccount: AuthTokenModel | undefined,
+    isLoggedIn: boolean = false,
+    accountPermissionsPromise:
+      | Promise<
+          ModelWithIncludes<
+            AccountPermissionModel,
+            { permission: PermissionModel }
+          >[]
+        >
+      | undefined;
+
+  if (accountId) {
+    // Start db query for account permissions, but do not await it here so that
+    // we can also concurrently look up the user / authtoken
+    accountPermissionsPromise = AccountPermissionModel.findAll({
+      where: {
+        accountId,
+        dateRevoked: null,
+      },
+      include: {
+        model: PermissionModel,
+        as: "permission",
+      },
+    }) as Promise<
+      ModelWithIncludes<
+        AccountPermissionModel,
+        { permission: PermissionModel }
+      >[]
+    >;
+  }
+
+  if (isUsingCookie) {
+    const maybeUser = await UserModel.findByPk(userId);
+
+    if (maybeUser) {
+      user = maybeUser;
+      isLoggedIn = true;
     } else {
-      res.status(401).json({ message: "Unauthorized" });
+      return notLoggedIn(res, `Invalid auth cookie`);
     }
+  } else if (baseplateToken) {
+    const maybeAuthToken = await AuthTokenModel.findByPk(baseplateToken);
+    if (maybeAuthToken) {
+      if (
+        maybeAuthToken.dateRevoked &&
+        new Date() > maybeAuthToken.dateRevoked
+      ) {
+        return notLoggedIn(res, `Baseplate token is expired`);
+      }
+      serviceAccount = maybeAuthToken;
+      isLoggedIn = true;
+    } else {
+      return notLoggedIn(res, `Invalid baseplate token`);
+    }
+  }
+
+  if (isLoggedIn) {
+    req.baseplateAccount = {
+      accountId: accountId!,
+      isServiceAccount: !isUsingCookie,
+      isUser: isUsingCookie,
+      serviceAccount,
+      user,
+      accountPermissions: await accountPermissionsPromise!,
+    };
+    return next();
+  }
+
+  // At this point, we know they're not logged in
+  if (req.url.startsWith("/api/")) {
+    return notLoggedIn(res, `Authentication required to access baseplate api`);
+  } else if (req.url.startsWith("/app/")) {
+    return res.status(302).redirect("/login");
   } else {
-    res.status(302).redirect("/login");
+    next();
   }
 });
 

@@ -2,6 +2,7 @@
 const config = {
   testEnvironment: "jsdom",
   extensionsToTreatAsEsm: [".ts", ".tsx"],
+  testPathIgnorePatterns: ["<rootDir>/backend"],
   transform: {
     "\\.[jt]sx?$": "babel-jest",
   },

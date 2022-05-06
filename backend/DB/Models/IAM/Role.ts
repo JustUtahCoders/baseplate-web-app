@@ -1,15 +1,15 @@
 import {
   Model,
-  HasManyAddAssociationMixin,
-  HasManyGetAssociationsMixin,
-  HasManyCountAssociationsMixin,
-  HasManyHasAssociationMixin,
-  HasManyHasAssociationsMixin,
-  HasManySetAssociationsMixin,
-  HasManyAddAssociationsMixin,
-  HasManyRemoveAssociationMixin,
-  HasManyRemoveAssociationsMixin,
-  HasManyCreateAssociationMixin,
+  BelongsToManyAddAssociationMixin,
+  BelongsToManyGetAssociationsMixin,
+  BelongsToManyCountAssociationsMixin,
+  BelongsToManyHasAssociationMixin,
+  BelongsToManyHasAssociationsMixin,
+  BelongsToManySetAssociationsMixin,
+  BelongsToManyAddAssociationsMixin,
+  BelongsToManyRemoveAssociationMixin,
+  BelongsToManyRemoveAssociationsMixin,
+  BelongsToManyCreateAssociationMixin,
 } from "sequelize";
 import { modelEvents } from "../../../InitDB";
 import {
@@ -38,22 +38,37 @@ export class RoleModel
   public auditAccountId!: string;
   public customerOrgId?: BaseplateUUID;
 
-  public getPermissions!: HasManyGetAssociationsMixin<PermissionModel>;
-  public countPermissions!: HasManyCountAssociationsMixin;
-  public hasPermission!: HasManyHasAssociationMixin<PermissionModel, number>;
-  public hasPermissions!: HasManyHasAssociationsMixin<PermissionModel, number>;
-  public setPermissions!: HasManySetAssociationsMixin<PermissionModel, number>;
-  public addPermission!: HasManyAddAssociationMixin<PermissionModel, number>;
-  public addPermissions!: HasManyAddAssociationsMixin<PermissionModel, number>;
-  public removePermission!: HasManyRemoveAssociationMixin<
+  public getPermissions!: BelongsToManyGetAssociationsMixin<PermissionModel>;
+  public countPermissions!: BelongsToManyCountAssociationsMixin;
+  public hasPermission!: BelongsToManyHasAssociationMixin<
     PermissionModel,
     number
   >;
-  public removePermissions!: HasManyRemoveAssociationsMixin<
+  public hasPermissions!: BelongsToManyHasAssociationsMixin<
     PermissionModel,
     number
   >;
-  public createPermission!: HasManyCreateAssociationMixin<PermissionModel>;
+  public setPermissions!: BelongsToManySetAssociationsMixin<
+    PermissionModel,
+    number
+  >;
+  public addPermission!: BelongsToManyAddAssociationMixin<
+    PermissionModel,
+    number
+  >;
+  public addPermissions!: BelongsToManyAddAssociationsMixin<
+    PermissionModel,
+    number
+  >;
+  public removePermission!: BelongsToManyRemoveAssociationMixin<
+    PermissionModel,
+    number
+  >;
+  public removePermissions!: BelongsToManyRemoveAssociationsMixin<
+    PermissionModel,
+    number
+  >;
+  public createPermission!: BelongsToManyCreateAssociationMixin<PermissionModel>;
 
   public readonly createdAt!: Date;
   public readonly updatedAt: Date;
@@ -87,8 +102,9 @@ modelEvents.once("init", (sequelize) => {
 });
 
 modelEvents.once("associate", (sequelize) => {
-  RoleModel.hasMany(PermissionModel, {
-    as: "permission",
+  RoleModel.belongsToMany(PermissionModel, {
+    through: "RolePermissions",
+    as: "permissions",
     foreignKey: "roleId",
   });
 });

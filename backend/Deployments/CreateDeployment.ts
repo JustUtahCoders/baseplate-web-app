@@ -1,4 +1,4 @@
-import { body, validationResult } from "express-validator";
+import { body } from "express-validator";
 import { CustomerOrgModel } from "../DB/Models/CustomerOrg/CustomerOrg";
 import {
   DeployedMicrofrontendCreationAttributes,
@@ -11,78 +11,79 @@ import {
   DeploymentStatus,
 } from "../DB/Models/Deployment/Deployment";
 import { EnvironmentModel } from "../DB/Models/Environment/Environment";
-import {
-  AuthTokenModel,
-  AuthTokenType,
-} from "../DB/Models/AuthToken/AuthToken";
 import { MicrofrontendModel } from "../DB/Models/Microfrontend/Microfrontend";
 import { router } from "../Router";
-import { invalidRequest, serverApiError } from "../Utils/EndpointResponses";
+import {
+  invalidRequest,
+  serverApiError,
+  validationResponseMiddleware,
+} from "../Utils/EndpointResponses";
 import { writeCloudflareKV } from "./CloudflareKV";
 import { BaseplateUUID } from "../DB/Models/SequelizeTSHelpers";
+import {
+  checkPermissionsMiddleware,
+  PermissionOperator,
+} from "../Utils/IAMUtils";
+import { BaseplatePermission } from "../DB/Models/IAM/Permission";
 
 router.post<Record<string, any>, DeploymentAttributes, RequestBody>(
-  "/api/deployments",
+  "/api/orgs/:customerOrgId/deployments",
 
+  // Request validation
   body("baseplateToken").isString().optional(),
   body("environmentId").isUUID(),
-  body("customerOrgId").isUUID(),
   body("cause").isIn(Object.values(DeploymentCause)),
   body("changedMicrofrontends").isArray(),
   body("changedMicrofrontends.*.microfrontendId").isUUID(),
   body("changedMicrofrontends.*.entryUrl").isString(),
   body("changedMicrofrontends.*.trailingSlashUrl").isString().optional(),
+  validationResponseMiddleware,
 
+  // Permissions
+  (req, res, next) => {
+    checkPermissionsMiddleware(req, res, next, {
+      operator: PermissionOperator.or,
+      permissionList: [
+        { permission: BaseplatePermission.DeployAllMicrofrontends },
+        {
+          operator: PermissionOperator.and,
+          permissionList: req.body.changedMicrofrontends.map(
+            (changedMicrofrontend) => ({
+              permission: BaseplatePermission.DeployOneMicrofrontend,
+              entityId: changedMicrofrontend.microfrontendId,
+            })
+          ),
+        },
+      ],
+    });
+  },
+
+  // Implementation
   async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return invalidRequest(res, errors);
-    }
+    const { customerOrgId } = req.params;
+    const { accountId } = req.baseplateAccount;
 
-    // TODO - get the user id from session
-    let userId;
-    const { customerOrgId } = req.body;
-
-    // TODO - verify user access to customer org and deployments
     const customerOrg = await CustomerOrgModel.findByPk(customerOrgId);
 
     if (!customerOrg) {
       return invalidRequest(res, `No such customer org '${customerOrgId}'`);
     }
 
-    let baseplateTokenId: BaseplateUUID | undefined;
-
-    if (req.body.baseplateToken) {
-      const token = await AuthTokenModel.findOne({
-        where: {
-          authTokenType: AuthTokenType.baseplateApiToken,
-          id: req.body.baseplateToken,
-          // TODO uncomment to ensure the token is from this user
-          // userId,
-        },
-      });
-
-      if (token) {
-        baseplateTokenId = token.id;
-        userId = token.userId;
-      } else {
-        return invalidRequest(res, `Invalid baseplate token`);
-      }
-    }
-
     const environment = await EnvironmentModel.findByPk(req.body.environmentId);
 
     if (!environment) {
-      return invalidRequest(res, `Invalid environment`);
+      return invalidRequest(
+        res,
+        `Invalid environment '${req.body.environmentId}'`
+      );
     }
 
     const deployment = await DeploymentModel.create({
-      auditAccountId: userId,
-      baseplateTokenId,
+      accountId,
+      auditAccountId: accountId,
       cause: req.body.cause,
       environmentId: req.body.environmentId,
       status: DeploymentStatus.pending,
-      userId,
     });
 
     const allMicrofrontends = await MicrofrontendModel.findAll({
@@ -131,7 +132,7 @@ router.post<Record<string, any>, DeploymentAttributes, RequestBody>(
                   entryUrl: lastDeployment.entryUrl,
                   trailingSlashUrl: lastDeployment.trailingSlashUrl,
                   deploymentChangedMicrofrontend: false,
-                  auditAccountId: userId,
+                  auditAccountId: accountId,
                 };
               }
             }
@@ -154,7 +155,7 @@ router.post<Record<string, any>, DeploymentAttributes, RequestBody>(
 
         // TODO - confirm entryUrl is publicly reachable
         return {
-          auditAccountId: userId,
+          auditAccountId: accountId,
           bareImportSpecifier,
           deploymentChangedMicrofrontend: true,
           deploymentId: deployment.id,

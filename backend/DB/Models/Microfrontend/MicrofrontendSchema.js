@@ -37,12 +37,6 @@ const schema = {
   auditAccountId: {
     type: DataTypes.UUID,
     allowNull: false,
-    references: {
-      model: "Users",
-      key: "id",
-    },
-    onUpdate: "cascade",
-    onDelete: "cascade",
   },
   createdAt: {
     type: DataTypes.DATE,
