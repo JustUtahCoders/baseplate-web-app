@@ -146,7 +146,7 @@ router.use("/", async (req, res, next) => {
     if (maybeAuthToken) {
       if (
         maybeAuthToken.dateRevoked &&
-        new Date() < maybeAuthToken.dateRevoked
+        new Date() > maybeAuthToken.dateRevoked
       ) {
         return notLoggedIn(res, `Baseplate token is expired`);
       }
