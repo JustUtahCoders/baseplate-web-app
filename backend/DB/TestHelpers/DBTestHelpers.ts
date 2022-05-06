@@ -52,8 +52,6 @@ export function sampleCustomerOrg(
     })
   );
 
-  // afterEach(() => safeDestroy(customerOrg))
-
   return () => customerOrg;
 }
 
@@ -105,7 +103,6 @@ export function sampleBaseplateToken(
 
   beforeEach(
     safeCreate(async () => {
-      console.log("user", getUser().id, "customerOrg", getCustomerOrg().id);
       await AuthTokenModel.truncate({
         cascade: true,
       });
