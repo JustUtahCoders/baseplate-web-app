@@ -18,6 +18,8 @@ if (!["db-tests"].includes(process.env.NODE_ENV || "production")) {
     "CLOUDFLARE_NAMESPACE_ID",
     "CLOUDFLARE_AUTH_EMAIL",
     "CLOUDFLARE_AUTH_KEY",
+    "GITHUB_CLIENT_ID",
+    "GITHUB_CLIENT_SECRET",
   ];
 
   requiredEnvVars.forEach((envVarName) => {

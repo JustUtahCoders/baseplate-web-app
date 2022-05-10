@@ -28,7 +28,7 @@ const schema = {
     type: DataTypes.STRING,
     allowNull: true,
   },
-  googleAuthToken: {
+  githubProfileId: {
     type: DataTypes.STRING,
     allowNull: true,
   },
