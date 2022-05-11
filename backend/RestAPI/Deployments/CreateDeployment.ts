@@ -1,30 +1,30 @@
 import { body, param } from "express-validator";
-import { CustomerOrgModel } from "../DB/Models/CustomerOrg/CustomerOrg";
+import { CustomerOrgModel } from "../../DB/Models/CustomerOrg/CustomerOrg";
 import {
   DeployedMicrofrontendCreationAttributes,
   DeployedMicrofrontendModel,
-} from "../DB/Models/DeployedMicrofrontend/DeployedMicrofrontend";
+} from "../../DB/Models/DeployedMicrofrontend/DeployedMicrofrontend";
 import {
   DeploymentAttributes,
   DeploymentCause,
   DeploymentModel,
   DeploymentStatus,
-} from "../DB/Models/Deployment/Deployment";
-import { EnvironmentModel } from "../DB/Models/Environment/Environment";
-import { MicrofrontendModel } from "../DB/Models/Microfrontend/Microfrontend";
-import { router } from "../Router";
+} from "../../DB/Models/Deployment/Deployment";
+import { EnvironmentModel } from "../../DB/Models/Environment/Environment";
+import { MicrofrontendModel } from "../../DB/Models/Microfrontend/Microfrontend";
+import { router } from "../../Router";
 import {
   invalidRequest,
   serverApiError,
   validationResponseMiddleware,
-} from "../Utils/EndpointResponses";
+} from "../../Utils/EndpointResponses";
 import { writeCloudflareKV } from "./CloudflareKV";
-import { BaseplateUUID } from "../DB/Models/SequelizeTSHelpers";
+import { BaseplateUUID } from "../../DB/Models/SequelizeTSHelpers";
 import {
   checkPermissionsMiddleware,
   PermissionOperator,
-} from "../Utils/IAMUtils";
-import { BaseplatePermission } from "../DB/Models/IAM/Permission";
+} from "../../Utils/IAMUtils";
+import { BaseplatePermission } from "../../DB/Models/IAM/Permission";
 
 router.post<Record<string, any>, DeploymentAttributes, RequestBody>(
   "/api/orgs/:customerOrgId/deployments",

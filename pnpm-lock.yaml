@@ -7,7 +7,7 @@ specifiers:
   '@babel/preset-env': ^7.16.11
   '@babel/preset-react': ^7.16.7
   '@babel/preset-typescript': ^7.16.7
-  '@baseplate-sdk/utils': ^2.0.0
+  '@baseplate-sdk/utils': ^3.0.0
   '@changesets/changelog-github': ^0.4.3
   '@changesets/cli': ^2.21.1
   '@jest/globals': ^28.0.0
@@ -97,7 +97,7 @@ specifiers:
   webpack-manifest-plugin: ^5.0.0
 
 dependencies:
-  '@baseplate-sdk/utils': 2.0.0
+  '@baseplate-sdk/utils': 3.0.0
   '@reach/tooltip': 0.16.2_sfoxds7t5ydpegc3knd667wn6m
   '@reach/utils': 0.16.0_sfoxds7t5ydpegc3knd667wn6m
   '@reach/visually-hidden': 0.16.0_sfoxds7t5ydpegc3knd667wn6m
@@ -1695,8 +1695,8 @@ packages:
       to-fast-properties: 2.0.0
     dev: true
 
-  /@baseplate-sdk/utils/2.0.0:
-    resolution: {integrity: sha512-pw7XU7jmGOwNvwL8kxKgA7WFY56by05f7Hc9Hkr/mY2oMFV0c4T9rKb42pmr8ffqcJDNWY/MQD54oNP7dB4Bfw==}
+  /@baseplate-sdk/utils/3.0.0:
+    resolution: {integrity: sha512-vUMB7dfZw7ZimD4KEsvFjSlBoGfbyYdQ5k73RAXU8X3jgxRXolGGGBvgSRYkIpLgVF74Id4LCbGsa0kpft8MBQ==}
     dependencies:
       lodash-es: 4.17.21
     dev: false
