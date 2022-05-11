@@ -103,7 +103,7 @@
     "webpack-manifest-plugin": "^5.0.0"
   },
   "dependencies": {
-    "@baseplate-sdk/utils": "^2.0.0",
+    "@baseplate-sdk/utils": "^3.0.0",
     "@reach/tooltip": "^0.16.2",
     "@reach/utils": "^0.16.0",
     "@reach/visually-hidden": "^0.16.0",

@@ -149,7 +149,7 @@ module.exports = {
       auditAccountId: baseplateWebAppToken,
     }));
 
-    await queryInterface.bulkInsert("AccountPermissions", allAccountPerms);
+    await queryInterface.bulkInsert("AccountPermissions", tokenPermissions);
   },
 
   async down(queryInterface, Sequelize) {

@@ -1,5 +1,5 @@
 import request from "supertest";
-import { DeploymentModel } from "../DB/Models/Deployment/Deployment";
+import { DeploymentModel } from "../../DB/Models/Deployment/Deployment";
 import {
   dbHelpers,
   sampleBaseplateToken,
@@ -7,8 +7,8 @@ import {
   sampleEnvironment,
   sampleMicrofrontend,
   sampleUser,
-} from "../DB/TestHelpers/DBTestHelpers";
-import { app } from "../Server";
+} from "../../DB/TestHelpers/DBTestHelpers";
+import { app } from "../../Server";
 
 const mockFetch = fetch as jest.Mock;
 
