@@ -35,6 +35,8 @@ export const sequelize = new Sequelize(
 
 export const modelEvents = new EventEmitter();
 
+modelEvents.setMaxListeners(50);
+
 export const dbReady = new Promise<void>((resolve, reject) => {
   let timeoutId;
   const intervalId = setInterval(() => {

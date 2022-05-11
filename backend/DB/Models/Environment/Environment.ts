@@ -13,7 +13,6 @@ import {
   AuditTargetAttributes,
   initAuditModel,
 } from "../Audit/Audit";
-import { UserModel } from "../User/User";
 
 const { Model } = S;
 
@@ -28,6 +27,8 @@ export class EnvironmentModel
   public customerOrgId!: BaseplateUUID;
   public name!: string;
   public isProd!: boolean;
+  public useBaseplateStaticWebHosting!: boolean;
+  public staticWebProxyHost?: string;
 
   public auditAccountId!: BaseplateUUID;
 
@@ -47,6 +48,8 @@ export interface EnvironmentAttributes extends AuditTargetAttributes {
   customerOrgId: BaseplateUUID;
   name: BaseplateUUID;
   isProd: boolean;
+  useBaseplateStaticWebHosting: boolean;
+  staticWebProxyHost?: string;
 }
 
 export type EnvironmentCreationAttributes = Omit<EnvironmentAttributes, "id">;

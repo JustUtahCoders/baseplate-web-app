@@ -7,6 +7,7 @@ import {
   BelongsToManyMethods,
   HasManyMethods,
   BaseplateUUID,
+  HasOneMethods,
 } from "../SequelizeTSHelpers";
 import S, {
   BelongsToGetAssociationMixin,
@@ -32,6 +33,9 @@ import S, {
   HasManyRemoveAssociationMixin,
   HasManyRemoveAssociationsMixin,
   HasManyCreateAssociationMixin,
+  HasOneCreateAssociationMixin,
+  HasOneSetAssociationMixin,
+  HasOneGetAssociationMixin,
 } from "sequelize";
 import { initialSchema } from "./CustomerOrgSchema";
 import {
@@ -39,6 +43,7 @@ import {
   AuditTargetAttributes,
   initAuditModel,
 } from "../Audit/Audit";
+import { StaticWebSettingsModel } from "./StaticWebSettings";
 
 const { Model } = S;
 
@@ -48,7 +53,8 @@ export class CustomerOrgModel
     CustomerOrgAttributes,
     BelongsToMethods<{ billingUser: UserModel }>,
     BelongsToManyMethods<{ user: UserModel }>,
-    HasManyMethods<{ environment: EnvironmentModel }>
+    HasManyMethods<{ environment: EnvironmentModel }>,
+    HasOneMethods<{ staticWebSettings: StaticWebSettingsModel }>
 {
   public id!: BaseplateUUID;
   public name!: string;
@@ -98,6 +104,13 @@ export class CustomerOrgModel
   >;
   public createEnvironment!: HasManyCreateAssociationMixin<EnvironmentModel>;
 
+  public getStaticWebSettings: HasOneGetAssociationMixin<StaticWebSettingsModel>;
+  public setStaticWebSettings: HasOneSetAssociationMixin<
+    StaticWebSettingsModel,
+    number
+  >;
+  public createStaticWebSettings: HasOneCreateAssociationMixin<StaticWebSettingsModel>;
+
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 }
@@ -144,5 +157,10 @@ modelEvents.once("associate", (sequelize) => {
 
   CustomerOrgModel.hasMany(EnvironmentModel, {
     foreignKey: "customerOrgId",
+  });
+
+  CustomerOrgModel.hasOne(StaticWebSettingsModel, {
+    foreignKey: "customerOrgId",
+    as: "staticWebSettings",
   });
 });

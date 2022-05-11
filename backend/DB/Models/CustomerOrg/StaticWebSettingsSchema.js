@@ -3,7 +3,7 @@ import S from "sequelize";
 const { DataTypes } = S;
 
 /**
- * @type {import('sequelize').ModelAttributes<import('./Environment').EnvironmentModel, import('./Environment').EnvironmentAttributes>}
+ * @type {import('sequelize').ModelAttributes<import('./StaticWebSettings').StaticWebSettingsModel, import('./StaticWebSettings').StaticWebSettingsAttributes>}
  */
 const schema = {
   id: {
@@ -14,29 +14,45 @@ const schema = {
   },
   customerOrgId: {
     type: DataTypes.UUID,
+    allowNull: false,
     references: {
       model: "CustomerOrgs",
       key: "id",
     },
-    allowNull: false,
-    onDelete: "cascade",
     onUpdate: "cascade",
+    onDelete: "cascade",
   },
-  name: {
+  defaultCacheControl: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
-  isProd: {
-    type: DataTypes.BOOLEAN,
-    allowNull: false,
-  },
-  useBaseplateStaticWebHosting: {
-    type: DataTypes.BOOLEAN,
-    allowNull: false,
-  },
-  staticWebProxyHost: {
+  importMapCacheControl: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
+  },
+  corsAllowOrigins: {
+    type: DataTypes.JSONB,
+    allowNull: true,
+  },
+  corsExposeHeaders: {
+    type: DataTypes.JSONB,
+    allowNull: true,
+  },
+  corsMaxAge: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+  },
+  corsAllowCredentials: {
+    type: DataTypes.BOOLEAN,
+    allowNull: true,
+  },
+  corsAllowMethods: {
+    type: DataTypes.JSONB,
+    allowNull: true,
+  },
+  corsAllowHeaders: {
+    type: DataTypes.JSONB,
+    allowNull: true,
   },
   auditAccountId: {
     type: DataTypes.UUID,
