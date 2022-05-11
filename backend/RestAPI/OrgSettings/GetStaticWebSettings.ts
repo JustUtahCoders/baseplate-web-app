@@ -2,7 +2,10 @@ import { BaseplateUUID } from "../../DB/Models/SequelizeTSHelpers";
 import { router } from "../../Router";
 import { OrgSettings, StaticFileProxySettings } from "@baseplate-sdk/utils";
 import { param } from "express-validator";
-import { validationResponseMiddleware } from "../../Utils/EndpointResponses";
+import {
+  serverApiError,
+  validationResponseMiddleware,
+} from "../../Utils/EndpointResponses";
 import { checkPermissionsMiddleware } from "../../Utils/IAMUtils";
 import { BaseplatePermission } from "../../DB/Models/IAM/Permission";
 import { EnvironmentModel } from "../../DB/Models/Environment/Environment";
@@ -39,6 +42,13 @@ router.get<RouteParams, ResBody>(
       }),
     ]);
 
+    if (!staticWebSettings) {
+      return serverApiError(
+        res,
+        `Unable to find StaticWebSettings for organization`
+      );
+    }
+
     const environmentSettings: { [key: string]: StaticFileProxySettings } = {};
 
     environments.forEach((env) => {
@@ -48,7 +58,7 @@ router.get<RouteParams, ResBody>(
       };
     });
 
-    const result: OrgSettings = {
+    res.json({
       cors: {
         allowCredentials: staticWebSettings.corsAllowCredentials,
         allowHeaders: staticWebSettings.corsAllowHeaders,
@@ -65,9 +75,7 @@ router.get<RouteParams, ResBody>(
           environments: environmentSettings,
         },
       },
-    };
-
-    res.json(result);
+    });
   }
 );
 
@@ -76,4 +84,12 @@ interface RouteParams {
   [key: string]: any;
 }
 
-type ResBody = OrgSettings;
+type ResBody = RecursivePartial<OrgSettings>;
+
+declare type RecursivePartial<T> = {
+  [P in keyof T]?: T[P] extends (infer U)[]
+    ? RecursivePartial<U>[]
+    : T[P] extends object
+    ? RecursivePartial<T[P]>
+    : T[P];
+};
