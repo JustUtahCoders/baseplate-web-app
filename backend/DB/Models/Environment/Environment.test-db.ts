@@ -27,6 +27,8 @@ describe("EnvironmentModel", () => {
       customerOrgId: customerOrg.id,
       isProd: true,
       name: "prod",
+      staticWebProxyHost: "s3://test",
+      useBaseplateStaticWebHosting: true,
       auditAccountId: user.id,
     });
 

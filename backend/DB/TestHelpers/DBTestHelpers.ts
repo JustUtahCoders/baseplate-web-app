@@ -86,6 +86,8 @@ export function sampleEnvironment(
       environment = await EnvironmentModel.create({
         name: "prod",
         isProd: true,
+        staticWebProxyHost: "s3://test",
+        useBaseplateStaticWebHosting: true,
         auditAccountId: userGetter().id,
         customerOrgId: customerOrgGetter().id,
       });
