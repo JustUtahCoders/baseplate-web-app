@@ -28,7 +28,7 @@ export class EnvironmentModel
   public name!: string;
   public isProd!: boolean;
   public useBaseplateStaticWebHosting!: boolean;
-  public staticWebProxyHost?: string;
+  public staticWebProxyHost!: string;
 
   public auditAccountId!: BaseplateUUID;
 
@@ -49,7 +49,7 @@ export interface EnvironmentAttributes extends AuditTargetAttributes {
   name: BaseplateUUID;
   isProd: boolean;
   useBaseplateStaticWebHosting: boolean;
-  staticWebProxyHost?: string;
+  staticWebProxyHost: string;
 }
 
 export type EnvironmentCreationAttributes = Omit<EnvironmentAttributes, "id">;
