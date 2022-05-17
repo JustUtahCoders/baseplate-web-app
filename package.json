@@ -103,6 +103,7 @@
     "webpack-manifest-plugin": "^5.0.0"
   },
   "dependencies": {
+    "@aws-sdk/client-sts": "^3.87.0",
     "@baseplate-sdk/utils": "^3.0.0",
     "@reach/tooltip": "^0.16.2",
     "@reach/utils": "^0.16.0",
@@ -142,6 +143,7 @@
     "react-router": "^5",
     "react-router-dom": "^5",
     "sequelize": "^6.17.0",
-    "tree-kill": "^1.2.2"
+    "tree-kill": "^1.2.2",
+    "uuid": "^8.3.2"
   }
 }

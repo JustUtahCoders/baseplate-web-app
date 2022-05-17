@@ -6,6 +6,7 @@ import "./Auth/ResetPassword";
 // Normal API endpoints
 import "./RestAPI/Deployments/CreateDeployment";
 import "./RestAPI/OrgSettings/GetStaticWebSettings";
+import "./RestAPI/Deployments/GetDeploymentCredentials";
 
 // The default API Handler responds with a 404
 import "./ApiNotFound";

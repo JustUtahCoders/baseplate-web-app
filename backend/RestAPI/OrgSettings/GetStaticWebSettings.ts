@@ -1,4 +1,3 @@
-import { BaseplateUUID } from "../../DB/Models/SequelizeTSHelpers";
 import { router } from "../../Router";
 import { OrgSettings, StaticFileProxySettings } from "@baseplate-sdk/utils";
 import { param } from "express-validator";
@@ -10,8 +9,9 @@ import { checkPermissionsMiddleware } from "../../Utils/IAMUtils";
 import { BaseplatePermission } from "../../DB/Models/IAM/Permission";
 import { EnvironmentModel } from "../../DB/Models/Environment/Environment";
 import { StaticWebSettingsModel } from "../../DB/Models/CustomerOrg/StaticWebSettings";
+import { RouteParamsWithCustomerOrg } from "../../Utils/EndpointUtils";
 
-router.get<RouteParams, ResBody>(
+router.get<RouteParamsWithCustomerOrg, ResBody>(
   "/api/orgs/:customerOrgId/static-web-settings",
 
   // Request validation
@@ -78,11 +78,6 @@ router.get<RouteParams, ResBody>(
     });
   }
 );
-
-interface RouteParams {
-  customerOrgId: BaseplateUUID;
-  [key: string]: any;
-}
 
 type ResBody = RecursivePartial<OrgSettings>;
 
