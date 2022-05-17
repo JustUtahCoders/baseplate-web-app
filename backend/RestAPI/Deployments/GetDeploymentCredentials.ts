@@ -111,7 +111,7 @@ router.get<RouteParams, ResBody>(
     );
 
     res.json({
-      type: "aws",
+      storageProvider: "aws",
       aws: {
         bucket: bucketName,
         region: process.env.AWS_STS_REGION!,
@@ -130,7 +130,7 @@ interface RouteParams extends RouteParamsWithCustomerOrg {
 }
 
 interface ResBody {
-  type: "aws";
+  storageProvider: "aws";
   aws: {
     bucket: string;
     region: string;
