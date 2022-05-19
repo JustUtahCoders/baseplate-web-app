@@ -36,6 +36,7 @@
     "destroy-test-db": "docker-compose -f backend/DB/TestHelpers/docker-compose.tests.yml down -v",
     "test-db-migrations": "bash backend/DB/TestHelpers/MigrationTests.sh",
     "test-db-code": "cross-env \"NODE_OPTIONS=--experimental-vm-modules --experimental-fetch\" NODE_ENV=db-tests jest --config jest.db.config.js --detectOpenHandles",
+    "prepublishOnly": "pnpm run build:backend",
     "prepare": "husky install"
   },
   "repository": {
