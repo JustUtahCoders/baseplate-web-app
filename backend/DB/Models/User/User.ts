@@ -2,7 +2,8 @@ import { DefaultModelAttrs } from "../DefaultModelAttrs";
 import { modelEvents } from "../../../InitDB";
 import { CustomerOrgModel } from "../CustomerOrg/CustomerOrg";
 import { BaseplateUUID, BelongsToManyMethods } from "../SequelizeTSHelpers";
-import S, {
+import {
+  Model,
   BelongsToManyGetAssociationsMixin,
   BelongsToManyHasAssociationsMixin,
   BelongsToManyHasAssociationMixin,
@@ -17,8 +18,6 @@ import S, {
 import { currentSchema } from "./UserSchema.js";
 import { AccountPermissionModel } from "../IAM/AccountPermission";
 import { AccountRoleModel } from "../IAM/AccountRole";
-
-const { Model, DataTypes } = S;
 
 export class UserModel
   extends Model<UserAttributes, UserCreationAttributes>

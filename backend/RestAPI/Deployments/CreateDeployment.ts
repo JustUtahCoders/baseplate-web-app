@@ -25,13 +25,17 @@ import {
   PermissionOperator,
 } from "../../Utils/IAMUtils";
 import { BaseplatePermission } from "../../DB/Models/IAM/Permission";
+import { RouteParamsWithCustomerOrg } from "../../Utils/EndpointUtils";
 
-router.post<Record<string, any>, DeploymentAttributes, RequestBody>(
+router.post<
+  RouteParamsWithCustomerOrg,
+  EndpointCreateDeploymentResBody,
+  RequestBody
+>(
   "/api/orgs/:customerOrgId/deployments",
 
   // Request validation
   param("customerOrgId").isUUID(),
-  body("baseplateToken").isString().optional(),
   body("environmentId").isUUID(),
   body("cause").isIn(Object.values(DeploymentCause)),
   body("changedMicrofrontends").isArray(),
@@ -42,6 +46,7 @@ router.post<Record<string, any>, DeploymentAttributes, RequestBody>(
 
   // Permissions
   (req, res, next) => {
+    console.log("Permissions check");
     checkPermissionsMiddleware(req, res, next, {
       operator: PermissionOperator.or,
       permissionList: [
@@ -185,7 +190,9 @@ router.post<Record<string, any>, DeploymentAttributes, RequestBody>(
         status: DeploymentStatus.success,
       });
 
-      return res.json(deployment.get({ plain: true }));
+      return res.json({
+        deployment: deployment.get({ plain: true }),
+      });
     } else {
       console.error("Cloudflare KV Write Error:");
       console.error(cloudflareResponse.errors);
@@ -214,4 +221,8 @@ interface ChangedMicrofrontend {
   microfrontendId: BaseplateUUID;
   entryUrl: string;
   trailingSlashUrl?: string;
+}
+
+export interface EndpointCreateDeploymentResBody {
+  deployment: DeploymentAttributes;
 }

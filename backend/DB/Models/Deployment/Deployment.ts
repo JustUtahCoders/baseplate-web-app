@@ -2,12 +2,9 @@ import { DefaultModelAttrs } from "../DefaultModelAttrs";
 import { modelEvents } from "../../../InitDB";
 import { AuthTokenModel } from "../AuthToken/AuthToken";
 import { DeploymentLogModel } from "../DeploymentLog/DeploymentLog";
+import { BaseplateUUID, HasManyMethods } from "../SequelizeTSHelpers";
 import {
-  BaseplateUUID,
-  BelongsToMethods,
-  HasManyMethods,
-} from "../SequelizeTSHelpers";
-import S, {
+  Model,
   BelongsToGetAssociationMixin,
   BelongsToSetAssociationMixin,
   BelongsToCreateAssociationMixin,
@@ -26,8 +23,6 @@ import { DeployedMicrofrontendModel } from "../DeployedMicrofrontend/DeployedMic
 import { currentSchema } from "./DeploymentSchema";
 import { AuditTargetAttributes } from "../Audit/Audit";
 import { EnvironmentModel } from "../Environment/Environment";
-
-const { Model } = S;
 
 export class DeploymentModel
   extends Model<DeploymentAttributes, DeploymentCreationAttributes>

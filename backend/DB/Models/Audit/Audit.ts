@@ -1,9 +1,7 @@
-import S, { ModelStatic } from "sequelize";
+import { ModelStatic, Model } from "sequelize";
 import { modelEvents } from "../../../InitDB";
 import { BaseplateUUID } from "../SequelizeTSHelpers";
 import { sequelizeOptions } from "./AuditInit";
-
-const { DataTypes, Model } = S;
 
 export class AuditModel<ModelAttributes>
   extends Model<

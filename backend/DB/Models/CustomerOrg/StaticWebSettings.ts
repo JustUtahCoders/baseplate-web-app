@@ -1,5 +1,6 @@
 import { DefaultModelAttrs } from "../DefaultModelAttrs";
-import S, {
+import {
+  Model,
   BelongsToGetAssociationMixin,
   BelongsToSetAssociationMixin,
   BelongsToCreateAssociationMixin,
@@ -13,8 +14,6 @@ import {
 } from "../Audit/Audit";
 import { modelEvents } from "../../../InitDB";
 import { initialSchema } from "./StaticWebSettingsSchema";
-
-const { Model } = S;
 
 export class StaticWebSettingsModel
   extends Model<

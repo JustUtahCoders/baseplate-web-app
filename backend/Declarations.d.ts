@@ -2,7 +2,7 @@ import { BaseplateAccount } from "./Utils/IAMUtils";
 declare global {
   namespace NodeJS {
     interface ProcessEnv {
-      BASEPLATE_ENV: string;
+      BASEPLATE_ENV: "dev" | "prod";
       CLOUDFLARE_ACCOUNT_ID: string;
       CLOUDFLARE_NAESPACE_ID: string;
       CLOUDFLARE_AUTH_EMAIL: string;

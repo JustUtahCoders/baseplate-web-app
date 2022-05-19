@@ -1,10 +1,8 @@
-import S from "sequelize";
+import { Model, DataTypes, literal } from "sequelize";
 import { DefaultModelAttrs } from "../DefaultModelAttrs";
 import { modelEvents } from "../../../InitDB";
 import { DeploymentModel } from "../Deployment/Deployment";
 import { BaseplateUUID } from "../SequelizeTSHelpers";
-
-const { Model, DataTypes } = S;
 
 export class DeploymentLogModel
   extends Model<DeploymentLogAttributes, DeploymentLogCreationAttributes>
@@ -39,7 +37,7 @@ modelEvents.once("init", (sequelize) => {
       id: {
         type: DataTypes.UUID,
         allowNull: false,
-        defaultValue: S.literal("gen_random_uuid()"),
+        defaultValue: literal("gen_random_uuid()"),
         primaryKey: true,
       },
       deploymentId: {

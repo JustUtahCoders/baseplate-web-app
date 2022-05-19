@@ -2,7 +2,8 @@ import { modelEvents } from "../../../InitDB";
 import { DefaultModelAttrs } from "../DefaultModelAttrs";
 import { CustomerOrgModel } from "../CustomerOrg/CustomerOrg";
 import { BaseplateUUID, BelongsToMethods } from "../SequelizeTSHelpers";
-import S, {
+import {
+  Model,
   BelongsToGetAssociationMixin,
   BelongsToSetAssociationMixin,
   BelongsToCreateAssociationMixin,
@@ -13,8 +14,6 @@ import {
   AuditTargetAttributes,
   initAuditModel,
 } from "../Audit/Audit";
-
-const { Model } = S;
 
 export class MicrofrontendModel
   extends Model<MicrofrontendAttributes, MicrofrontendCreationAttributes>
