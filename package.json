@@ -11,6 +11,9 @@
   "publishConfig": {
     "access": "public"
   },
+  "files": [
+    "types"
+  ],
   "scripts": {
     "develop": "concurrently \"pnpm:develop:*\"",
     "dev:vscode": "concurrently \"pnpm:develop:db\" \"pnpm:develop:frontend\" \"pnpm:develop:backend:types\"",
