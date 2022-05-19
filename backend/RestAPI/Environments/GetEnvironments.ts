@@ -1,6 +1,5 @@
 import { param } from "express-validator";
 import {
-  Environment,
   EnvironmentAttributes,
   EnvironmentModel,
 } from "../../DB/Models/Environment/Environment";
