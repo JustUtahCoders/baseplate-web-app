@@ -1,6 +1,9 @@
 {
   "$schema": "https://unpkg.com/@changesets/config@1.7.0/schema.json",
-  "changelog": "@changesets/changelog-github",
+  "changelog": [
+    "@changesets/changelog-github",
+    { "repo": "JustUtahCoders/baseplate-web-app" }
+  ],
   "commit": false,
   "fixed": [],
   "linked": [],

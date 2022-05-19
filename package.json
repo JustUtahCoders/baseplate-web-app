@@ -1,6 +1,6 @@
 {
   "name": "@baseplate-sdk/web-app",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Customer web app for Baseplate",
   "type": "module",
   "engines": {
@@ -8,6 +8,9 @@
   },
   "types": "types/backend/TSEntry.d.ts",
   "main": "this-project-only-exposes-typescript-declarations.js",
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "develop": "concurrently \"pnpm:develop:*\"",
     "dev:vscode": "concurrently \"pnpm:develop:db\" \"pnpm:develop:frontend\" \"pnpm:develop:backend:types\"",
