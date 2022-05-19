@@ -211,7 +211,6 @@ router.post<
 export interface EndpointCreateDeploymentReqBody {
   baseplateToken?: BaseplateUUID;
   environmentId: BaseplateUUID;
-  customerOrgId: BaseplateUUID;
   cause: DeploymentCause;
   changedMicrofrontends: ChangedMicrofrontend[];
 }
