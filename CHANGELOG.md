@@ -1,5 +1,11 @@
 # @baseplate-sdk/web-app
 
+## 2.0.2
+
+### Patch Changes
+
+- [#22](https://github.com/JustUtahCoders/baseplate-web-app/pull/22) [`2a89887`](https://github.com/JustUtahCoders/baseplate-web-app/commit/2a898878c4295daaf92490d3076d20485053d7ef) Thanks [@joeldenning](https://github.com/joeldenning)! - Ensure build before publish
+
 ## 2.0.1
 
 ### Patch Changes
