@@ -46,7 +46,6 @@ router.post<
 
   // Permissions
   (req, res, next) => {
-    console.log("Permissions check");
     checkPermissionsMiddleware(req, res, next, {
       operator: PermissionOperator.or,
       permissionList: [
