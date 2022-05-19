@@ -1,5 +1,11 @@
 # @baseplate-sdk/web-app
 
+## 2.0.3
+
+### Patch Changes
+
+- [#23](https://github.com/JustUtahCoders/baseplate-web-app/pull/23) [`ffd6d5e`](https://github.com/JustUtahCoders/baseplate-web-app/commit/ffd6d5e77580d7b22f02720d358ce5cff5d98f82) Thanks [@joeldenning](https://github.com/joeldenning)! - Remove unneeded customerOrgId
+
 ## 2.0.2
 
 ### Patch Changes
