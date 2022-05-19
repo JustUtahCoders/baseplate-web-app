@@ -1,5 +1,11 @@
 # @baseplate-sdk/web-app
 
+## 2.0.1
+
+### Patch Changes
+
+- [#21](https://github.com/JustUtahCoders/baseplate-web-app/pull/21) [`d10fc20`](https://github.com/JustUtahCoders/baseplate-web-app/commit/d10fc20b0a460bcde74f949840a4e1f1b2ee2a21) Thanks [@joeldenning](https://github.com/joeldenning)! - Fix files published to npm
+
 ## 2.0.0
 
 ### Major Changes
