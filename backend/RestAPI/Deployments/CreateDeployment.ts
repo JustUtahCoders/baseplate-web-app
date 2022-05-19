@@ -30,7 +30,7 @@ import { RouteParamsWithCustomerOrg } from "../../Utils/EndpointUtils";
 router.post<
   RouteParamsWithCustomerOrg,
   EndpointCreateDeploymentResBody,
-  RequestBody
+  EndpointCreateDeploymentReqBody
 >(
   "/api/orgs/:customerOrgId/deployments",
 
@@ -208,7 +208,7 @@ router.post<
   }
 );
 
-interface RequestBody {
+export interface EndpointCreateDeploymentReqBody {
   baseplateToken?: BaseplateUUID;
   environmentId: BaseplateUUID;
   customerOrgId: BaseplateUUID;
