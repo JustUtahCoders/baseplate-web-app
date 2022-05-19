@@ -1,6 +1,7 @@
 import { DefaultModelAttrs } from "../DefaultModelAttrs";
 import { modelEvents } from "../../../InitDB";
-import S, {
+import {
+  Model,
   BelongsToGetAssociationMixin,
   BelongsToSetAssociationMixin,
   BelongsToCreateAssociationMixin,
@@ -13,8 +14,6 @@ import {
   AuditTargetAttributes,
   initAuditModel,
 } from "../Audit/Audit";
-
-const { Model } = S;
 
 export class EnvironmentModel
   extends Model<EnvironmentAttributes, EnvironmentCreationAttributes>
@@ -54,7 +53,10 @@ export interface EnvironmentAttributes extends AuditTargetAttributes {
 
 export type EnvironmentCreationAttributes = Omit<EnvironmentAttributes, "id">;
 
-export type Environment = EnvironmentAttributes & DefaultModelAttrs;
+export type Environment = Omit<
+  Omit<EnvironmentAttributes & DefaultModelAttrs, "auditAccountId">,
+  "customerOrgId"
+>;
 
 export class EnvironmentAuditModel extends AuditModel<EnvironmentAttributes> {}
 

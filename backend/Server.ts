@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Express } from "express";
 import { router } from "./Router";
 import bodyParser from "body-parser";
 import "./InitDB";
@@ -6,7 +6,7 @@ import "./RouteImports";
 import kill from "tree-kill";
 import open from "open";
 
-export const app = express();
+export const app: Express = express();
 app.use(bodyParser.json());
 app.use(router);
 

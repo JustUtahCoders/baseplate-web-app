@@ -36,9 +36,12 @@ describe(`POST /api/deployments`, () => {
     });
 
     const response = await request(app)
-      .post(`/api/orgs/${getCustomerOrg().id}/deployments`)
+      .post(
+        `/api/orgs/${getCustomerOrg().id}/deployments?baseplateToken=${
+          getBaseplateToken().id
+        }`
+      )
       .send({
-        baseplateToken: getBaseplateToken().id,
         environmentId: getEnvironment().id,
         cause: "manualAPICall",
         changedMicrofrontends: [
@@ -51,9 +54,11 @@ describe(`POST /api/deployments`, () => {
       });
 
     expect(response.statusCode).toBe(200);
-    expect(response.body.status).toBe("success");
+    expect(response.body.deployment.status).toBe("success");
 
-    const deployment = await DeploymentModel.findByPk(response.body.id);
+    const deployment = await DeploymentModel.findByPk(
+      response.body.deployment.id
+    );
     expect(deployment).toBeTruthy();
     expect(deployment.status).toBe("success");
     const deployedMicrofrontends = await deployment.getDeployedMicrofrontends();

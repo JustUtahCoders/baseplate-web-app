@@ -1,6 +1,7 @@
 import { DefaultModelAttrs } from "../DefaultModelAttrs";
 import { modelEvents } from "../../../InitDB";
-import S, {
+import {
+  Model,
   BelongsToGetAssociationMixin,
   BelongsToSetAssociationMixin,
   BelongsToCreateAssociationMixin,
@@ -14,9 +15,6 @@ import {
   AuditTargetAttributes,
   initAuditModel,
 } from "../Audit/Audit";
-import { UserModel } from "../User/User";
-
-const { Model } = S;
 
 export class DeployedMicrofrontendModel
   extends Model<

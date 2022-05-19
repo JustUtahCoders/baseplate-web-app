@@ -3,14 +3,13 @@ import { CustomerOrgModel } from "../CustomerOrg/CustomerOrg";
 import { DefaultModelAttrs } from "../DefaultModelAttrs";
 import { UserModel } from "../User/User";
 import { BaseplateUUID, BelongsToMethods } from "../SequelizeTSHelpers";
-import S, {
+import {
+  Model,
   BelongsToGetAssociationMixin,
   BelongsToSetAssociationMixin,
   BelongsToCreateAssociationMixin,
 } from "sequelize";
 import { currentSchema } from "./AuthTokenSchema";
-
-const { Model } = S;
 
 export class AuthTokenModel
   extends Model<AuthTokenAttributes, AuthTokenCreationAttributes>

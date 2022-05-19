@@ -9,7 +9,8 @@ import {
   BaseplateUUID,
   HasOneMethods,
 } from "../SequelizeTSHelpers";
-import S, {
+import {
+  Model,
   BelongsToGetAssociationMixin,
   BelongsToSetAssociationMixin,
   BelongsToCreateAssociationMixin,
@@ -44,8 +45,6 @@ import {
   initAuditModel,
 } from "../Audit/Audit";
 import { StaticWebSettingsModel } from "./StaticWebSettings";
-
-const { Model } = S;
 
 export class CustomerOrgModel
   extends Model<CustomerOrgAttributes, CustomerOrgCreationAttributes>

@@ -11,7 +11,7 @@ import { EnvironmentModel } from "../../DB/Models/Environment/Environment";
 import { StaticWebSettingsModel } from "../../DB/Models/CustomerOrg/StaticWebSettings";
 import { RouteParamsWithCustomerOrg } from "../../Utils/EndpointUtils";
 
-router.get<RouteParamsWithCustomerOrg, ResBody>(
+router.get<RouteParamsWithCustomerOrg, EndpointGetStaticWebSettingsResBody>(
   "/api/orgs/:customerOrgId/static-web-settings",
 
   // Request validation
@@ -53,6 +53,7 @@ router.get<RouteParamsWithCustomerOrg, ResBody>(
 
     environments.forEach((env) => {
       environmentSettings[env.name] = {
+        environmentId: env.id,
         host: env.staticWebProxyHost,
         useBaseplateHosting: env.useBaseplateStaticWebHosting,
       };
@@ -79,7 +80,7 @@ router.get<RouteParamsWithCustomerOrg, ResBody>(
   }
 );
 
-type ResBody = RecursivePartial<OrgSettings>;
+export type EndpointGetStaticWebSettingsResBody = RecursivePartial<OrgSettings>;
 
 declare type RecursivePartial<T> = {
   [P in keyof T]?: T[P] extends (infer U)[]

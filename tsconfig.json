@@ -1,11 +1,13 @@
 {
-  "files": ["backend/Server.ts"],
+  "files": ["backend/TSEntry.ts"],
   "include": ["backend/Declarations.d.ts"],
   "compilerOptions": {
     "esModuleInterop": true,
     "module": "esnext",
     "allowSyntheticDefaultImports": true,
     "moduleResolution": "node",
+    "declaration": true,
+    "declarationDir": "types",
     "resolveJsonModule": true,
     "strictNullChecks": true,
     "jsx": "react-jsx",

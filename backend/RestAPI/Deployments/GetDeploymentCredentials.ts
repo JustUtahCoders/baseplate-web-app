@@ -26,7 +26,7 @@ const stsClient = new STSClient({
   },
 });
 
-router.get<RouteParams, ResBody>(
+router.get<RouteParams, EndpointGetDeploymentCredentialsResBody>(
   "/api/orgs/:customerOrgId/environments/:environmentId/deployment-credentials",
 
   // Request validation
@@ -129,7 +129,7 @@ interface RouteParams extends RouteParamsWithCustomerOrg {
   environmentId: string;
 }
 
-interface ResBody {
+export interface EndpointGetDeploymentCredentialsResBody {
   storageProvider: "aws";
   aws: {
     bucket: string;

@@ -27,6 +27,7 @@ import { PermissionModel } from "../DB/Models/IAM/Permission";
 import { Strategy as GithubStrategy } from "passport-github";
 import { body } from "express-validator";
 import { Op } from "sequelize";
+import validator from "validator";
 
 passport.use(
   new Strategy(async function (email, password, done) {
@@ -179,7 +180,31 @@ router.post(
 router.use("/", async (req, res, next) => {
   const userId = req?.session?.passport?.user?.id;
   const isUsingCookie = Boolean(userId);
-  const baseplateToken = req.body.baseplateToken || req.query.baseplateToken;
+  let baseplateToken: string | undefined;
+
+  if (req.headers.authorization) {
+    if (!req.headers.authorization.toLowerCase().startsWith("token ")) {
+      return notLoggedIn(res, [
+        `Invalid Authorization header. Value must start with "token "`,
+      ]);
+    } else {
+      baseplateToken = req.headers.authorization.slice("token ".length);
+    }
+  } else if (req.query.baseplateToken) {
+    if (typeof req.query.baseplateToken !== "string") {
+      return notLoggedIn(res, [
+        `Invalid baseplateToken query param - must be a single value`,
+      ]);
+    } else {
+      baseplateToken = req.query.baseplateToken;
+    }
+  }
+
+  if (baseplateToken && !validator.isUUID(baseplateToken, 4)) {
+    return notLoggedIn(res, [
+      `Invalid baseplate token - must be a valid UUIDv4`,
+    ]);
+  }
 
   let accountId: BaseplateUUID | undefined = userId || baseplateToken,
     user: UserModel | undefined,

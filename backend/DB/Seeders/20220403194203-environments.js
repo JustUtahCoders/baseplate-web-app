@@ -11,7 +11,7 @@ module.exports = {
       [
         {
           customerOrgId: sampleCustomerOrgId,
-          name: "__main__",
+          name: "prod",
           isProd: true,
           useBaseplateStaticWebHosting: true,
           staticWebProxyHost: "s3://baseplate-static-web-hosting-prod",
@@ -54,7 +54,7 @@ module.exports = {
       "Environments",
       {
         where: {
-          name: "__main__",
+          name: "prod",
         },
         plain: false,
       },
