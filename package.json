@@ -6,7 +6,7 @@
   "engines": {
     "node": ">=17.5"
   },
-  "types": "types/backend/Server.d.ts",
+  "types": "types/backend/TSEntry.d.ts",
   "main": "this-project-only-exposes-typescript-declarations.js",
   "scripts": {
     "develop": "concurrently \"pnpm:develop:*\"",
