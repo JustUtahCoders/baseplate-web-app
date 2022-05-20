@@ -7,12 +7,6 @@ dotEnv.config({
   path: ".env.dev",
 });
 
-if (!process.env.SEED_ORG_KEY) {
-  throw Error(`SEED_ORG_KEY environment variable required to seed DB`);
-}
-
-const orgKey = process.env.SEED_ORG_KEY;
-
 module.exports = {
   async up(queryInterface, Sequelize) {
     const { sampleUserId, sampleCustomerOrgId } =

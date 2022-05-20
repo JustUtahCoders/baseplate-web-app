@@ -43,7 +43,7 @@ export const dbReady = new Promise<void>((resolve, reject) => {
     console.log("Attempting to connect to db");
     sequelize
       .authenticate()
-      .then(async () => {
+      .then(() => {
         console.log("Database connection established");
         clearInterval(intervalId);
 

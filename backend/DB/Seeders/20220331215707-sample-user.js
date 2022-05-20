@@ -5,7 +5,13 @@ dotEnv.config({
   path: ".env.dev",
 });
 
-if (!process.env.SEED_ORG_KEY) {
+let seedOrgKey = process.env.SEED_ORG_KEY;
+
+if (process.env.NODE_ENV === "db-tests") {
+  seedOrgKey = "convex";
+}
+
+if (!seedOrgKey) {
   throw Error(`SEED_ORG_KEY environment variable required to seed DB`);
 }
 
@@ -54,7 +60,7 @@ module.exports = {
           billingUserId: orgOwnerUser.id,
           auditAccountId: orgOwnerUser.id,
           name: "Convex Co-op",
-          orgKey: process.env.SEED_ORG_KEY,
+          orgKey: seedOrgKey,
         },
       ],
       {
