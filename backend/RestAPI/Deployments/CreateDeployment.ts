@@ -220,9 +220,9 @@ router.post<
       )
     );
 
-    // @ts-ignore
     const unreachableUrls = publiclyReachableResults
       .filter((r) => r.status === "rejected")
+      // @ts-ignore
       .map((r) => r.reason);
     if (unreachableUrls.length > 0) {
       return invalidRequest(res, [
