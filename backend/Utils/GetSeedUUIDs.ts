@@ -35,11 +35,15 @@ if (process.env.IS_RUNNING_LOCALLY) {
 
     const customerOrg = await CustomerOrgModel.findOne({
       where: {
-        orgKey: "convex",
+        orgKey: process.env.SEED_ORG_KEY,
       },
     });
 
     const ownerUser = users.find((u) => u.email === "owner@baseplate.cloud");
+
+    if (!ownerUser) {
+      throw Error(`Unable to find owner user - was DB seeded?`);
+    }
 
     const baseplateApiToken = await AuthTokenModel.findOne({
       where: {

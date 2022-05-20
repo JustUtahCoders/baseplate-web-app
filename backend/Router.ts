@@ -15,6 +15,7 @@ if (process.env.IS_RUNNING_LOCALLY) {
 if (!["db-tests"].includes(process.env.NODE_ENV || "production")) {
   const requiredEnvVars: string[] = [
     "BASEPLATE_ENV",
+    "BASEPLATE_CDN",
     "CLOUDFLARE_ACCOUNT_ID",
     "CLOUDFLARE_NAMESPACE_ID",
     "CLOUDFLARE_AUTH_EMAIL",
@@ -22,10 +23,14 @@ if (!["db-tests"].includes(process.env.NODE_ENV || "production")) {
     "GITHUB_CLIENT_ID",
     "GITHUB_CLIENT_SECRET",
     "AWS_STS_ROLE",
-    "AWS_STS_REGION",
-    "AWS_STS_ACCESS_KEY_ID",
-    "AWS_STS_SECRET_ACCESS_KEY",
+    "AWS_REGION",
+    "AWS_ACCESS_KEY_ID",
+    "AWS_SECRET_ACCESS_KEY",
   ];
+
+  if (process.env.IS_RUNNING_LOCALLY) {
+    requiredEnvVars.push("SEED_ORG_KEY");
+  }
 
   requiredEnvVars.forEach((envVarName) => {
     if (!process.env[envVarName]) {

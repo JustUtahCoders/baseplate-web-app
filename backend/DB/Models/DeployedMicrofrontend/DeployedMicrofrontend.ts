@@ -28,25 +28,25 @@ export class DeployedMicrofrontendModel
       microfrontend: MicrofrontendModel;
     }>
 {
-  public id!: BaseplateUUID;
-  public microfrontendId!: BaseplateUUID;
-  public deploymentId!: BaseplateUUID;
-  public bareImportSpecifier: string;
-  public entryUrl!: string;
-  public trailingSlashUrl!: string;
-  public deploymentChangedMicrofrontend!: boolean;
-  public auditAccountId!: BaseplateUUID;
+  declare id: BaseplateUUID;
+  declare microfrontendId: BaseplateUUID;
+  declare deploymentId: BaseplateUUID;
+  declare bareImportSpecifier: string;
+  declare entryUrl: string;
+  declare trailingSlashUrl: string;
+  declare deploymentChangedMicrofrontend: boolean;
+  declare auditAccountId: BaseplateUUID;
 
-  public getDeployment!: BelongsToGetAssociationMixin<DeploymentModel>;
-  public setDeployment!: BelongsToSetAssociationMixin<DeploymentModel, number>;
-  public createDeployment!: BelongsToCreateAssociationMixin<DeploymentModel>;
+  declare getDeployment: BelongsToGetAssociationMixin<DeploymentModel>;
+  declare setDeployment: BelongsToSetAssociationMixin<DeploymentModel, number>;
+  declare createDeployment: BelongsToCreateAssociationMixin<DeploymentModel>;
 
-  public getMicrofrontend!: BelongsToGetAssociationMixin<MicrofrontendModel>;
-  public setMicrofrontend!: BelongsToSetAssociationMixin<
+  declare getMicrofrontend: BelongsToGetAssociationMixin<MicrofrontendModel>;
+  declare setMicrofrontend: BelongsToSetAssociationMixin<
     MicrofrontendModel,
     number
   >;
-  public createMicrofrontend!: BelongsToCreateAssociationMixin<MicrofrontendModel>;
+  declare createMicrofrontend: BelongsToCreateAssociationMixin<MicrofrontendModel>;
 }
 
 export class DeployedMicrofrontendAuditModel extends AuditModel<DeployedMicrofrontendAttributes> {}

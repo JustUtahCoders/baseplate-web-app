@@ -10,6 +10,7 @@ import { BaseplatePermission } from "../../DB/Models/IAM/Permission";
 import { EnvironmentModel } from "../../DB/Models/Environment/Environment";
 import { StaticWebSettingsModel } from "../../DB/Models/CustomerOrg/StaticWebSettings";
 import { RouteParamsWithCustomerOrg } from "../../Utils/EndpointUtils";
+import { BaseplateUUID } from "../../DB/Models/SequelizeTSHelpers";
 
 router.get<RouteParamsWithCustomerOrg, EndpointGetStaticWebSettingsResBody>(
   "/api/orgs/:customerOrgId/static-web-settings",
@@ -29,37 +30,52 @@ router.get<RouteParamsWithCustomerOrg, EndpointGetStaticWebSettingsResBody>(
   async (req, res) => {
     const { customerOrgId } = req.params;
 
-    const [environments, staticWebSettings] = await Promise.all([
-      EnvironmentModel.findAll({
-        where: {
-          customerOrgId,
-        },
-      }),
-      StaticWebSettingsModel.findOne({
-        where: {
-          customerOrgId,
-        },
-      }),
-    ]);
+    const result = await getAllStaticWebSettings(customerOrgId);
 
-    if (!staticWebSettings) {
-      return serverApiError(
-        res,
-        `Unable to find StaticWebSettings for organization`
-      );
+    if (result.success) {
+      res.json(result.data);
+    } else {
+      serverApiError(res, result.message);
     }
+  }
+);
 
-    const environmentSettings: { [key: string]: StaticFileProxySettings } = {};
+export async function getAllStaticWebSettings(
+  customerOrgId: BaseplateUUID
+): Promise<Result<EndpointGetStaticWebSettingsResBody>> {
+  const [environments, staticWebSettings] = await Promise.all([
+    EnvironmentModel.findAll({
+      where: {
+        customerOrgId,
+      },
+    }),
+    StaticWebSettingsModel.findOne({
+      where: {
+        customerOrgId,
+      },
+    }),
+  ]);
 
-    environments.forEach((env) => {
-      environmentSettings[env.name] = {
-        environmentId: env.id,
-        host: env.staticWebProxyHost,
-        useBaseplateHosting: env.useBaseplateStaticWebHosting,
-      };
-    });
+  if (!staticWebSettings) {
+    return {
+      success: false,
+      message: `Unable to find StaticWebSettings for organization`,
+    };
+  }
 
-    res.json({
+  const environmentSettings: { [key: string]: StaticFileProxySettings } = {};
+
+  environments.forEach((env) => {
+    environmentSettings[env.name] = {
+      environmentId: env.id,
+      host: env.staticWebProxyHost,
+      useBaseplateHosting: env.useBaseplateStaticWebHosting,
+    };
+  });
+
+  return {
+    success: true,
+    data: {
       cors: {
         allowCredentials: staticWebSettings.corsAllowCredentials,
         allowHeaders: staticWebSettings.corsAllowHeaders,
@@ -76,9 +92,21 @@ router.get<RouteParamsWithCustomerOrg, EndpointGetStaticWebSettingsResBody>(
           environments: environmentSettings,
         },
       },
-    });
-  }
-);
+    },
+  };
+}
+
+type Result<Data> = Ok<Data> | Failure;
+
+interface Ok<Data> {
+  success: true;
+  data: Data;
+}
+
+interface Failure {
+  success: false;
+  message: string;
+}
 
 export type EndpointGetStaticWebSettingsResBody = RecursivePartial<OrgSettings>;
 

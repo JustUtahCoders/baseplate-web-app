@@ -55,63 +55,63 @@ export class CustomerOrgModel
     HasManyMethods<{ environment: EnvironmentModel }>,
     HasOneMethods<{ staticWebSettings: StaticWebSettingsModel }>
 {
-  public id!: BaseplateUUID;
-  public name!: string;
-  public accountEnabled!: boolean;
-  public billingUserId!: BaseplateUUID;
-  public orgKey!: string;
-  public auditAccountId!: BaseplateUUID;
+  declare id: BaseplateUUID;
+  declare name: string;
+  declare accountEnabled: boolean;
+  declare billingUserId: BaseplateUUID;
+  declare orgKey: string;
+  declare auditAccountId: BaseplateUUID;
 
-  public getBillingUser!: BelongsToGetAssociationMixin<UserModel>;
-  public setBillingUser!: BelongsToSetAssociationMixin<UserModel, number>;
-  public createBillingUser!: BelongsToCreateAssociationMixin<UserModel>;
+  declare createdAt: Date;
+  declare updatedAt: Date;
 
-  public getUsers!: BelongsToManyGetAssociationsMixin<UserModel>;
-  public countUsers!: BelongsToManyCountAssociationsMixin;
-  public hasUser!: BelongsToManyHasAssociationMixin<UserModel, number>;
-  public hasUsers!: BelongsToManyHasAssociationsMixin<UserModel, number>;
-  public setUsers!: BelongsToManySetAssociationsMixin<UserModel, number>;
-  public addUser!: BelongsToManyAddAssociationMixin<UserModel, number>;
-  public addUsers!: BelongsToManyAddAssociationsMixin<UserModel, number>;
-  public removeUser!: BelongsToManyRemoveAssociationMixin<UserModel, number>;
-  public removeUsers!: BelongsToManyRemoveAssociationsMixin<UserModel, number>;
-  public createUser!: BelongsToManyCreateAssociationMixin<UserModel>;
+  declare getBillingUser: BelongsToGetAssociationMixin<UserModel>;
+  declare setBillingUser: BelongsToSetAssociationMixin<UserModel, number>;
+  declare createBillingUser: BelongsToCreateAssociationMixin<UserModel>;
 
-  public getEnvironments!: HasManyGetAssociationsMixin<EnvironmentModel>;
-  public countEnvironments!: HasManyCountAssociationsMixin;
-  public hasEnvironment!: HasManyHasAssociationMixin<EnvironmentModel, number>;
-  public hasEnvironments!: HasManyHasAssociationsMixin<
-    EnvironmentModel,
-    number
-  >;
-  public setEnvironments!: HasManySetAssociationsMixin<
-    EnvironmentModel,
-    number
-  >;
-  public addEnvironment!: HasManyAddAssociationMixin<EnvironmentModel, number>;
-  public addEnvironments!: HasManyAddAssociationsMixin<
-    EnvironmentModel,
-    number
-  >;
-  public removeEnvironment!: HasManyRemoveAssociationMixin<
-    EnvironmentModel,
-    number
-  >;
-  public removeEnvironments!: HasManyRemoveAssociationsMixin<
-    EnvironmentModel,
-    number
-  >;
-  public createEnvironment!: HasManyCreateAssociationMixin<EnvironmentModel>;
+  declare getUsers: BelongsToManyGetAssociationsMixin<UserModel>;
+  declare countUsers: BelongsToManyCountAssociationsMixin;
+  declare hasUser: BelongsToManyHasAssociationMixin<UserModel, number>;
+  declare hasUsers: BelongsToManyHasAssociationsMixin<UserModel, number>;
+  declare setUsers: BelongsToManySetAssociationsMixin<UserModel, number>;
+  declare addUser: BelongsToManyAddAssociationMixin<UserModel, number>;
+  declare addUsers: BelongsToManyAddAssociationsMixin<UserModel, number>;
+  declare removeUser: BelongsToManyRemoveAssociationMixin<UserModel, number>;
+  declare removeUsers: BelongsToManyRemoveAssociationsMixin<UserModel, number>;
+  declare createUser: BelongsToManyCreateAssociationMixin<UserModel>;
 
-  public getStaticWebSettings: HasOneGetAssociationMixin<StaticWebSettingsModel>;
-  public setStaticWebSettings: HasOneSetAssociationMixin<
+  declare getEnvironments: HasManyGetAssociationsMixin<EnvironmentModel>;
+  declare countEnvironments: HasManyCountAssociationsMixin;
+  declare hasEnvironment: HasManyHasAssociationMixin<EnvironmentModel, number>;
+  declare hasEnvironments: HasManyHasAssociationsMixin<
+    EnvironmentModel,
+    number
+  >;
+  declare setEnvironments: HasManySetAssociationsMixin<
+    EnvironmentModel,
+    number
+  >;
+  declare addEnvironment: HasManyAddAssociationMixin<EnvironmentModel, number>;
+  declare addEnvironments: HasManyAddAssociationsMixin<
+    EnvironmentModel,
+    number
+  >;
+  declare removeEnvironment: HasManyRemoveAssociationMixin<
+    EnvironmentModel,
+    number
+  >;
+  declare removeEnvironments: HasManyRemoveAssociationsMixin<
+    EnvironmentModel,
+    number
+  >;
+  declare createEnvironment: HasManyCreateAssociationMixin<EnvironmentModel>;
+
+  declare getStaticWebSettings: HasOneGetAssociationMixin<StaticWebSettingsModel>;
+  declare setStaticWebSettings: HasOneSetAssociationMixin<
     StaticWebSettingsModel,
     number
   >;
-  public createStaticWebSettings: HasOneCreateAssociationMixin<StaticWebSettingsModel>;
-
-  public readonly createdAt!: Date;
-  public readonly updatedAt!: Date;
+  declare createStaticWebSettings: HasOneCreateAssociationMixin<StaticWebSettingsModel>;
 }
 
 export interface CustomerOrgAttributes extends AuditTargetAttributes {
@@ -136,6 +136,14 @@ modelEvents.once("init", (sequelize) => {
   CustomerOrgModel.init(initialSchema, {
     sequelize,
     modelName,
+  });
+
+  CustomerOrgModel.addHook("afterUpsert", async (upsert, options) => {
+    const customerOrg = upsert[0] as CustomerOrgModel;
+    const { updateCustomerOrgCloudflareSettings } = await import(
+      "../CustomerOrgCloudflareSettings"
+    );
+    await updateCustomerOrgCloudflareSettings(customerOrg);
   });
 });
 

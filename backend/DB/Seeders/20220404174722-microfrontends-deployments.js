@@ -1,6 +1,11 @@
 "use strict";
 const { getSampleUserAndCustomerOrg } = require("./20220331215707-sample-user");
 const { getSampleEnvironment } = require("./20220403194203-environments");
+const dotEnv = require("dotenv");
+
+dotEnv.config({
+  path: ".env.dev",
+});
 
 module.exports = {
   async up(queryInterface, Sequelize) {
@@ -82,44 +87,47 @@ module.exports = {
       },
     ]);
 
-    await queryInterface.bulkInsert("DeployedMicrofrontends", [
-      {
-        deploymentId: dep1.id,
-        microfrontendId: navbarMFE.id,
-        deploymentChangedMicrofrontend: true,
-        bareImportSpecifier: "@convex/navbar",
-        entryUrl: "https://cdn.baseplate.cloud/convex/navbar/navbar.v1.js",
-        trailingSlashUrl: "https://cdn.baseplate.cloud/convex/navbar/",
-        auditAccountId: sampleUserId,
-      },
-      {
-        deploymentId: dep1.id,
-        microfrontendId: settingsMFE.id,
-        deploymentChangedMicrofrontend: true,
-        bareImportSpecifier: "@convex/settings",
-        entryUrl: "https://cdn.baseplate.cloud/convex/settings/settings.v1.js",
-        trailingSlashUrl: "https://cdn.baseplate.cloud/convex/settings/",
-        auditAccountId: sampleUserId,
-      },
-      {
-        deploymentId: dep1.id,
-        microfrontendId: navbarMFE.id,
-        deploymentChangedMicrofrontend: true,
-        bareImportSpecifier: "@convex/navbar",
-        entryUrl: "https://cdn.baseplate.cloud/convex/navbar/navbar.v2.js",
-        trailingSlashUrl: "https://cdn.baseplate.cloud/convex/navbar/",
-        auditAccountId: sampleUserId,
-      },
-      {
-        deploymentId: dep1.id,
-        microfrontendId: settingsMFE.id,
-        deploymentChangedMicrofrontend: false,
-        bareImportSpecifier: "@convex/settings",
-        entryUrl: "https://cdn.baseplate.cloud/convex/settings/settings.v1.js",
-        trailingSlashUrl: "https://cdn.baseplate.cloud/convex/settings/",
-        auditAccountId: sampleUserId,
-      },
-    ]);
+    // Commented because the corresponding javascript files aren't actually in S3
+    // and it creates an invalid import map pointing to prod
+
+    // await queryInterface.bulkInsert("DeployedMicrofrontends", [
+    //   {
+    //     deploymentId: dep1.id,
+    //     microfrontendId: navbarMFE.id,
+    //     deploymentChangedMicrofrontend: true,
+    //     bareImportSpecifier: `@${orgKey}/navbar`,
+    //     entryUrl: `https://cdn.baseplate.cloud/${orgKey}/navbar/navbar.v1.js`,
+    //     trailingSlashUrl: `https://cdn.baseplate.cloud/${orgKey}/navbar/`,
+    //     auditAccountId: sampleUserId,
+    //   },
+    //   {
+    //     deploymentId: dep1.id,
+    //     microfrontendId: settingsMFE.id,
+    //     deploymentChangedMicrofrontend: true,
+    //     bareImportSpecifier: `@${orgKey}/settings`,
+    //     entryUrl: `https://cdn.baseplate.cloud/${orgKey}/settings/settings.v1.js`,
+    //     trailingSlashUrl: `https://cdn.baseplate.cloud/${orgKey}/settings/`,
+    //     auditAccountId: sampleUserId,
+    //   },
+    //   {
+    //     deploymentId: dep1.id,
+    //     microfrontendId: navbarMFE.id,
+    //     deploymentChangedMicrofrontend: true,
+    //     bareImportSpecifier: `@${orgKey}/navbar`,
+    //     entryUrl: `https://cdn.baseplate.cloud/${orgKey}/navbar/navbar.v2.js`,
+    //     trailingSlashUrl: `https://cdn.baseplate.cloud/${orgKey}/navbar/`,
+    //     auditAccountId: sampleUserId,
+    //   },
+    //   {
+    //     deploymentId: dep1.id,
+    //     microfrontendId: settingsMFE.id,
+    //     deploymentChangedMicrofrontend: false,
+    //     bareImportSpecifier: `@${orgKey}/settings`,
+    //     entryUrl: `https://cdn.baseplate.cloud/${orgKey}/settings/settings.v1.js`,
+    //     trailingSlashUrl: `https://cdn.baseplate.cloud/${orgKey}/settings/`,
+    //     auditAccountId: sampleUserId,
+    //   },
+    // ]);
   },
 
   async down(queryInterface, Sequelize) {

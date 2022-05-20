@@ -19,20 +19,20 @@ export class AccountRoleModel
   extends Model<AccountRoleAttributes, AccountRoleCreationAttributes>
   implements AccountRole, BelongsToMethods<{ role: RoleModel }>
 {
-  public id!: BaseplateUUID;
-  public customerOrgId!: BaseplateUUID;
-  public accountId!: BaseplateUUID;
-  public roleId!: BaseplateUUID;
-  public entityId?: BaseplateUUID;
-  public dateRevoked?: Date;
-  public auditAccountId!: BaseplateUUID;
+  declare id: BaseplateUUID;
+  declare customerOrgId: BaseplateUUID;
+  declare accountId: BaseplateUUID;
+  declare roleId: BaseplateUUID;
+  declare entityId: BaseplateUUID;
+  declare dateRevoked: Date;
+  declare auditAccountId: BaseplateUUID;
 
-  public readonly createdAt!: Date;
-  public readonly updatedAt!: Date;
+  declare createdAt: Date;
+  declare updatedAt: Date;
 
-  public getRole!: BelongsToGetAssociationMixin<RoleModel>;
-  public setRole!: BelongsToSetAssociationMixin<RoleModel, number>;
-  public createRole!: BelongsToCreateAssociationMixin<RoleModel>;
+  declare getRole: BelongsToGetAssociationMixin<RoleModel>;
+  declare setRole: BelongsToSetAssociationMixin<RoleModel, number>;
+  declare createRole: BelongsToCreateAssociationMixin<RoleModel>;
 }
 
 export interface AccountRoleAttributes extends AuditTargetAttributes {

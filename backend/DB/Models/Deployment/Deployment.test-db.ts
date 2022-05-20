@@ -83,30 +83,46 @@ describe("DeploymentModel", () => {
       auditAccountId: getUser().id,
       microfrontendId: microfrontend.id,
       deploymentChangedMicrofrontend: true,
-      bareImportSpecifier: "@convex/navbar",
-      entryUrl: "https://cdn.baseplate.cloud/convex/apps/navbar/navbar.v1.js",
-      trailingSlashUrl: "https://cdn.baseplate.cloud/convex/apps/navbar/",
+      bareImportSpecifier: `@${getCustomerOrg().orgKey}/navbar`,
+      entryUrl: `https://cdn.baseplate.cloud/${
+        getCustomerOrg().orgKey
+      }/apps/navbar/navbar.v1.js`,
+      trailingSlashUrl: `https://cdn.baseplate.cloud/${
+        getCustomerOrg().orgKey
+      }/apps/navbar/`,
     });
 
     await deployment.createDeployedMicrofrontend({
       auditAccountId: getUser().id,
       microfrontendId: microfrontend.id,
       deploymentChangedMicrofrontend: true,
-      bareImportSpecifier: "@convex/settings",
-      entryUrl:
-        "https://cdn.baseplate.cloud/convex/apps/settings/settings.v1.js",
-      trailingSlashUrl: "https://cdn.baseplate.cloud/convex/apps/settings/",
+      bareImportSpecifier: `@${getCustomerOrg().orgKey}/settings`,
+      entryUrl: `https://cdn.baseplate.cloud/${
+        getCustomerOrg().orgKey
+      }/apps/settings/settings.v1.js`,
+      trailingSlashUrl: `https://cdn.baseplate.cloud/${
+        getCustomerOrg().orgKey
+      }/apps/settings/`,
     });
 
     expect(await deployment.deriveImportMap()).toEqual({
       imports: {
-        "@convex/navbar":
-          "https://cdn.baseplate.cloud/convex/apps/navbar/navbar.v1.js",
-        "@convex/navbar/": "https://cdn.baseplate.cloud/convex/apps/navbar/",
-        "@convex/settings":
-          "https://cdn.baseplate.cloud/convex/apps/settings/settings.v1.js",
-        "@convex/settings/":
-          "https://cdn.baseplate.cloud/convex/apps/settings/",
+        [`@${getCustomerOrg().orgKey}/navbar`]: `https://cdn.baseplate.cloud/${
+          getCustomerOrg().orgKey
+        }/apps/navbar/navbar.v1.js`,
+        [`@${getCustomerOrg().orgKey}/navbar/`]: `https://cdn.baseplate.cloud/${
+          getCustomerOrg().orgKey
+        }/apps/navbar/`,
+        [`@${
+          getCustomerOrg().orgKey
+        }/settings`]: `https://cdn.baseplate.cloud/${
+          getCustomerOrg().orgKey
+        }/apps/settings/settings.v1.js`,
+        [`@${
+          getCustomerOrg().orgKey
+        }/settings/`]: `https://cdn.baseplate.cloud/${
+          getCustomerOrg().orgKey
+        }/apps/settings/`,
       },
       scopes: {},
     });

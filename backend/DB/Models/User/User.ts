@@ -29,96 +29,96 @@ export class UserModel
       permission: AccountPermissionModel;
     }>
 {
-  public id!: BaseplateUUID;
-  public givenName!: string;
-  public familyName!: string;
-  public email!: string;
-  public password: string | null;
-  public githubProfileId: string | null;
+  declare id: BaseplateUUID;
+  declare givenName: string;
+  declare familyName: string;
+  declare email: string;
+  declare password: string | null;
+  declare githubProfileId: string | null;
 
-  public getCustomerOrgs!: BelongsToManyGetAssociationsMixin<CustomerOrgModel>;
-  public countCustomerOrgs!: BelongsToManyCountAssociationsMixin;
-  public hasCustomerOrg!: BelongsToManyHasAssociationMixin<
-    CustomerOrgModel,
-    number
-  >;
-  public hasCustomerOrgs!: BelongsToManyHasAssociationsMixin<
-    CustomerOrgModel,
-    number
-  >;
-  public setCustomerOrgs!: BelongsToManySetAssociationsMixin<
-    CustomerOrgModel,
-    number
-  >;
-  public addCustomerOrg!: BelongsToManyAddAssociationMixin<
-    CustomerOrgModel,
-    number
-  >;
-  public addCustomerOrgs!: BelongsToManyAddAssociationsMixin<
-    CustomerOrgModel,
-    number
-  >;
-  public removeCustomerOrg!: BelongsToManyRemoveAssociationMixin<
-    CustomerOrgModel,
-    number
-  >;
-  public removeCustomerOrgs!: BelongsToManyRemoveAssociationsMixin<
-    CustomerOrgModel,
-    number
-  >;
-  public createCustomerOrg!: BelongsToManyCreateAssociationMixin<CustomerOrgModel>;
+  declare createdAt: Date;
+  declare updatedAt: Date;
 
-  public getRoles!: BelongsToManyGetAssociationsMixin<AccountRoleModel>;
-  public countRoles!: BelongsToManyCountAssociationsMixin;
-  public hasRole!: BelongsToManyHasAssociationMixin<AccountRoleModel, number>;
-  public hasRoles!: BelongsToManyHasAssociationsMixin<AccountRoleModel, number>;
-  public setRoles!: BelongsToManySetAssociationsMixin<AccountRoleModel, number>;
-  public addRole!: BelongsToManyAddAssociationMixin<AccountRoleModel, number>;
-  public addRoles!: BelongsToManyAddAssociationsMixin<AccountRoleModel, number>;
-  public removeRole!: BelongsToManyRemoveAssociationMixin<
+  declare getCustomerOrgs: BelongsToManyGetAssociationsMixin<CustomerOrgModel>;
+  declare countCustomerOrgs: BelongsToManyCountAssociationsMixin;
+  declare hasCustomerOrg: BelongsToManyHasAssociationMixin<
+    CustomerOrgModel,
+    number
+  >;
+  declare hasCustomerOrgs: BelongsToManyHasAssociationsMixin<
+    CustomerOrgModel,
+    number
+  >;
+  declare setCustomerOrgs: BelongsToManySetAssociationsMixin<
+    CustomerOrgModel,
+    number
+  >;
+  declare addCustomerOrg: BelongsToManyAddAssociationMixin<
+    CustomerOrgModel,
+    number
+  >;
+  declare addCustomerOrgs: BelongsToManyAddAssociationsMixin<
+    CustomerOrgModel,
+    number
+  >;
+  declare removeCustomerOrg: BelongsToManyRemoveAssociationMixin<
+    CustomerOrgModel,
+    number
+  >;
+  declare removeCustomerOrgs: BelongsToManyRemoveAssociationsMixin<
+    CustomerOrgModel,
+    number
+  >;
+  declare createCustomerOrg: BelongsToManyCreateAssociationMixin<CustomerOrgModel>;
+
+  declare getRoles: BelongsToManyGetAssociationsMixin<AccountRoleModel>;
+  declare countRoles: BelongsToManyCountAssociationsMixin;
+  declare hasRole: BelongsToManyHasAssociationMixin<AccountRoleModel, number>;
+  declare hasRoles: BelongsToManyHasAssociationsMixin<AccountRoleModel, number>;
+  declare setRoles: BelongsToManySetAssociationsMixin<AccountRoleModel, number>;
+  declare addRole: BelongsToManyAddAssociationMixin<AccountRoleModel, number>;
+  declare addRoles: BelongsToManyAddAssociationsMixin<AccountRoleModel, number>;
+  declare removeRole: BelongsToManyRemoveAssociationMixin<
     AccountRoleModel,
     number
   >;
-  public removeRoles!: BelongsToManyRemoveAssociationsMixin<
+  declare removeRoles: BelongsToManyRemoveAssociationsMixin<
     AccountRoleModel,
     number
   >;
-  public createRole!: BelongsToManyCreateAssociationMixin<AccountRoleModel>;
+  declare createRole: BelongsToManyCreateAssociationMixin<AccountRoleModel>;
 
-  public getPermissions!: BelongsToManyGetAssociationsMixin<AccountPermissionModel>;
-  public countPermissions!: BelongsToManyCountAssociationsMixin;
-  public hasPermission!: BelongsToManyHasAssociationMixin<
+  declare getPermissions: BelongsToManyGetAssociationsMixin<AccountPermissionModel>;
+  declare countPermissions: BelongsToManyCountAssociationsMixin;
+  declare hasPermission: BelongsToManyHasAssociationMixin<
     AccountPermissionModel,
     number
   >;
-  public hasPermissions!: BelongsToManyHasAssociationsMixin<
+  declare hasPermissions: BelongsToManyHasAssociationsMixin<
     AccountPermissionModel,
     number
   >;
-  public setPermissions!: BelongsToManySetAssociationsMixin<
+  declare setPermissions: BelongsToManySetAssociationsMixin<
     AccountPermissionModel,
     number
   >;
-  public addPermission!: BelongsToManyAddAssociationMixin<
+  declare addPermission: BelongsToManyAddAssociationMixin<
     AccountPermissionModel,
     number
   >;
-  public addPermissions!: BelongsToManyAddAssociationsMixin<
+  declare addPermissions: BelongsToManyAddAssociationsMixin<
     AccountPermissionModel,
     number
   >;
-  public removePermission!: BelongsToManyRemoveAssociationMixin<
+  declare removePermission: BelongsToManyRemoveAssociationMixin<
     AccountPermissionModel,
     number
   >;
-  public removePermissions!: BelongsToManyRemoveAssociationsMixin<
+  declare removePermissions: BelongsToManyRemoveAssociationsMixin<
     AccountPermissionModel,
     number
   >;
-  public createPermission!: BelongsToManyCreateAssociationMixin<AccountPermissionModel>;
-
-  public readonly createdAt!: Date;
-  public readonly updatedAt!: Date;
+  declare createPermission: BelongsToManyCreateAssociationMixin<AccountPermissionModel>;
 }
 
 export interface UserAttributes {

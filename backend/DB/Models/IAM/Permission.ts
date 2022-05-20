@@ -9,14 +9,14 @@ export class PermissionModel
   extends Model<PermissionAttributes, PermissionCreationAttributes>
   implements PermissionAttributes, DefaultModelAttrs
 {
-  public id!: BaseplateUUID;
-  public name!: BaseplatePermission;
-  public humanReadableName!: string;
-  public description!: string;
-  public requiresEntityId!: boolean;
+  declare id: BaseplateUUID;
+  declare name: BaseplatePermission;
+  declare humanReadableName: string;
+  declare description: string;
+  declare requiresEntityId: boolean;
 
-  public readonly createdAt!: Date;
-  public readonly updatedAt!: Date;
+  declare createdAt: Date;
+  declare updatedAt: Date;
 }
 
 export interface PermissionAttributes {

@@ -1,8 +1,8 @@
-import express, { Express } from "express";
-import { router } from "./Router";
-import bodyParser from "body-parser";
 import "./InitDB";
+import { router } from "./Router";
 import "./RouteImports";
+import express, { Express } from "express";
+import bodyParser from "body-parser";
 import kill from "tree-kill";
 import open from "open";
 

@@ -24,20 +24,20 @@ export class AccountPermissionModel
     AccountPermissionAttributes,
     BelongsToMethods<{ permission: PermissionModel }>
 {
-  public id!: BaseplateUUID;
-  public customerOrgId!: BaseplateUUID;
-  public accountId!: BaseplateUUID;
-  public permissionId!: BaseplateUUID;
-  public entityId: BaseplateUUID;
-  public dateRevoked: Date;
-  public auditAccountId!: BaseplateUUID;
+  declare id: BaseplateUUID;
+  declare customerOrgId: BaseplateUUID;
+  declare accountId: BaseplateUUID;
+  declare permissionId: BaseplateUUID;
+  declare entityId: BaseplateUUID;
+  declare dateRevoked: Date;
+  declare auditAccountId: BaseplateUUID;
 
-  public getPermission!: BelongsToGetAssociationMixin<PermissionModel>;
-  public setPermission!: BelongsToSetAssociationMixin<PermissionModel, number>;
-  public createPermission!: BelongsToCreateAssociationMixin<PermissionModel>;
+  declare createdAt: Date;
+  declare updatedAt: Date;
 
-  public readonly createdAt!: Date;
-  public readonly updatedAt!: Date;
+  declare getPermission: BelongsToGetAssociationMixin<PermissionModel>;
+  declare setPermission: BelongsToSetAssociationMixin<PermissionModel, number>;
+  declare createPermission: BelongsToCreateAssociationMixin<PermissionModel>;
 }
 
 export interface AccountPermissionAttributes extends AuditTargetAttributes {
