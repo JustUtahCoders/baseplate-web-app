@@ -38,6 +38,53 @@ export async function writeCloudflareKV(
   return (await r.json()) as CloudflareKVWriteResponse;
 }
 
+/**
+ * See https://api.cloudflare.com/#workers-kv-namespace-read-key-value-pair
+ */
+export async function readCloudflareKV<Data = object>(
+  key: string
+): Promise<Data> {
+  const r = await fetch(
+    `https://api.cloudflare.com/client/v4/accounts/${process.env.CLOUDFLARE_ACCOUNT_ID}/storage/kv/namespaces/${process.env.CLOUDFLARE_NAMESPACE_ID}/values/${key}`,
+    {
+      method: "Get",
+      headers: {
+        "x-auth-email": process.env.CLOUDFLARE_AUTH_EMAIL!,
+        authorization: `Bearer ${process.env.CLOUDFLARE_AUTH_KEY}`,
+      },
+    }
+  );
+
+  if (!r.ok) {
+    let responseBody = "";
+    try {
+      responseBody = await r.text();
+    } catch {}
+
+    throw new CloudflareAPIError(
+      r.status,
+      `Cloudflare API to read KV storage value responded with HTTP status '${
+        r.status
+      }', with following response body: ${JSON.stringify(responseBody)}`
+    );
+  }
+
+  const value = await r.text();
+  try {
+    return JSON.parse(value) as Data;
+  } catch {
+    return value as unknown as Data;
+  }
+}
+
+export class CloudflareAPIError extends Error {
+  constructor(status: number, ...args) {
+    super(...args);
+    this.status = status;
+  }
+  status: number;
+}
+
 interface CloudflareKVWriteResponse {
   success: boolean;
   errors: string[];

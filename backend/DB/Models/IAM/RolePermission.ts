@@ -18,21 +18,21 @@ export class RolePermissionModel
     DefaultModelAttrs,
     BelongsToMethods<{ role: RoleModel; permission: PermissionModel }>
 {
-  public id!: BaseplateUUID;
-  public permissionId!: string;
-  public roleId!: string;
-  public dateRevoked?: Date;
+  declare id: BaseplateUUID;
+  declare permissionId: string;
+  declare roleId: string;
+  declare dateRevoked: Date;
 
-  public getRole!: BelongsToGetAssociationMixin<RoleModel>;
-  public setRole!: BelongsToSetAssociationMixin<RoleModel, number>;
-  public createRole!: BelongsToCreateAssociationMixin<RoleModel>;
+  declare createdAt: Date;
+  declare updatedAt: Date;
 
-  public getPermission!: BelongsToGetAssociationMixin<PermissionModel>;
-  public setPermission!: BelongsToSetAssociationMixin<PermissionModel, number>;
-  public createPermission!: BelongsToCreateAssociationMixin<PermissionModel>;
+  declare getRole: BelongsToGetAssociationMixin<RoleModel>;
+  declare setRole: BelongsToSetAssociationMixin<RoleModel, number>;
+  declare createRole: BelongsToCreateAssociationMixin<RoleModel>;
 
-  public readonly createdAt!: Date;
-  public readonly updatedAt: Date;
+  declare getPermission: BelongsToGetAssociationMixin<PermissionModel>;
+  declare setPermission: BelongsToSetAssociationMixin<PermissionModel, number>;
+  declare createPermission: BelongsToCreateAssociationMixin<PermissionModel>;
 }
 
 export interface RolePermissionAttributes {

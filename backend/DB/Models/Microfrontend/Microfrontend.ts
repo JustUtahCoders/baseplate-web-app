@@ -21,22 +21,22 @@ export class MicrofrontendModel
     MicrofrontendAttributes,
     BelongsToMethods<{ customerOrg: CustomerOrgModel }>
 {
-  public id!: BaseplateUUID;
-  public customerOrgId!: BaseplateUUID;
-  public name!: string;
-  public scope?: string;
-  public useCustomerOrgKeyAsScope!: boolean;
-  public auditAccountId!: BaseplateUUID;
+  declare id: BaseplateUUID;
+  declare customerOrgId: BaseplateUUID;
+  declare name: string;
+  declare scope: string;
+  declare useCustomerOrgKeyAsScope: boolean;
+  declare auditAccountId: BaseplateUUID;
 
-  public readonly createdAt!: Date;
-  public readonly updatedAt!: Date;
+  declare createdAt: Date;
+  declare updatedAt: Date;
 
-  public getCustomerOrg!: BelongsToGetAssociationMixin<CustomerOrgModel>;
-  public setCustomerOrg!: BelongsToSetAssociationMixin<
+  declare getCustomerOrg: BelongsToGetAssociationMixin<CustomerOrgModel>;
+  declare setCustomerOrg: BelongsToSetAssociationMixin<
     CustomerOrgModel,
     number
   >;
-  public createCustomerOrg!: BelongsToCreateAssociationMixin<CustomerOrgModel>;
+  declare createCustomerOrg: BelongsToCreateAssociationMixin<CustomerOrgModel>;
 }
 
 export interface MicrofrontendAttributes extends AuditTargetAttributes {

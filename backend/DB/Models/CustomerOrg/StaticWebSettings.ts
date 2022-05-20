@@ -21,31 +21,32 @@ export class StaticWebSettingsModel
     StaticWebSettingsCreationAttributes
   >
   implements
+    StaticWebSettingsAttributes,
     DefaultModelAttrs,
     StaticWebSettingsAttributes,
     BelongsToMethods<{ customerOrg: CustomerOrgModel }>
 {
-  public id!: BaseplateUUID;
-  public customerOrgId!: BaseplateUUID;
-  public defaultCacheControl?: string;
-  public importMapCacheControl?: string;
-  public corsAllowOrigins: string[];
-  public corsExposeHeaders: string[];
-  public corsMaxAge: number;
-  public corsAllowCredentials: boolean;
-  public corsAllowMethods: string[];
-  public corsAllowHeaders: string[];
-  public auditAccountId!: BaseplateUUID;
+  declare id: BaseplateUUID;
+  declare customerOrgId: BaseplateUUID;
+  declare defaultCacheControl: string;
+  declare importMapCacheControl: string;
+  declare corsAllowOrigins: string[];
+  declare corsExposeHeaders: string[];
+  declare corsMaxAge: number;
+  declare corsAllowCredentials: boolean;
+  declare corsAllowMethods: string[];
+  declare corsAllowHeaders: string[];
+  declare auditAccountId: BaseplateUUID;
 
-  public getCustomerOrg!: BelongsToGetAssociationMixin<CustomerOrgModel>;
-  public setCustomerOrg!: BelongsToSetAssociationMixin<
+  declare createdAt: Date;
+  declare updatedAt: Date;
+
+  declare getCustomerOrg: BelongsToGetAssociationMixin<CustomerOrgModel>;
+  declare setCustomerOrg: BelongsToSetAssociationMixin<
     CustomerOrgModel,
     number
   >;
-  public createCustomerOrg!: BelongsToCreateAssociationMixin<CustomerOrgModel>;
-
-  public readonly createdAt: Date;
-  public readonly updatedAt: Date;
+  declare createCustomerOrg: BelongsToCreateAssociationMixin<CustomerOrgModel>;
 }
 
 export interface StaticWebSettingsAttributes extends AuditTargetAttributes {

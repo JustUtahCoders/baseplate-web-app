@@ -9,3 +9,4 @@ process.env.CLOUDFLARE_AUTH_EMAIL = "3";
 process.env.CLOUDFLARE_AUTH_KEY = "4";
 process.env.GITHUB_CLIENT_ID = "5";
 process.env.GITHUB_CLIENT_SECRET = "6";
+process.env.BASEPLATE_CDN = "https://cdn.baseplate.cloud";

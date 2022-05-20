@@ -9,6 +9,7 @@ import {
   DeploymentCause,
   DeploymentModel,
   DeploymentStatus,
+  ImportMap,
 } from "../../DB/Models/Deployment/Deployment";
 import { EnvironmentModel } from "../../DB/Models/Environment/Environment";
 import { MicrofrontendModel } from "../../DB/Models/Microfrontend/Microfrontend";
@@ -26,6 +27,22 @@ import {
 } from "../../Utils/IAMUtils";
 import { BaseplatePermission } from "../../DB/Models/IAM/Permission";
 import { RouteParamsWithCustomerOrg } from "../../Utils/EndpointUtils";
+import { IsURLOptions } from "express-validator/src/options";
+import path from "path";
+
+const urlValidations: IsURLOptions = {
+  require_host: false,
+  require_port: false,
+  require_protocol: false,
+  require_tld: false,
+  require_valid_protocol: false,
+  host_whitelist: [],
+  allow_protocol_relative_urls: true,
+  allow_fragments: false,
+  allow_query_components: false,
+  allow_trailing_dot: true,
+  allow_underscores: true,
+};
 
 router.post<
   RouteParamsWithCustomerOrg,
@@ -40,8 +57,13 @@ router.post<
   body("cause").isIn(Object.values(DeploymentCause)),
   body("changedMicrofrontends").isArray(),
   body("changedMicrofrontends.*.microfrontendId").isUUID(),
-  body("changedMicrofrontends.*.entryUrl").isString(),
-  body("changedMicrofrontends.*.trailingSlashUrl").isString().optional(),
+  body("changedMicrofrontends.*.entryUrl")
+    .isURL(urlValidations)
+    .matches(/^\/.+(?<!\/)$/),
+  body("changedMicrofrontends.*.trailingSlashUrl")
+    .isURL(urlValidations)
+    .matches(/^\/?.*\/$/)
+    .optional(),
   validationResponseMiddleware,
 
   // Permissions
@@ -158,17 +180,56 @@ router.post<
           : microfrontend.scope;
         const bareImportSpecifier = `@${npmScope}/${microfrontend.name}`;
 
-        // TODO - confirm entryUrl is publicly reachable
+        const pathPrefix = `/${customerOrg.orgKey}/apps/${microfrontend.name}`;
+        const entryUrl = new URL(
+          path.join(pathPrefix, changedMicrofrontend.entryUrl),
+          process.env.BASEPLATE_CDN
+        ).href;
+        const trailingSlashUrl = changedMicrofrontend.trailingSlashUrl
+          ? new URL(
+              path.join(pathPrefix, changedMicrofrontend.trailingSlashUrl),
+              process.env.BASEPLATE_CDN
+            ).href
+          : undefined;
+
         return {
           auditAccountId: accountId,
           bareImportSpecifier,
           deploymentChangedMicrofrontend: true,
           deploymentId: deployment.id,
-          entryUrl: changedMicrofrontend.entryUrl,
           microfrontendId: changedMicrofrontend.microfrontendId,
-          trailingSlashUrl: changedMicrofrontend.trailingSlashUrl,
+          entryUrl,
+          trailingSlashUrl,
         };
       });
+
+    // Verify that the entryUrl is publicly reachable
+    const publiclyReachableResults = await Promise.allSettled(
+      changedDeployedMicrofrontends.map(
+        async (changedDeployedMicrofrontend) => {
+          try {
+            const response = await fetch(changedDeployedMicrofrontend.entryUrl);
+            if (!response.ok) {
+              // Not throwing an Error, which is unusual, but intentional here
+              throw changedDeployedMicrofrontend.entryUrl;
+            }
+          } catch {
+            throw changedDeployedMicrofrontend.entryUrl;
+          }
+        }
+      )
+    );
+
+    // @ts-ignore
+    const unreachableUrls = publiclyReachableResults
+      .filter((r) => r.status === "rejected")
+      .map((r) => r.reason);
+    if (unreachableUrls.length > 0) {
+      return invalidRequest(res, [
+        `The following URLs are not publicly reachable, so they cannot be put into the import map created by this deployment`,
+        ...unreachableUrls,
+      ]);
+    }
 
     const allDeployedMicrofrontends = unchangedDeployedMicrofrontends.concat(
       changedDeployedMicrofrontends
@@ -191,6 +252,7 @@ router.post<
 
       return res.json({
         deployment: deployment.get({ plain: true }),
+        importMap,
       });
     } else {
       console.error("Cloudflare KV Write Error:");
@@ -223,4 +285,5 @@ interface ChangedMicrofrontend {
 
 export interface EndpointCreateDeploymentResBody {
   deployment: DeploymentAttributes;
+  importMap: ImportMap;
 }

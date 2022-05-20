@@ -1,4 +1,13 @@
 const bcrypt = require("bcryptjs");
+const dotEnv = require("dotenv");
+
+dotEnv.config({
+  path: ".env.dev",
+});
+
+if (!process.env.SEED_ORG_KEY) {
+  throw Error(`SEED_ORG_KEY environment variable required to seed DB`);
+}
 
 const orgOwnerUserEmail = "owner@baseplate.cloud";
 const mfeOwnerUserEmail = "mfe@baseplate.cloud";
@@ -45,7 +54,7 @@ module.exports = {
           billingUserId: orgOwnerUser.id,
           auditAccountId: orgOwnerUser.id,
           name: "Convex Co-op",
-          orgKey: "convex",
+          orgKey: process.env.SEED_ORG_KEY,
         },
       ],
       {

@@ -18,25 +18,25 @@ export class AuthTokenModel
     DefaultModelAttrs,
     BelongsToMethods<{ user: UserModel; customerOrg: CustomerOrgModel }>
 {
-  public id!: BaseplateUUID;
-  public userId?: BaseplateUUID;
-  public customerOrgId?: BaseplateUUID;
-  public authTokenType!: AuthTokenType;
-  public dateRevoked?: Date;
+  declare id: BaseplateUUID;
+  declare userId: BaseplateUUID;
+  declare customerOrgId: BaseplateUUID;
+  declare authTokenType: AuthTokenType;
+  declare dateRevoked: Date;
 
-  public getUser!: BelongsToGetAssociationMixin<UserModel>;
-  public setUser!: BelongsToSetAssociationMixin<UserModel, number>;
-  public createUser!: BelongsToCreateAssociationMixin<UserModel>;
+  declare createdAt: Date;
+  declare updatedAt: Date;
 
-  public getCustomerOrg!: BelongsToGetAssociationMixin<CustomerOrgModel>;
-  public setCustomerOrg!: BelongsToSetAssociationMixin<
+  declare getUser: BelongsToGetAssociationMixin<UserModel>;
+  declare setUser: BelongsToSetAssociationMixin<UserModel, number>;
+  declare createUser: BelongsToCreateAssociationMixin<UserModel>;
+
+  declare getCustomerOrg: BelongsToGetAssociationMixin<CustomerOrgModel>;
+  declare setCustomerOrg: BelongsToSetAssociationMixin<
     CustomerOrgModel,
     number
   >;
-  public createCustomerOrg!: BelongsToCreateAssociationMixin<CustomerOrgModel>;
-
-  public readonly createdAt!: Date;
-  public readonly updatedAt!: Date;
+  declare createCustomerOrg: BelongsToCreateAssociationMixin<CustomerOrgModel>;
 }
 
 export interface AuthTokenAttributes {

@@ -21,8 +21,8 @@ import { s3BucketName } from "./S3Utils";
 const stsClient = new STSClient({
   region: process.env.AWS_STS_REGION,
   credentials: {
-    accessKeyId: process.env.AWS_STS_ACCESS_KEY_ID!,
-    secretAccessKey: process.env.AWS_STS_SECRET_ACCESS_KEY!,
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
   },
 });
 
@@ -114,7 +114,7 @@ router.get<RouteParams, EndpointGetDeploymentCredentialsResBody>(
       storageProvider: "aws",
       aws: {
         bucket: bucketName,
-        region: process.env.AWS_STS_REGION!,
+        region: process.env.AWS_REGION!,
         credentials: {
           accessKeyId: data.Credentials?.AccessKeyId!,
           secretAccessKey: data.Credentials?.SecretAccessKey!,

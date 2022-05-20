@@ -4,7 +4,7 @@
   "description": "Customer web app for Baseplate",
   "type": "module",
   "engines": {
-    "node": ">=17.5"
+    "node": "18"
   },
   "types": "types/backend/TSEntry.d.ts",
   "main": "this-project-only-exposes-typescript-declarations.js",
@@ -17,7 +17,7 @@
   "scripts": {
     "develop": "concurrently \"pnpm:develop:*\"",
     "dev:vscode": "concurrently \"pnpm:develop:db\" \"pnpm:develop:frontend\" \"pnpm:develop:backend:types\"",
-    "develop:backend": "cross-env \"NODE_OPTIONS=--experimental-loader @node-loader/core  --experimental-specifier-resolution=node --experimental-fetch\" IS_RUNNING_LOCALLY=true BASEPLATE_ENV=dev nodemon --signal SIGINT backend/Server.ts --watch backend --watch migrations --watch frontend --ext tsx,ts,js",
+    "develop:backend": "cross-env \"NODE_OPTIONS=--experimental-loader @node-loader/core  --experimental-specifier-resolution=node\" IS_RUNNING_LOCALLY=true BASEPLATE_ENV=dev nodemon --signal SIGINT backend/Server.ts --watch backend --watch migrations --watch frontend --ext tsx,ts,js",
     "develop:backend:types": "tsc --noEmit --watch --preserveWatchOutput",
     "develop:db": "docker-compose up",
     "develop:frontend": "webpack serve --config webpack.config.cjs --port 7700",
@@ -35,7 +35,7 @@
     "prepare-test-db": "bash backend/DB/TestHelpers/StartTestDB.sh && cross-env NODE_ENV=db-tests pnpm exec sequelize db:migrate && cross-env NODE_ENV=db-tests pnpm exec sequelize db:seed:all",
     "destroy-test-db": "docker-compose -f backend/DB/TestHelpers/docker-compose.tests.yml down -v",
     "test-db-migrations": "bash backend/DB/TestHelpers/MigrationTests.sh",
-    "test-db-code": "cross-env \"NODE_OPTIONS=--experimental-vm-modules --experimental-fetch\" NODE_ENV=db-tests jest --config jest.db.config.js --detectOpenHandles",
+    "test-db-code": "cross-env \"NODE_OPTIONS=--experimental-vm-modules\" NODE_ENV=db-tests jest --config jest.db.config.js --detectOpenHandles",
     "prepublishOnly": "pnpm run build:backend",
     "prepare": "husky install"
   },
@@ -112,6 +112,7 @@
     "webpack-manifest-plugin": "^5.0.0"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.95.0",
     "@aws-sdk/client-sts": "^3.87.0",
     "@baseplate-sdk/utils": "^3.1.1",
     "@reach/tooltip": "^0.16.2",
@@ -121,7 +122,7 @@
     "@types/cookie-session": "^2.0.44",
     "@types/express": "^4.17.13",
     "@types/lodash-es": "^4.17.6",
-    "@types/node": "^17.0.27",
+    "@types/node": "^17.0.35",
     "@types/passport-github": "^1.1.7",
     "@types/react": "^17.0.41",
     "@types/react-dom": "^17.0.14",

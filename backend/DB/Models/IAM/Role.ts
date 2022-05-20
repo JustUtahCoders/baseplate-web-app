@@ -29,49 +29,49 @@ export class RoleModel
     DefaultModelAttrs,
     HasManyMethods<{ permission: PermissionModel }>
 {
-  public id!: BaseplateUUID;
-  public name!: string;
-  public humanReadableName!: string;
-  public description!: string;
-  public deprecationDate!: Date;
-  public requiresEntityId!: boolean;
-  public auditAccountId!: string;
-  public customerOrgId?: BaseplateUUID;
+  declare id: BaseplateUUID;
+  declare name: string;
+  declare humanReadableName: string;
+  declare description: string;
+  declare deprecationDate: Date;
+  declare requiresEntityId: boolean;
+  declare auditAccountId: string;
+  declare customerOrgId: BaseplateUUID;
 
-  public getPermissions!: BelongsToManyGetAssociationsMixin<PermissionModel>;
-  public countPermissions!: BelongsToManyCountAssociationsMixin;
-  public hasPermission!: BelongsToManyHasAssociationMixin<
-    PermissionModel,
-    number
-  >;
-  public hasPermissions!: BelongsToManyHasAssociationsMixin<
-    PermissionModel,
-    number
-  >;
-  public setPermissions!: BelongsToManySetAssociationsMixin<
-    PermissionModel,
-    number
-  >;
-  public addPermission!: BelongsToManyAddAssociationMixin<
-    PermissionModel,
-    number
-  >;
-  public addPermissions!: BelongsToManyAddAssociationsMixin<
-    PermissionModel,
-    number
-  >;
-  public removePermission!: BelongsToManyRemoveAssociationMixin<
-    PermissionModel,
-    number
-  >;
-  public removePermissions!: BelongsToManyRemoveAssociationsMixin<
-    PermissionModel,
-    number
-  >;
-  public createPermission!: BelongsToManyCreateAssociationMixin<PermissionModel>;
+  declare createdAt: Date;
+  declare updatedAt: Date;
 
-  public readonly createdAt!: Date;
-  public readonly updatedAt: Date;
+  declare getPermissions: BelongsToManyGetAssociationsMixin<PermissionModel>;
+  declare countPermissions: BelongsToManyCountAssociationsMixin;
+  declare hasPermission: BelongsToManyHasAssociationMixin<
+    PermissionModel,
+    number
+  >;
+  declare hasPermissions: BelongsToManyHasAssociationsMixin<
+    PermissionModel,
+    number
+  >;
+  declare setPermissions: BelongsToManySetAssociationsMixin<
+    PermissionModel,
+    number
+  >;
+  declare addPermission: BelongsToManyAddAssociationMixin<
+    PermissionModel,
+    number
+  >;
+  declare addPermissions: BelongsToManyAddAssociationsMixin<
+    PermissionModel,
+    number
+  >;
+  declare removePermission: BelongsToManyRemoveAssociationMixin<
+    PermissionModel,
+    number
+  >;
+  declare removePermissions: BelongsToManyRemoveAssociationsMixin<
+    PermissionModel,
+    number
+  >;
+  declare createPermission: BelongsToManyCreateAssociationMixin<PermissionModel>;
 }
 
 export interface RoleAttributes extends AuditTargetAttributes {

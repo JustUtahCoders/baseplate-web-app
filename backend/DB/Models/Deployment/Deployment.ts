@@ -31,14 +31,17 @@ export class DeploymentModel
     HasManyMethods<{ deploymentLog: DeploymentLogModel }>,
     HasManyMethods<{ deployedMicrofrontend: DeployedMicrofrontendModel }>
 {
-  public id!: BaseplateUUID;
-  public accountId!: BaseplateUUID;
-  public cause!: DeploymentCause;
-  public status!: DeploymentStatus;
-  public environmentId!: BaseplateUUID;
-  public auditAccountId!: BaseplateUUID;
+  declare id: BaseplateUUID;
+  declare accountId: BaseplateUUID;
+  declare cause: DeploymentCause;
+  declare status: DeploymentStatus;
+  declare environmentId: BaseplateUUID;
+  declare auditAccountId: BaseplateUUID;
 
-  public async deriveImportMap(): Promise<ImportMap> {
+  declare createdAt: Date;
+  declare updatedAt: Date;
+
+  public async deriveImportMap(this: DeploymentModel): Promise<ImportMap> {
     const deployedMicrofrontends = await this.getDeployedMicrofrontends();
 
     const importMap: ImportMap = {
@@ -58,86 +61,83 @@ export class DeploymentModel
     return importMap;
   }
 
-  public getBaseplateToken!: BelongsToGetAssociationMixin<AuthTokenModel>;
-  public setBaseplateToken!: BelongsToSetAssociationMixin<
+  declare getBaseplateToken: BelongsToGetAssociationMixin<AuthTokenModel>;
+  declare setBaseplateToken: BelongsToSetAssociationMixin<
     AuthTokenModel,
     number
   >;
-  public createBaseplateToken!: BelongsToCreateAssociationMixin<AuthTokenModel>;
+  declare createBaseplateToken: BelongsToCreateAssociationMixin<AuthTokenModel>;
 
-  public getEnvironment!: BelongsToGetAssociationMixin<EnvironmentModel>;
-  public setEnvironment!: BelongsToSetAssociationMixin<
+  declare getEnvironment: BelongsToGetAssociationMixin<EnvironmentModel>;
+  declare setEnvironment: BelongsToSetAssociationMixin<
     EnvironmentModel,
     number
   >;
-  public createEnvironment!: BelongsToCreateAssociationMixin<EnvironmentModel>;
+  declare createEnvironment: BelongsToCreateAssociationMixin<EnvironmentModel>;
 
-  public getDeploymentLogs!: HasManyGetAssociationsMixin<DeploymentLogModel>;
-  public countDeploymentLogs!: HasManyCountAssociationsMixin;
-  public hasDeploymentLog!: HasManyHasAssociationMixin<
+  declare getDeploymentLogs: HasManyGetAssociationsMixin<DeploymentLogModel>;
+  declare countDeploymentLogs: HasManyCountAssociationsMixin;
+  declare hasDeploymentLog: HasManyHasAssociationMixin<
     DeploymentLogModel,
     number
   >;
-  public hasDeploymentLogs!: HasManyHasAssociationsMixin<
+  declare hasDeploymentLogs: HasManyHasAssociationsMixin<
     DeploymentLogModel,
     number
   >;
-  public setDeploymentLogs!: HasManySetAssociationsMixin<
+  declare setDeploymentLogs: HasManySetAssociationsMixin<
     DeploymentLogModel,
     number
   >;
-  public addDeploymentLog!: HasManyAddAssociationMixin<
+  declare addDeploymentLog: HasManyAddAssociationMixin<
     DeploymentLogModel,
     number
   >;
-  public addDeploymentLogs!: HasManyAddAssociationsMixin<
+  declare addDeploymentLogs: HasManyAddAssociationsMixin<
     DeploymentLogModel,
     number
   >;
-  public removeDeploymentLog!: HasManyRemoveAssociationMixin<
+  declare removeDeploymentLog: HasManyRemoveAssociationMixin<
     DeploymentLogModel,
     number
   >;
-  public removeDeploymentLogs!: HasManyRemoveAssociationsMixin<
+  declare removeDeploymentLogs: HasManyRemoveAssociationsMixin<
     DeploymentLogModel,
     number
   >;
-  public createDeploymentLog!: HasManyCreateAssociationMixin<DeploymentLogModel>;
+  declare createDeploymentLog: HasManyCreateAssociationMixin<DeploymentLogModel>;
 
-  public getDeployedMicrofrontends!: HasManyGetAssociationsMixin<DeployedMicrofrontendModel>;
-  public countDeployedMicrofrontends!: HasManyCountAssociationsMixin;
-  public hasDeployedMicrofrontend!: HasManyHasAssociationMixin<
+  declare getDeployedMicrofrontends: HasManyGetAssociationsMixin<DeployedMicrofrontendModel>;
+  declare countDeployedMicrofrontends: HasManyCountAssociationsMixin;
+  declare hasDeployedMicrofrontend: HasManyHasAssociationMixin<
     DeployedMicrofrontendModel,
     number
   >;
-  public hasDeployedMicrofrontends!: HasManyHasAssociationsMixin<
+  declare hasDeployedMicrofrontends: HasManyHasAssociationsMixin<
     DeployedMicrofrontendModel,
     number
   >;
-  public setDeployedMicrofrontends!: HasManySetAssociationsMixin<
+  declare setDeployedMicrofrontends: HasManySetAssociationsMixin<
     DeployedMicrofrontendModel,
     number
   >;
-  public addDeployedMicrofrontend!: HasManyAddAssociationMixin<
+  declare addDeployedMicrofrontend: HasManyAddAssociationMixin<
     DeployedMicrofrontendModel,
     number
   >;
-  public addDeployedMicrofrontends!: HasManyAddAssociationsMixin<
+  declare addDeployedMicrofrontends: HasManyAddAssociationsMixin<
     DeployedMicrofrontendModel,
     number
   >;
-  public removeDeployedMicrofrontend!: HasManyRemoveAssociationMixin<
+  declare removeDeployedMicrofrontend: HasManyRemoveAssociationMixin<
     DeployedMicrofrontendModel,
     number
   >;
-  public removeDeployedMicrofrontends!: HasManyRemoveAssociationsMixin<
+  declare removeDeployedMicrofrontends: HasManyRemoveAssociationsMixin<
     DeployedMicrofrontendModel,
     number
   >;
-  public createDeployedMicrofrontend!: HasManyCreateAssociationMixin<DeployedMicrofrontendModel>;
-
-  public readonly createdAt!: Date;
-  public readonly updatedAt!: Date;
+  declare createDeployedMicrofrontend: HasManyCreateAssociationMixin<DeployedMicrofrontendModel>;
 }
 
 export interface DeploymentAttributes extends AuditTargetAttributes {
@@ -174,6 +174,7 @@ modelEvents.once("init", (sequelize) => {
 modelEvents.once("associate", (sequelize) => {
   DeploymentModel.hasMany(DeploymentLogModel, {
     foreignKey: "deploymentId",
+    as: "deploymentLog",
   });
 
   DeploymentModel.belongsTo(EnvironmentModel, {

@@ -22,24 +22,24 @@ export class EnvironmentModel
     EnvironmentAttributes,
     BelongsToMethods<{ customerOrg: CustomerOrgModel }>
 {
-  public id!: BaseplateUUID;
-  public customerOrgId!: BaseplateUUID;
-  public name!: string;
-  public isProd!: boolean;
-  public useBaseplateStaticWebHosting!: boolean;
-  public staticWebProxyHost!: string;
+  declare id: BaseplateUUID;
+  declare customerOrgId: BaseplateUUID;
+  declare name: string;
+  declare isProd: boolean;
+  declare useBaseplateStaticWebHosting: boolean;
+  declare staticWebProxyHost: string;
 
-  public auditAccountId!: BaseplateUUID;
+  declare auditAccountId: BaseplateUUID;
 
-  public readonly createdAt!: Date;
-  public readonly updatedAt!: Date;
+  declare createdAt: Date;
+  declare updatedAt: Date;
 
-  public getCustomerOrg!: BelongsToGetAssociationMixin<CustomerOrgModel>;
-  public setCustomerOrg!: BelongsToSetAssociationMixin<
+  declare getCustomerOrg: BelongsToGetAssociationMixin<CustomerOrgModel>;
+  declare setCustomerOrg: BelongsToSetAssociationMixin<
     CustomerOrgModel,
     number
   >;
-  public createCustomerOrg!: BelongsToCreateAssociationMixin<CustomerOrgModel>;
+  declare createCustomerOrg: BelongsToCreateAssociationMixin<CustomerOrgModel>;
 }
 
 export interface EnvironmentAttributes extends AuditTargetAttributes {

@@ -8,13 +8,13 @@ export class DeploymentLogModel
   extends Model<DeploymentLogAttributes, DeploymentLogCreationAttributes>
   implements DeploymentLogAttributes
 {
-  public id!: BaseplateUUID;
-  public deploymentId!: BaseplateUUID;
-  public label!: string;
-  public text!: string;
+  declare id: BaseplateUUID;
+  declare deploymentId: BaseplateUUID;
+  declare label: string;
+  declare text: string;
 
-  public readonly createdAt!: Date;
-  public readonly updatedAt!: Date;
+  declare createdAt: Date;
+  declare updatedAt: Date;
 }
 
 export interface DeploymentLogAttributes {

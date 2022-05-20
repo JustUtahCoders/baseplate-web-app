@@ -10,13 +10,13 @@ export class AuditModel<ModelAttributes>
   >
   implements AuditAttributes<ModelAttributes>
 {
-  public id!: BaseplateUUID;
-  public auditAccountId!: BaseplateUUID;
-  public auditItemId!: BaseplateUUID;
-  public auditTimestamp!: Date;
-  public auditEventType!: string;
-  public oldRowData: Partial<ModelAttributes>;
-  public newRowData: Partial<ModelAttributes>;
+  declare id: BaseplateUUID;
+  declare auditAccountId: BaseplateUUID;
+  declare auditItemId: BaseplateUUID;
+  declare auditTimestamp: Date;
+  declare auditEventType: string;
+  declare oldRowData: Partial<ModelAttributes>;
+  declare newRowData: Partial<ModelAttributes>;
 }
 
 export interface AuditAttributes<ModelAttributes> {
