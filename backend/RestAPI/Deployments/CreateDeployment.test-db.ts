@@ -254,7 +254,8 @@ describe(`POST /api/deployments`, () => {
     expect(response.statusCode).toBe(400);
     expect(response.body).toEqual({
       errors: [
-        `The following URLs are not publicly reachable, so they cannot be put into the import map created by this deployment: https://cdn.baseplate.cloud/${
+        `The following URLs are not publicly reachable, so they cannot be put into the import map created by this deployment`,
+        `https://cdn.baseplate.cloud/${
           getCustomerOrg().orgKey
         }/apps/navbar/navbar.js`,
       ],
