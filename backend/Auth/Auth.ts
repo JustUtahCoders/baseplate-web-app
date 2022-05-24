@@ -226,7 +226,7 @@ router.use("/", async (req, res, next) => {
       where: {
         accountId,
         dateRevoked: {
-          [Op.is]: null,
+          [Op.is]: undefined,
         },
       },
       include: {
