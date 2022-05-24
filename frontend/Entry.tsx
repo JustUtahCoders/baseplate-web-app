@@ -1,4 +1,4 @@
-import { hydrate } from "react-dom";
+import { hydrateRoot } from "react-dom/client";
 import * as React from "react";
 import { App, AppProps } from "./App";
 import "tailwindcss/tailwind.css";
@@ -8,4 +8,4 @@ const rootProps = JSON.parse(
     .textContent as string
 ) as AppProps;
 
-hydrate(<App {...rootProps} />, document.documentElement);
+hydrateRoot(document.documentElement, <App {...rootProps} />);

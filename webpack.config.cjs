@@ -5,6 +5,12 @@ const TerserPlugin = require("terser-webpack-plugin");
 const ForkTsCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin");
 const ReactRefreshWebpackPlugin = require("@pmmmwh/react-refresh-webpack-plugin");
 
+/**
+ *
+ * @param {*} webpackConfigEnv
+ * @param {*} argv
+ * @returns {import('webpack').Configuration}
+ */
 module.exports = (webpackConfigEnv, argv) => {
   const isProd = webpackConfigEnv.prod;
 
@@ -87,6 +93,9 @@ module.exports = (webpackConfigEnv, argv) => {
       hot: true,
       headers: {
         "Access-Control-Allow-Origin": "*",
+      },
+      client: {
+        webSocketURL: "ws://localhost:7700/ws",
       },
     },
   };

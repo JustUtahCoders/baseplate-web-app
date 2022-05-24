@@ -225,7 +225,9 @@ router.use("/", async (req, res, next) => {
     accountPermissionsPromise = AccountPermissionModel.findAll({
       where: {
         accountId,
-        dateRevoked: null,
+        dateRevoked: {
+          [Op.is]: null,
+        },
       },
       include: {
         model: PermissionModel,

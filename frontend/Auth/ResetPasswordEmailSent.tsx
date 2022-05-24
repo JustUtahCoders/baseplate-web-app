@@ -1,13 +1,20 @@
-import React from "react";
-import { Redirect } from "react-router";
 import { Button, ButtonKind } from "../Styleguide/Button";
 import { Anchor } from "../Styleguide/Anchor";
+import { useNavigate, useLocation } from "react-router";
+import { useEffect } from "react";
 
-export function ResetPasswordEmailSent(props) {
-  const { email } = props.location.state;
+export function ResetPasswordEmailSent(props: Props) {
+  const { email } = useLocation().state as { email: string };
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!email) {
+      navigate("/login");
+    }
+  }, [email, navigate]);
 
   if (!email) {
-    return <Redirect to="/login" />;
+    return null;
   }
 
   return (
@@ -30,3 +37,5 @@ export function ResetPasswordEmailSent(props) {
     </div>
   );
 }
+
+interface Props {}

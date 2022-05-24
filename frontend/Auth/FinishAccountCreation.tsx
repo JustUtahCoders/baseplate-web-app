@@ -1,15 +1,15 @@
-import { useState, FormEvent } from "react";
+import { useState, FormEvent, useEffect } from "react";
 import { useMutation } from "react-query";
-import { Redirect, RouteProps, useHistory } from "react-router";
 import { FormField } from "../Styleguide/FormField";
 import { FormFieldLabel } from "../Styleguide/FormFieldLabel";
 import { Input } from "../Styleguide/Input";
 import { baseplateFetch } from "../Utils/baseplateFetch";
 import { unary } from "lodash-es";
 import { Button, ButtonKind } from "../Styleguide/Button";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
-export function FinishAccountCreation(props: RouteProps) {
-  const searchParams = new URLSearchParams(props.location?.search);
+export function FinishAccountCreation(props: Props) {
+  const [searchParams] = useSearchParams();
   const [email, setEmail] = useState(searchParams.get("email") || "");
   const [givenName, setGivenName] = useState(
     searchParams.get("givenName") || ""
@@ -18,7 +18,13 @@ export function FinishAccountCreation(props: RouteProps) {
     searchParams.get("familyName") || ""
   );
   const githubAccessToken = searchParams.get("githubAccessToken");
-  const history = useHistory();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!githubAccessToken) {
+      navigate("/login");
+    }
+  }, [githubAccessToken, navigate]);
 
   const submitMutation = useMutation<
     APIResult,
@@ -50,10 +56,6 @@ export function FinishAccountCreation(props: RouteProps) {
       },
     }
   );
-
-  if (!githubAccessToken) {
-    return <Redirect to="/login" />;
-  }
 
   return (
     <div className="flex justify-center h-screen">
@@ -104,3 +106,5 @@ export function FinishAccountCreation(props: RouteProps) {
 interface APIResult {
   success: boolean;
 }
+
+interface Props {}

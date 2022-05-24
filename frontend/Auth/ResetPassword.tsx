@@ -1,21 +1,20 @@
 import React, { useState } from "react";
-import { useHistory } from "react-router-dom";
 import { Button, ButtonKind } from "../Styleguide/Button";
 import { FormField } from "../Styleguide/FormField";
 import { FormFieldLabel } from "../Styleguide/FormFieldLabel";
 import { Input } from "../Styleguide/Input";
-import { RouterProps } from "react-router";
+import { RouterProps, useNavigate } from "react-router";
 import { useMutation } from "react-query";
 import { baseplateFetch } from "../Utils/baseplateFetch";
 import { unary } from "lodash-es";
 
-export function ResetPassword(props: RouterProps) {
+export function ResetPassword(props: Props) {
   const [resetPasswordFormData, setResetPasswordFormData] =
     useState<ResetPasswordFormData>({
       email: "",
     });
 
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const submitMutation = useMutation<
     void,
@@ -34,8 +33,7 @@ export function ResetPassword(props: RouterProps) {
     },
     {
       onSuccess: async (data, variables, context) => {
-        history.push({
-          pathname: "/reset-password-email-sent",
+        navigate("/reset-password-email-sent", {
           state: { email: resetPasswordFormData.email },
         });
       },
@@ -91,3 +89,5 @@ export function ResetPassword(props: RouterProps) {
 interface ResetPasswordFormData {
   email: string;
 }
+
+interface Props {}
