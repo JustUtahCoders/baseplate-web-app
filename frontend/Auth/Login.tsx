@@ -8,24 +8,23 @@
 */
 
 import React, { useState } from "react";
-import { useHistory } from "react-router-dom";
 import { Button, ButtonKind } from "../Styleguide/Button";
 import { Anchor } from "../Styleguide/Anchor";
 import { FormField } from "../Styleguide/FormField";
 import { FormFieldLabel } from "../Styleguide/FormFieldLabel";
 import { Input } from "../Styleguide/Input";
-import { RouterProps } from "react-router";
+import { useNavigate } from "react-router";
 import { useMutation } from "react-query";
 import { baseplateFetch } from "../Utils/baseplateFetch";
 import { unary } from "lodash-es";
 
-export function Login(props: RouterProps) {
+export function Login(props: Props) {
   const [loginFormData, setLoginFormData] = useState<LoginFormData>({
     username: "",
     password: "",
   });
 
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const submitMutation = useMutation<
     LoginResultData,
@@ -45,7 +44,7 @@ export function Login(props: RouterProps) {
     },
     {
       onSuccess: async (data, variables, context) => {
-        history.push("/app");
+        navigate("/app");
       },
       onError: (error, variables, context) => {
         throw error;
@@ -122,3 +121,5 @@ export interface LoginFormData {
   username: string;
   password: string;
 }
+
+interface Props {}

@@ -1,6 +1,10 @@
 const colors = require("tailwindcss/colors");
 
+/**
+ * @type {import('tailwindcss/tailwind-config').TailwindConfig}
+ */
 module.exports = {
+  content: ["frontend/**/*.{ts,tsx,js,jsx}"],
   theme: {
     colors: {
       primary: {

@@ -1,10 +1,13 @@
-import { StaticRouter, Route, Redirect } from "react-router";
+import { StaticRouter } from "react-router-dom/server";
+import { Route, Routes } from "react-router";
 import { BrowserRouter } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { Login } from "./Auth/Login";
 import { ResetPassword } from "./Auth/ResetPassword";
 import { ResetPasswordEmailSent } from "./Auth/ResetPasswordEmailSent";
 import { FinishAccountCreation } from "./Auth/FinishAccountCreation";
+import { DocsHome } from "./Docs/DocsHome";
+import { DocsPage } from "./Docs/DocsPage";
 
 const queryClient = new QueryClient();
 
@@ -42,17 +45,22 @@ export function App(props: AppProps) {
       <body>
         {/* @ts-ignore */}
         <Router context={props.routerContext} location={props.reqUrl}>
-          <Route path="/login" component={Login} />
-          <Route path="/reset-password" component={ResetPassword} />
-          <Route
-            path="/reset-password-email-sent"
-            component={ResetPasswordEmailSent}
-          />
-          <Route
-            path="/finish-account-creation"
-            component={FinishAccountCreation}
-          />
-          <Route path="/" exact render={() => <div>Home</div>} />
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
+            <Route
+              path="/reset-password-email-sent"
+              element={<ResetPasswordEmailSent />}
+            />
+            <Route
+              path="/finish-account-creation"
+              element={<FinishAccountCreation />}
+            />
+            <Route path="/" element={<div>Home</div>} />
+            <Route path="/docs" element={<DocsHome />}>
+              <Route path=":folder1/:docsPage" element={<DocsPage />} />
+            </Route>
+          </Routes>
         </Router>
         {props.jsFiles.map((jsFile) => (
           <script key={jsFile} src={`${props.assetBase}/${jsFile}`}></script>

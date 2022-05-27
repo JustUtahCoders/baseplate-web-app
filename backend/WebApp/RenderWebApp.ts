@@ -1,8 +1,7 @@
 import { Response } from "express";
 import { createElement } from "react";
-import ReactDOMServer from "react-dom/server.js";
+import ReactDOMServer from "react-dom/server";
 import { App, AppProps, RouterContext } from "../../frontend/App";
-import { serverApiError } from "../Utils/EndpointResponses";
 
 export const renderWebApp = async (req, res: Response) => {
   const routerContext: RouterContext = {};
@@ -26,29 +25,28 @@ export const renderWebApp = async (req, res: Response) => {
     jsFiles: [isProd ? webpackManifest["main.js"] : "baseplate-web-app.js"],
   };
 
-  let stream;
-  try {
-    stream = ReactDOMServer.renderToNodeStream(createElement(App, props));
-  } catch (err) {
-    console.log("ERROR", err);
-    return serverApiError(res, "Unable to generate HTML");
-  }
+  let didError = false;
+  const stream = ReactDOMServer.renderToPipeableStream(
+    createElement(App, props),
+    {
+      onShellReady() {
+        res.status(didError ? 500 : 200);
+        res.setHeader("content-type", "text/html");
+        res.write("<!DOCTYPE html><html>");
+        stream.pipe(res);
+      },
+      onShellError(error) {
+        console.error(error);
+        res.status(500).send("<!DOCTYPE html><html>Server error</html>");
+      },
+      onError(err) {
+        console.error(err);
+        didError = true;
+      },
+    }
+  );
 
   if (routerContext.url) {
     return res.redirect(routerContext.url);
   }
-
-  res.write("<!DOCTYPE html><html>");
-
-  stream.on("error", (err) => {
-    console.log("ERROR", err);
-    res.end();
-  });
-
-  stream.on("end", () => {
-    res.write("</html>");
-    res.end();
-  });
-
-  stream.pipe(res, { end: false });
 };

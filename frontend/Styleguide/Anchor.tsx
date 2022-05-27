@@ -28,4 +28,5 @@ export function Anchor(props: AnchorProps) {
 export type AnchorProps = Omit<LinkProps, "to"> & {
   kind: ButtonKind;
   to?: string;
+  href?: string;
 };
