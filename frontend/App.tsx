@@ -11,8 +11,16 @@ import { DocsPage } from "./Docs/DocsPage";
 import { createContext } from "react";
 
 const queryClient = new QueryClient();
-export const SSRResultContext = createContext<SSRResult>({
-  ejsData: { pageTitle: "" },
+export const RootPropsContext = createContext<AppProps>({
+  reqUrl: "/",
+  ssrResult: {
+    ejsData: {
+      pageTitle: "Baseplate",
+    },
+  },
+  userInformation: {
+    isLoggedIn: false,
+  },
 });
 
 export function App(props: AppProps) {
@@ -22,7 +30,7 @@ export function App(props: AppProps) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <SSRResultContext.Provider value={props.ssrResult}>
+      <RootPropsContext.Provider value={props}>
         <Router location={props.reqUrl}>
           <Routes>
             <Route path="/login" element={<Login />} />
@@ -41,14 +49,20 @@ export function App(props: AppProps) {
             </Route>
           </Routes>
         </Router>
-      </SSRResultContext.Provider>
+      </RootPropsContext.Provider>
     </QueryClientProvider>
   );
 }
 
 export interface AppProps {
+  userInformation: UserInformation;
   ssrResult: SSRResult;
   reqUrl: string;
+}
+
+export interface UserInformation {
+  isLoggedIn: boolean;
+  orgKey?: string;
 }
 
 export interface SSRResult {

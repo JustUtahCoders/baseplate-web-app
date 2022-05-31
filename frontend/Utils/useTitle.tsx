@@ -1,11 +1,11 @@
 import { useContext, useEffect } from "react";
-import { SSRResultContext } from "../App";
+import { RootPropsContext } from "../App";
 
 export function useTitle(title: string | Promise<string>): void {
-  const ssrResultContext = useContext(SSRResultContext);
+  const rootPropsContext = useContext(RootPropsContext);
 
   if (typeof document === "undefined") {
-    ssrResultContext.ejsData.pageTitle = title;
+    rootPropsContext.ssrResult.ejsData.pageTitle = title;
   }
 
   useEffect(() => {
