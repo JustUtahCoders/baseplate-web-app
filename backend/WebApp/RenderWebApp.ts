@@ -50,7 +50,7 @@ export const renderWebApp = async (req, res: Response) => {
     const customerOrg = await CustomerOrgModel.findByPk(
       req.query.customerOrgId
     );
-    userInformation.orgKey = customerOrg?.orgKey ?? "";
+    userInformation.orgKey = customerOrg?.orgKey;
   }
 
   const rootProps: AppProps = {
