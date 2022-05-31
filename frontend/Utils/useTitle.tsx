@@ -1,16 +1,31 @@
 import { useContext, useEffect } from "react";
 import { SSRResultContext } from "../App";
 
-export function useTitle(title: string): void {
+export function useTitle(title: string | Promise<string>): void {
   const ssrResultContext = useContext(SSRResultContext);
 
+  if (typeof document === "undefined") {
+    ssrResultContext.ejsData.pageTitle = title;
+  }
+
   useEffect(() => {
-    if (typeof document !== "undefined") {
-      console.log("setting browser title", document.title, title);
-      document.title = title;
+    let titlePromise: Promise<string>;
+    if (typeof title === "string") {
+      titlePromise = Promise.resolve(title);
     } else {
-      console.log("setting html title context", title);
-      ssrResultContext.ejsData.pageTitle = title;
+      titlePromise = title;
     }
+
+    let canceled: boolean = false;
+
+    titlePromise.then((title) => {
+      if (!canceled && typeof document !== "undefined") {
+        document.title = title;
+      }
+    });
+
+    return () => {
+      canceled = true;
+    };
   });
 }

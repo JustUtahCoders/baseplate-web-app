@@ -1,17 +1,10 @@
-import {
-  Component,
-  FunctionComponent,
-  lazy,
-  ReactNode,
-  Suspense,
-  useState,
-} from "react";
+import { Component, FunctionComponent, lazy, ReactNode, Suspense } from "react";
 import { useParams } from "react-router";
 import { MDXProvider } from "@mdx-js/react";
 import { useTitle } from "../Utils/useTitle";
 
 const inBrowser = typeof window !== "undefined";
-let promiseLoad: (url: string) => Promise<{ default: FunctionComponent }>;
+let promiseLoad: (url: string) => Promise<DocModule>;
 let webpackContext: __WebpackModuleApi.RequireContext;
 
 if (inBrowser) {
@@ -27,15 +20,14 @@ const mdxComponents = {};
 
 export function DocsPage(props: Props) {
   const params = useParams();
-  const [notFound, setNotFound] = useState(false);
-  const DocsComp = lazy(() =>
-    promiseLoad(`${params.folder1}/${params.docsPage}.mdx`)
-  );
-  useTitle("Docs Page");
 
-  if (notFound) {
-    return <div>No such docs page.</div>;
-  }
+  const filePath = `${params.folder1}/${params.docsPage}.mdx`;
+
+  const DocsComp = lazy(() => promiseLoad(filePath));
+
+  useTitle(
+    promiseLoad(filePath).then((m) => m.pageTitle || "Baseplate Documentation")
+  );
 
   return (
     <ErrorBoundary>
@@ -67,3 +59,8 @@ class ErrorBoundary extends Component<{ children: ReactNode }> {
 }
 
 interface Props {}
+
+interface DocModule {
+  default: FunctionComponent;
+  pageTitle?: string;
+}
