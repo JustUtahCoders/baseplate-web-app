@@ -76,7 +76,7 @@ specifiers:
   mini-css-extract-plugin: ^2.6.0
   nodemon: ^2.0.16
   open: ^8.4.0
-  passport: ^0.6.0
+  passport: '0.5'
   passport-custom: ^1.1.1
   passport-github: ^1.1.0
   passport-local: ^1.0.0
@@ -149,7 +149,7 @@ dependencies:
   lodash-es: 4.17.21
   merge2: 1.4.1
   open: 8.4.0
-  passport: 0.6.0
+  passport: 0.5.3
   passport-custom: 1.1.1
   passport-github: 1.1.0
   passport-local: 1.0.0
@@ -8749,17 +8749,16 @@ packages:
     dev: false
 
   /passport-strategy/1.0.0:
-    resolution: {integrity: sha1-tVOaqPwiWj0a0XlHbd8ja0QPUuQ=, registry: https://gitlab.com/api/v4/packages/npm/, tarball: https://gitlab.com/api/v4/packages/npm/passport-strategy/-/passport-strategy-1.0.0.tgz}
+    resolution: {integrity: sha1-tVOaqPwiWj0a0XlHbd8ja0QPUuQ=}
     engines: {node: '>= 0.4.0'}
     dev: false
 
-  /passport/0.6.0:
-    resolution: {integrity: sha512-0fe+p3ZnrWRW74fe8+SvCyf4a3Pb2/h7gFkQ8yTJpAO50gDzlfjZUZTO1k5Eg9kUct22OxHLqDZoKUWRHOh9ug==, registry: https://gitlab.com/api/v4/packages/npm/, tarball: https://gitlab.com/api/v4/packages/npm/passport/-/passport-0.6.0.tgz}
+  /passport/0.5.3:
+    resolution: {integrity: sha512-gGc+70h4gGdBWNsR3FuV3byLDY6KBTJAIExGFXTpQaYfbbcHCBlRRKx7RBQSpqEqc5Hh2qVzRs7ssvSfOpkUEA==}
     engines: {node: '>= 0.4.0'}
     dependencies:
       passport-strategy: 1.0.0
       pause: 0.0.1
-      utils-merge: 1.0.1
     dev: false
 
   /path-exists/4.0.0:
@@ -8789,7 +8788,7 @@ packages:
     dev: true
 
   /pause/0.0.1:
-    resolution: {integrity: sha1-HUCLP9t2kjuVQ9lvtMnf1TXZy10=, registry: https://gitlab.com/api/v4/packages/npm/, tarball: https://gitlab.com/api/v4/packages/npm/pause/-/pause-0.0.1.tgz}
+    resolution: {integrity: sha1-HUCLP9t2kjuVQ9lvtMnf1TXZy10=}
     dev: false
 
   /periscopic/3.0.4:

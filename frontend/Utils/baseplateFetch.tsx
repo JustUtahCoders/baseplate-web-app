@@ -21,7 +21,10 @@ export function baseplateFetch<ResponseDataType = object>(
         return r.text();
       }
     } else if (r.status === 401) {
-      window.location.assign("/login");
+      if (window.location.pathname !== "/login") {
+        window.location.assign("/login");
+      }
+      return { httpStatus: r.status };
     } else {
       throw Error(
         `Server responded with ${r.status} ${r.statusText} when requesting ${

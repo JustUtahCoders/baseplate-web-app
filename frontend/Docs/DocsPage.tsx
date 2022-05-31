@@ -1,40 +1,39 @@
-import { Component, FunctionComponent, lazy, ReactNode, Suspense } from "react";
+import {
+  Component,
+  FunctionComponent,
+  lazy,
+  ReactNode,
+  Suspense,
+  useContext,
+} from "react";
 import { useParams } from "react-router";
-import { MDXProvider } from "@mdx-js/react";
 import { useTitle } from "../Utils/useTitle";
-
-const inBrowser = typeof window !== "undefined";
-let promiseLoad: (url: string) => Promise<DocModule>;
-let webpackContext: __WebpackModuleApi.RequireContext;
-
-if (inBrowser) {
-  webpackContext = require.context("../../docs", true, /\.mdx?$/);
-  promiseLoad = async (url: string) => {
-    return webpackContext("./" + url);
-  };
-} else {
-  promiseLoad = (url: string) => import(`../../docs/${url}`);
-}
-
-const mdxComponents = {};
+import { loadDocModule } from "./DocsUtils";
+import { RootPropsContext } from "../App";
+import { CdnUrl } from "./CdnUrl";
 
 export function DocsPage(props: Props) {
   const params = useParams();
+  const rootProps = useContext(RootPropsContext);
 
   const filePath = `${params.folder1}/${params.docsPage}.mdx`;
 
-  const DocsComp = lazy(() => promiseLoad(filePath));
+  const DocsComp = lazy<FunctionComponent<{ orgKey: string; components: any }>>(
+    () => loadDocModule(filePath)
+  );
 
   useTitle(
-    promiseLoad(filePath).then((m) => m.pageTitle || "Baseplate Documentation")
+    loadDocModule(filePath).then(
+      (m) => m.pageTitle ?? "Baseplate Documentation"
+    )
   );
+
+  const orgKey = rootProps.userInformation.orgKey ?? ":orgKey";
 
   return (
     <ErrorBoundary>
       <Suspense fallback={<div>Loading...</div>}>
-        <MDXProvider components={mdxComponents}>
-          <DocsComp />
-        </MDXProvider>
+        <DocsComp orgKey={orgKey} components={{ CdnUrl }} />
       </Suspense>
     </ErrorBoundary>
   );
@@ -59,8 +58,3 @@ class ErrorBoundary extends Component<{ children: ReactNode }> {
 }
 
 interface Props {}
-
-interface DocModule {
-  default: FunctionComponent;
-  pageTitle?: string;
-}

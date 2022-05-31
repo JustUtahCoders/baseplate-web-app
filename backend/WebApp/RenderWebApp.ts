@@ -1,12 +1,13 @@
 import { Response } from "express";
 import { createElement } from "react";
 import ReactDOMServer from "react-dom/server";
-import { App, AppProps, SSRResult } from "../../frontend/App";
+import { App, AppProps, SSRResult, UserInformation } from "../../frontend/App";
 import url from "url";
 import { renderFile, render } from "ejs";
 import fs from "fs";
 import merge2 from "merge2";
 import { Duplex, pipeline, Readable } from "stream";
+import { CustomerOrgModel } from "../DB/Models/CustomerOrg/CustomerOrg";
 
 const webAppIntro = url.fileURLToPath(
   new URL("./WebAppIntro.ejs", import.meta.url).href
@@ -40,7 +41,20 @@ export const renderWebApp = async (req, res: Response) => {
     webpackManifest = (await import("../webpack-manifest.json")).default;
   }
 
+  const userInformation: UserInformation = {
+    isLoggedIn: Boolean(req.baseplateAccount),
+    orgKey: "",
+  };
+
+  if (userInformation.isLoggedIn && req.query.customerOrgId) {
+    const customerOrg = await CustomerOrgModel.findByPk(
+      req.query.customerOrgId
+    );
+    userInformation.orgKey = customerOrg?.orgKey ?? "";
+  }
+
   const rootProps: AppProps = {
+    userInformation,
     ssrResult,
     reqUrl: req.url,
   };

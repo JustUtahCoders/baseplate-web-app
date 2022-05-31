@@ -28,15 +28,18 @@ import { Strategy as GithubStrategy } from "passport-github";
 import { body } from "express-validator";
 import { Op } from "sequelize";
 import validator from "validator";
+import bcrypt from "bcryptjs";
 
 passport.use(
   new Strategy(async function (email, password, done) {
     try {
-      const user = await UserModel.findAll({
+      const users = await UserModel.findAll({
         where: {
           email,
-          password,
         },
+      });
+      const user = users.find((u) => {
+        return u.password && bcrypt.compareSync(password, u.password);
       });
       if (user) {
         return done(null, user);
@@ -121,6 +124,10 @@ router.post("/login", passport.authenticate("local"), (req, res, next) => {
 });
 
 router.get("/login", renderWebApp);
+router.get("/logout", async (req, res) => {
+  req.logout();
+  res.redirect("/login");
+});
 
 router.get("/auth/github", passport.authenticate("github"));
 router.get(

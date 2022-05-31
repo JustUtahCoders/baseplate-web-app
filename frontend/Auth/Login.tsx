@@ -23,6 +23,7 @@ export function Login(props: Props) {
     username: "",
     password: "",
   });
+  const [loginError, setLoginError] = useState<null | Error>(null);
 
   const navigate = useNavigate();
 
@@ -31,30 +32,37 @@ export function Login(props: Props) {
     Error,
     React.FormEvent<HTMLFormElement>
   >(
-    (evt) => {
+    async (evt) => {
       evt.preventDefault();
-      let requestPromise = baseplateFetch<LoginResultData>(`/login`, {
+      const result = await baseplateFetch<LoginResultData>(`/login`, {
         method: "POST",
         body: {
           username: loginFormData.username,
           password: loginFormData.password,
         },
       });
-      return requestPromise;
+
+      // @ts-ignore
+      if (result.httpStatus === 401) {
+        throw Error("Server responded with 401");
+      } else {
+        return result;
+      }
     },
     {
       onSuccess: async (data, variables, context) => {
         navigate("/app");
       },
       onError: (error, variables, context) => {
-        throw error;
+        console.error(error);
+        setLoginError(error);
       },
     }
   );
 
   return (
     <div className="flex justify-center h-screen">
-      <form onSubmit={unary(submitMutation.mutate)} className="pt-40">
+      <form onSubmit={submitMutation.mutate} className="pt-40">
         <h1 className="text-xl text-gray-500 place-self-start mb-6">Sign in</h1>
         <FormField>
           <FormFieldLabel htmlFor="username">Email</FormFieldLabel>
@@ -86,6 +94,7 @@ export function Login(props: Props) {
             required
           />
         </FormField>
+        {loginError && <div>Invalid email or password</div>}
         <div className="flex space-x-4 my-8">
           <Button kind={ButtonKind.primary} type="submit" className="mr-8">
             Sign in
