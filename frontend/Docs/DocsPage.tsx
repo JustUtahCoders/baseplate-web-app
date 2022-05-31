@@ -26,7 +26,7 @@ export function DocsPage(props: Props) {
   const DocsComp = lazy(() => promiseLoad(filePath));
 
   useTitle(
-    promiseLoad(filePath).then((m) => m.title || "Baseplate Documentation")
+    promiseLoad(filePath).then((m) => m.pageTitle || "Baseplate Documentation")
   );
 
   return (
@@ -62,5 +62,5 @@ interface Props {}
 
 interface DocModule {
   default: FunctionComponent;
-  title?: string;
+  pageTitle?: string;
 }

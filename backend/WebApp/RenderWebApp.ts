@@ -104,10 +104,6 @@ export const renderWebApp = async (req, res: Response) => {
             outroHTMLReadable
           );
 
-          finalReadable.on("end", () => {
-            console.log("stream ended", ssrResult);
-          });
-
           finalReadable.pipe(res);
         }
       },
