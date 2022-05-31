@@ -1,5 +1,6 @@
 import * as tsNodeLoader from "ts-node/esm";
 import { createLoader } from "@mdx-js/node-loader";
+import rehypeHighlight from "rehype-highlight";
 
 const cssLoader = {
   async load(url, context, defaultLoad) {
@@ -16,6 +17,7 @@ const cssLoader = {
 
 const mdxLoader = createLoader({
   fixRuntimeWithoutExportMap: false,
+  rehypePlugins: [rehypeHighlight],
 });
 
 export default {
