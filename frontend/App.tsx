@@ -8,8 +8,12 @@ import { ResetPasswordEmailSent } from "./Auth/ResetPasswordEmailSent";
 import { FinishAccountCreation } from "./Auth/FinishAccountCreation";
 import { DocsHome } from "./Docs/DocsHome";
 import { DocsPage } from "./Docs/DocsPage";
+import { createContext } from "react";
 
 const queryClient = new QueryClient();
+export const SSRResultContext = createContext<SSRResult>({
+  ejsData: { pageTitle: "" },
+});
 
 export function App(props: AppProps) {
   const inBrowser = typeof window !== "undefined";
@@ -18,33 +22,8 @@ export function App(props: AppProps) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com"></link>
-        <link rel="preconnect" href="https://fonts.gstatic.com"></link>
-        <link
-          href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap"
-          rel="stylesheet"
-        ></link>
-        <meta
-          name="google-signin-client_id"
-          content="437751451243-do7cqgls9rooar4q430cr57nu24cgb5n.apps.googleusercontent.com"
-        ></meta>
-        <script
-          type="application/json"
-          id="root-props"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(props) }}
-        />
-        {props.cssFiles.map((cssFile) => (
-          <link
-            key={cssFile}
-            rel="stylesheet"
-            href={`${props.assetBase}/${cssFile}`}
-          ></link>
-        ))}
-      </head>
-      <body>
-        {/* @ts-ignore */}
-        <Router context={props.routerContext} location={props.reqUrl}>
+      <SSRResultContext.Provider value={props.ssrResult}>
+        <Router location={props.reqUrl}>
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/reset-password" element={<ResetPassword />} />
@@ -62,22 +41,21 @@ export function App(props: AppProps) {
             </Route>
           </Routes>
         </Router>
-        {props.jsFiles.map((jsFile) => (
-          <script key={jsFile} src={`${props.assetBase}/${jsFile}`}></script>
-        ))}
-      </body>
+      </SSRResultContext.Provider>
     </QueryClientProvider>
   );
 }
 
-export interface RouterContext {
-  url?: string;
+export interface AppProps {
+  ssrResult: SSRResult;
+  reqUrl: string;
 }
 
-export interface AppProps {
-  routerContext: RouterContext;
-  reqUrl: string;
-  assetBase: string;
-  jsFiles: string[];
-  cssFiles: string[];
+export interface SSRResult {
+  redirectUrl?: string;
+  ejsData: EJSData;
+}
+
+export interface EJSData {
+  pageTitle: string;
 }

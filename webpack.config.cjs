@@ -76,6 +76,16 @@ module.exports = (webpackConfigEnv, argv) => {
             name: "/media/[name].[hash:8].[ext]",
           },
         },
+        {
+          test: /\.mdx?$/,
+          use: [
+            {
+              loader: require.resolve("@mdx-js/loader"),
+              /** @type {import('@mdx-js/loader').Options} */
+              options: {},
+            },
+          ],
+        },
       ],
     },
     plugins: [

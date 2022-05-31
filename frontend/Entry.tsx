@@ -8,4 +8,4 @@ const rootProps = JSON.parse(
     .textContent as string
 ) as AppProps;
 
-hydrateRoot(document.documentElement, <App {...rootProps} />);
+hydrateRoot(document.getElementById("react-root"), <App {...rootProps} />);
