@@ -57,5 +57,5 @@ export interface SSRResult {
 }
 
 export interface EJSData {
-  pageTitle: string;
+  pageTitle: string | Promise<string>;
 }

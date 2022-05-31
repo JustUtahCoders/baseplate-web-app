@@ -57,13 +57,17 @@ export const renderWebApp = async (req, res: Response) => {
   const reactReadable = ReactDOMServer.renderToPipeableStream(
     createElement(App, rootProps),
     {
-      onShellReady() {
+      async onShellReady() {
         if (ssrResult.redirectUrl) {
           reactReadable.abort();
           res.redirect(ssrResult.redirectUrl);
         } else if (didError) {
           sendInternalError();
         } else {
+          if (ssrResult.ejsData.pageTitle instanceof Promise) {
+            ssrResult.ejsData.pageTitle = await ssrResult.ejsData.pageTitle;
+          }
+
           Object.assign(ejsData, ssrResult.ejsData, {
             rootProps: JSON.stringify(rootProps),
           });
@@ -99,6 +103,10 @@ export const renderWebApp = async (req, res: Response) => {
             reactReadable,
             outroHTMLReadable
           );
+
+          finalReadable.on("end", () => {
+            console.log("stream ended", ssrResult);
+          });
 
           finalReadable.pipe(res);
         }
