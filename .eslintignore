@@ -3,3 +3,7 @@
 *.yml
 *.sql
 *.ejs
+*.woff
+*.woff2
+*.eot
+*.css
