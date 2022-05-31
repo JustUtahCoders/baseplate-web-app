@@ -1,0 +1,31 @@
+@font-face {
+  font-family: "Soehne";
+  src: url("./Fonts/soehne/soehne-web-fett.woff2") format("woff2"),
+    url("./Fonts/soehne/soehne-web-fett.woff") format("woff");
+  font-weight: 800;
+}
+
+@font-face {
+  font-family: "Soehne";
+  src: url("./Fonts/soehne/soehne-web-kraftig.woff2") format("woff2"),
+    url("./Fonts/soehne/soehne-web-kraftig.woff") format("woff");
+  font-weight: 600;
+}
+
+@font-face {
+  font-family: "Soehne";
+  src: url("./Fonts/soehne/soehne-web-buch.woff2") format("woff2"),
+    url("./Fonts/soehne/soehne-web-buch.woff") format("woff");
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: "Soehne";
+  src: url("./Fonts/soehne/soehne-web-leicht.woff2") format("woff2"),
+    url("./Fonts/soehne/soehne-web-leicht.woff") format("woff");
+  font-weight: 200;
+}
+
+* {
+  font-family: "Soehne";
+}

@@ -9,6 +9,7 @@ import { FinishAccountCreation } from "./Auth/FinishAccountCreation";
 import { DocsHome } from "./Docs/DocsHome";
 import { DocsPage } from "./Docs/DocsPage";
 import { createContext } from "react";
+import "./App.css";
 
 const queryClient = new QueryClient();
 export const RootPropsContext = createContext<AppProps>({

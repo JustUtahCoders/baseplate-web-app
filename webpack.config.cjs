@@ -62,19 +62,18 @@ module.exports = (webpackConfigEnv, argv) => {
           include: [path.join(__dirname, "frontend"), /node_modules/],
         },
         {
-          test: [/\.bmp$/, /\.gif$/, /\.jpe?g$/, /\.png$/],
-          loader: require.resolve("url-loader"),
-          options: {
-            limit: 10000,
-            name: "media/[name].[hash:8].[ext]",
-          },
-        },
-        {
-          test: [/\.eot$/, /\.ttf$/, /\.svg$/, /\.woff$/, /\.woff2$/],
-          loader: require.resolve("file-loader"),
-          options: {
-            name: "/media/[name].[hash:8].[ext]",
-          },
+          test: [
+            /\.eot$/,
+            /\.ttf$/,
+            /\.svg$/,
+            /\.woff$/,
+            /\.woff2$/,
+            /\.bmp$/,
+            /\.gif$/,
+            /\.jpe?g$/,
+            /\/.png$/,
+          ],
+          type: "asset/resource",
         },
         {
           test: /\.mdx?$/,

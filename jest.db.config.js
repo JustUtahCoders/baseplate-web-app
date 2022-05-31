@@ -6,6 +6,9 @@ const config = {
   transform: {
     "\\.[jt]sx?$": "babel-jest",
   },
+  moduleNameMapper: {
+    "^.+\\.css$": "<rootDir>/__mocks__/CSSStub.ts",
+  },
   setupFiles: ["<rootDir>/backend/SetupTests.ts"],
 };
 
