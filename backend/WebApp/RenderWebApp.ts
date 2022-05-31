@@ -72,26 +72,30 @@ export const renderWebApp = async (req, res: Response) => {
           const introHTMLReadable = new Duplex();
           renderFile(webAppIntro, ejsData, { cache: true }, (err, html) => {
             if (err) {
-              console.error("ERROR", err);
+              console.error("Error rendering EJS");
+              console.error(err);
+            } else {
+              introHTMLReadable.push(html);
             }
 
-            introHTMLReadable.push(html);
             introHTMLReadable.push(null);
           });
 
           const outroHTMLReadable = new Duplex();
           renderFile(webAppOutro, ejsData, { cache: true }, (err, html) => {
             if (err) {
-              console.error("ERROR", err);
+              console.error("Error rendering EJS");
+              console.error(err);
+            } else {
+              outroHTMLReadable.push(html);
             }
 
-            outroHTMLReadable.push(html);
             outroHTMLReadable.push(null);
           });
 
-          // @ts-ignore
           const finalReadable = merge2(
             introHTMLReadable,
+            // @ts-ignore
             reactReadable,
             outroHTMLReadable
           );
