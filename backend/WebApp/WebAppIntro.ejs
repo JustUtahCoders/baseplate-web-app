@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title><%= pageTitle %></title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"></link>
+  <link rel="preconnect" href="https://fonts.gstatic.com"></link>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap"
+    rel="stylesheet"
+  ></link>
+  <script
+    type="application/json"
+    id="root-props"
+  >
+    <%- rootProps %>
+  </script>
+  <% cssFiles.forEach(function (cssFile) { %>
+  <link
+    rel="stylesheet"
+    href="<%= assetBase %>/<%= cssFile %>"
+  ></link>
+  <% }); %>
+</head>
+<body>
+<div id="react-root">

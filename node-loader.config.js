@@ -1,4 +1,5 @@
 import * as tsNodeLoader from "ts-node/esm";
+import { createLoader } from "@mdx-js/node-loader";
 
 const cssLoader = {
   async load(url, context, defaultLoad) {
@@ -13,6 +14,10 @@ const cssLoader = {
   },
 };
 
+const mdxLoader = createLoader({
+  fixRuntimeWithoutExportMap: false,
+});
+
 export default {
-  loaders: [cssLoader, tsNodeLoader],
+  loaders: [mdxLoader, cssLoader, tsNodeLoader],
 };
