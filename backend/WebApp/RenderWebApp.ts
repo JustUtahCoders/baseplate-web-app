@@ -6,8 +6,9 @@ import url from "url";
 import { renderFile, render } from "ejs";
 import fs from "fs";
 import merge2 from "merge2";
-import { Duplex, pipeline, Readable } from "stream";
+import { Duplex } from "stream";
 import { CustomerOrgModel } from "../DB/Models/CustomerOrg/CustomerOrg";
+import { UserPreferencesAttributes } from "../DB/Models/User/UserPreferences";
 
 const webAppIntro = url.fileURLToPath(
   new URL("./WebAppIntro.ejs", import.meta.url).href
@@ -42,6 +43,8 @@ export const renderWebApp = async (req, res: Response) => {
   }
 
   const userInformation: UserInformation = {
+    userPreferences: req.baseplateAccount
+      .userPreferences as UserPreferencesAttributes,
     isLoggedIn: Boolean(req.baseplateAccount),
     orgKey: "",
   };

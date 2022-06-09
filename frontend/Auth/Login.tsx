@@ -51,7 +51,7 @@ export function Login(props: Props) {
     },
     {
       onSuccess: async (data, variables, context) => {
-        navigate("/app");
+        navigate("/console");
       },
       onError: (error, variables, context) => {
         console.error(error);
