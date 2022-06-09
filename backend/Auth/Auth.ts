@@ -29,6 +29,11 @@ import { body } from "express-validator";
 import { Op } from "sequelize";
 import validator from "validator";
 import bcrypt from "bcryptjs";
+import {
+  UserPreferences,
+  UserPreferencesAttributes,
+  UserPreferencesModel,
+} from "../DB/Models/User/UserPreferences";
 
 passport.use(
   new Strategy(async function (email, password, done) {
@@ -140,7 +145,7 @@ router.get(
     } else if (user.finishAccountCreation) {
       res.redirect(`/finish-account-creation?${user.frontendQuery}`);
     } else {
-      res.redirect("/app");
+      res.redirect("/console");
     }
   }
 );
@@ -224,7 +229,8 @@ router.use("/", async (req, res, next) => {
             { permission: PermissionModel }
           >[]
         >
-      | undefined;
+      | undefined,
+    userPreferencesPromise: Promise<UserPreferencesAttributes> | undefined;
 
   if (accountId) {
     // Start db query for account permissions, but do not await it here so that
@@ -253,6 +259,15 @@ router.use("/", async (req, res, next) => {
 
     if (maybeUser) {
       user = maybeUser;
+      userPreferencesPromise = UserPreferencesModel.findOrCreate({
+        where: {
+          userId: user.id,
+        },
+        defaults: {
+          userId: user.id,
+          auditAccountId: user.id,
+        },
+      }).then(([model]) => model.get({ plain: true }));
       isLoggedIn = true;
     } else {
       return notLoggedIn(res, `Invalid auth cookie`);
@@ -279,6 +294,7 @@ router.use("/", async (req, res, next) => {
       isServiceAccount: !isUsingCookie,
       isUser: isUsingCookie,
       serviceAccount,
+      userPreferences: await userPreferencesPromise,
       user,
       accountPermissions: await accountPermissionsPromise!,
     };
@@ -288,7 +304,7 @@ router.use("/", async (req, res, next) => {
   // At this point, we know they're not logged in
   if (req.url.startsWith("/api/")) {
     return notLoggedIn(res, `Authentication required to access baseplate api`);
-  } else if (req.url.startsWith("/app")) {
+  } else if (req.url.startsWith("/console")) {
     return res.status(302).redirect("/login");
   } else {
     next();

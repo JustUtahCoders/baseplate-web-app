@@ -35,7 +35,7 @@ export function SecondaryNav(props: SecondaryNavProps) {
         present: false,
       });
     };
-  }, [width, dimensions]);
+  }, [width, dimensions, collapsed, pageLayout]);
 
   return (
     <nav

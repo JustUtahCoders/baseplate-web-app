@@ -10,6 +10,10 @@ import {
   ModelWithIncludes,
 } from "../DB/Models/SequelizeTSHelpers";
 import { UserModel } from "../DB/Models/User/User";
+import {
+  UserPreferences,
+  UserPreferencesAttributes,
+} from "../DB/Models/User/UserPreferences";
 import { notAuthorized } from "./EndpointResponses";
 
 export function findMissingPermissions(
@@ -119,6 +123,7 @@ export interface BaseplateAccount {
     AccountPermissionModel,
     { permission: PermissionModel }
   >[];
+  userPreferences?: UserPreferencesAttributes;
   user?: UserModel;
   serviceAccount?: AuthTokenModel;
 }

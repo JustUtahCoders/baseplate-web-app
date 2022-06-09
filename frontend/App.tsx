@@ -13,6 +13,10 @@ import "./App.css";
 import { DocsHome } from "./Docs/DocsHome";
 import { inBrowser } from "./Utils/browserHelpers";
 import { isEqual } from "lodash-es";
+import { ConsoleHome } from "./Console/ConsoleHome";
+import { MicrofrontendsList } from "./Console/MicrofrontendsList";
+import { UserPreferencesAttributes } from "../backend/DB/Models/User/UserPreferences";
+import { RouteWithCustomerOrgId } from "./Utils/RouteWithCustomerOrgId";
 
 const queryClient = new QueryClient();
 export const RootPropsContext = createContext<AppProps>({
@@ -24,6 +28,11 @@ export const RootPropsContext = createContext<AppProps>({
   },
   userInformation: {
     isLoggedIn: false,
+    userPreferences: {
+      auditAccountId: "",
+      id: "",
+      userId: "",
+    },
   },
 });
 
@@ -50,6 +59,11 @@ export function App(props: AppProps) {
                 element={<FinishAccountCreation />}
               />
               <Route path="/" element={<div>Home</div>} />
+              <Route path="/console" element={<ConsoleHome />} />
+              {RouteWithCustomerOrgId({
+                pathSuffix: "microfrontends",
+                element: <MicrofrontendsList />,
+              })}
               <Route path="/docs" element={<Docs />}>
                 <Route path="" element={<DocsHome />} />
                 <Route path=":folder1/:docsPage" element={<DocsPage />} />
@@ -80,6 +94,7 @@ export interface AppProps {
 export interface UserInformation {
   isLoggedIn: boolean;
   orgKey?: string;
+  userPreferences: UserPreferencesAttributes;
 }
 
 export interface SSRResult {

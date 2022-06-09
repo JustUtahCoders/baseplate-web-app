@@ -1,7 +1,11 @@
 import { DefaultModelAttrs } from "../DefaultModelAttrs";
 import { modelEvents } from "../../../InitDB";
 import { CustomerOrgModel } from "../CustomerOrg/CustomerOrg";
-import { BaseplateUUID, BelongsToManyMethods } from "../SequelizeTSHelpers";
+import {
+  BaseplateUUID,
+  BelongsToManyMethods,
+  HasOneMethods,
+} from "../SequelizeTSHelpers";
 import {
   Model,
   BelongsToManyGetAssociationsMixin,
@@ -14,10 +18,14 @@ import {
   BelongsToManyRemoveAssociationsMixin,
   BelongsToManyCreateAssociationMixin,
   BelongsToManyCountAssociationsMixin,
+  HasOneGetAssociationMixin,
+  HasOneSetAssociationMixin,
+  HasOneCreateAssociationMixin,
 } from "sequelize";
 import { currentSchema } from "./UserSchema.js";
 import { AccountPermissionModel } from "../IAM/AccountPermission";
 import { AccountRoleModel } from "../IAM/AccountRole";
+import { UserPreferencesModel } from "./UserPreferences";
 
 export class UserModel
   extends Model<UserAttributes, UserCreationAttributes>
@@ -27,7 +35,9 @@ export class UserModel
       customerOrg: CustomerOrgModel;
       role: AccountRoleModel;
       permission: AccountPermissionModel;
-    }>
+    }>,
+    HasOneMethods<{ userPreferences: UserPreferencesModel }>,
+    DefaultModelAttrs
 {
   declare id: BaseplateUUID;
   declare givenName: string;
@@ -38,6 +48,13 @@ export class UserModel
 
   declare createdAt: Date;
   declare updatedAt: Date;
+
+  declare getUserPreferences: HasOneGetAssociationMixin<UserPreferencesModel>;
+  declare setUserPreferences: HasOneSetAssociationMixin<
+    UserPreferencesModel,
+    number
+  >;
+  declare createUserPreferences: HasOneCreateAssociationMixin<UserPreferencesModel>;
 
   declare getCustomerOrgs: BelongsToManyGetAssociationsMixin<CustomerOrgModel>;
   declare countCustomerOrgs: BelongsToManyCountAssociationsMixin;
@@ -156,5 +173,10 @@ modelEvents.once("associate", (sequelize) => {
   UserModel.hasMany(AccountRoleModel, {
     as: "role",
     foreignKey: "accountId",
+  });
+
+  UserModel.hasOne(UserPreferencesModel, {
+    as: "userPreferences",
+    foreignKey: "userId",
   });
 });
