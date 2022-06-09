@@ -8,7 +8,14 @@ module.exports = {
       "Environments",
       (
         await import("../Models/Environment/EnvironmentSchema.js")
-      ).initialSchema
+      ).initialSchema,
+      {
+        uniqueKeys: {
+          uniquePipelineOrder: {
+            fields: ["pipelineOrder", "customerOrgId"],
+          },
+        },
+      }
     );
     await auditInit.createAuditTable(queryInterface, "Environments");
   },

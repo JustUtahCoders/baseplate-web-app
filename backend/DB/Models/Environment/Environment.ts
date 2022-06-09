@@ -28,6 +28,7 @@ export class EnvironmentModel
   declare isProd: boolean;
   declare useBaseplateStaticWebHosting: boolean;
   declare staticWebProxyHost: string;
+  declare pipelineOrder: number;
 
   declare auditAccountId: BaseplateUUID;
 
@@ -47,6 +48,7 @@ export interface EnvironmentAttributes extends AuditTargetAttributes {
   customerOrgId: BaseplateUUID;
   name: BaseplateUUID;
   isProd: boolean;
+  pipelineOrder: number;
   useBaseplateStaticWebHosting: boolean;
   staticWebProxyHost: string;
 }
