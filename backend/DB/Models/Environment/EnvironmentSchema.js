@@ -38,6 +38,13 @@ const schema = {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  pipelineOrder: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    validate: {
+      min: 0,
+    },
+  },
   auditAccountId: {
     type: DataTypes.UUID,
     allowNull: false,
