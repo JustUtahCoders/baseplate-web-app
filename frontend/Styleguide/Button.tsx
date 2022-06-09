@@ -31,8 +31,11 @@ export enum ButtonKind {
 
 export function buttonClasses(kind: ButtonKind, extraClassName: string = "") {
   const kindClasses = buttonKindClasses[kind] || "";
+  const ubiquitousClasses = `inline-block`;
+
   return always(kindClasses)
     .always(extraClassName)
+    .always(ubiquitousClasses)
     .maybe(styledButtonClasses, styledButtonKinds.includes(kind))
     .toString();
 }

@@ -1,8 +1,9 @@
 import { createElement, useRef, useState, useEffect } from "react";
+import { inBrowser } from "./browserHelpers";
 
 function useStaticContent() {
   const ref = useRef(null);
-  const [render, setRender] = useState(typeof window === "undefined");
+  const [render, setRender] = useState(inBrowser);
 
   useEffect(() => {
     // check if the innerHTML is empty as client side navigation
