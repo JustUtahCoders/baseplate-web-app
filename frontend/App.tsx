@@ -6,10 +6,13 @@ import { Login } from "./Auth/Login";
 import { ResetPassword } from "./Auth/ResetPassword";
 import { ResetPasswordEmailSent } from "./Auth/ResetPasswordEmailSent";
 import { FinishAccountCreation } from "./Auth/FinishAccountCreation";
-import { DocsHome } from "./Docs/DocsHome";
+import { Docs } from "./Docs/Docs";
 import { DocsPage } from "./Docs/DocsPage";
-import { createContext } from "react";
+import { createContext, useState } from "react";
 import "./App.css";
+import { DocsHome } from "./Docs/DocsHome";
+import { inBrowser } from "./Utils/browserHelpers";
+import { isEqual } from "lodash-es";
 
 const queryClient = new QueryClient();
 export const RootPropsContext = createContext<AppProps>({
@@ -25,34 +28,47 @@ export const RootPropsContext = createContext<AppProps>({
 });
 
 export function App(props: AppProps) {
-  const inBrowser = typeof window !== "undefined";
+  const [pageLayout, setPageLayout] =
+    useState<Omit<PageLayout, "setSecondaryNav">>(defaultPageLayout);
 
   const Router = inBrowser ? BrowserRouter : StaticRouter;
 
   return (
     <QueryClientProvider client={queryClient}>
       <RootPropsContext.Provider value={props}>
-        <Router location={props.reqUrl}>
-          <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="/reset-password" element={<ResetPassword />} />
-            <Route
-              path="/reset-password-email-sent"
-              element={<ResetPasswordEmailSent />}
-            />
-            <Route
-              path="/finish-account-creation"
-              element={<FinishAccountCreation />}
-            />
-            <Route path="/" element={<div>Home</div>} />
-            <Route path="/docs" element={<DocsHome />}>
-              <Route path=":folder1/:docsPage" element={<DocsPage />} />
-            </Route>
-          </Routes>
-        </Router>
+        <PageLayoutContext.Provider value={{ ...pageLayout, setSecondaryNav }}>
+          <Router location={props.reqUrl}>
+            <Routes>
+              <Route path="/login" element={<Login />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
+              <Route
+                path="/reset-password-email-sent"
+                element={<ResetPasswordEmailSent />}
+              />
+              <Route
+                path="/finish-account-creation"
+                element={<FinishAccountCreation />}
+              />
+              <Route path="/" element={<div>Home</div>} />
+              <Route path="/docs" element={<Docs />}>
+                <Route path="" element={<DocsHome />} />
+                <Route path=":folder1/:docsPage" element={<DocsPage />} />
+              </Route>
+            </Routes>
+          </Router>
+        </PageLayoutContext.Provider>
       </RootPropsContext.Provider>
     </QueryClientProvider>
   );
+
+  function setSecondaryNav(newLayout: SecondaryNavLayout) {
+    if (!isEqual(newLayout, pageLayout.secondaryNav)) {
+      setPageLayout({
+        ...pageLayout,
+        secondaryNav: newLayout,
+      });
+    }
+  }
 }
 
 export interface AppProps {
@@ -74,3 +90,32 @@ export interface SSRResult {
 export interface EJSData {
   pageTitle: string | Promise<string>;
 }
+
+interface SecondaryNavLayout {
+  present: boolean;
+  orientation: NavOrientation;
+  collapsed: boolean;
+}
+
+export interface PageLayout {
+  setSecondaryNav(newLayout: SecondaryNavLayout): void;
+  secondaryNav: SecondaryNavLayout;
+}
+
+export enum NavOrientation {
+  vertical = "vertical",
+  horizontal = "horizaontal",
+}
+
+const defaultPageLayout: Omit<PageLayout, "setSecondaryNav"> = {
+  secondaryNav: {
+    present: false,
+    orientation: NavOrientation.horizontal,
+    collapsed: false,
+  },
+};
+
+export const PageLayoutContext = createContext<PageLayout>({
+  ...defaultPageLayout,
+  setSecondaryNav() {},
+});

@@ -6,21 +6,16 @@ const colors = require("tailwindcss/colors");
 module.exports = {
   content: ["frontend/**/*.{ts,tsx,js,jsx}"],
   theme: {
-    colors: {
-      primary: {
-        DEFAULT: "#2a467b",
-      },
-      white: colors.white,
-      lightGray: colors.lightGray,
-      coolGray: colors.gray,
-      blue: colors.blue,
-      red: colors.red,
-      transparent: "transparent",
-    },
     extend: {
+      colors: {
+        primary: {
+          DEFAULT: "#2a467b",
+        },
+      },
       outline: {
         primary: ["2px solid #2a467b"],
       },
     },
   },
+  safelist: [`ml-14`, `ml-40`, `lg:w-14`, `lg:w-40`, `lg:ml-14`, `lg:ml-40`],
 };

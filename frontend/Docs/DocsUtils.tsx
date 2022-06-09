@@ -1,6 +1,6 @@
 import { FunctionComponent } from "react";
+import { inBrowser } from "../Utils/browserHelpers";
 
-const inBrowser = typeof window !== "undefined";
 let loadDocModule: (url: string) => Promise<DocModule>;
 let webpackContext: __WebpackModuleApi.RequireContext;
 

@@ -1,0 +1,5 @@
+@media screen(lg) {
+  .h-14.secondary-nav-height {
+    height: calc(100vw - theme("spacing.14"));
+  }
+}

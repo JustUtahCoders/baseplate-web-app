@@ -11,8 +11,9 @@ const ReactRefreshWebpackPlugin = require("@pmmmwh/react-refresh-webpack-plugin"
  * @param {*} argv
  * @returns {import('webpack').Configuration}
  */
-module.exports = (webpackConfigEnv, argv) => {
+module.exports = async (webpackConfigEnv, argv) => {
   const isProd = webpackConfigEnv.prod;
+  const { default: rehypeHighlight } = await import("rehype-highlight");
 
   return {
     entry: path.resolve(process.cwd(), "frontend/Entry.tsx"),
@@ -81,7 +82,9 @@ module.exports = (webpackConfigEnv, argv) => {
             {
               loader: require.resolve("@mdx-js/loader"),
               /** @type {import('@mdx-js/loader').Options} */
-              options: {},
+              options: {
+                rehypePlugins: [rehypeHighlight],
+              },
             },
           ],
         },
