@@ -6,6 +6,7 @@ const config = {
   transform: {
     "\\.[jt]sx?$": "babel-jest",
   },
+  setupFilesAfterEnv: ["<rootDir>/frontend/SetupTests.tsx"],
 };
 
 export default config;

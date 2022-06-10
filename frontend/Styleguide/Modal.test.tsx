@@ -1,7 +1,6 @@
 import { Modal } from "./Modal";
 import { render, fireEvent } from "@testing-library/react";
 import { jest } from "@jest/globals";
-import "@testing-library/jest-dom";
 
 describe(`<Modal />`, () => {
   let close;
