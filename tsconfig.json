@@ -1,6 +1,6 @@
 {
   "files": ["backend/TSEntry.ts"],
-  "include": ["backend/Declarations.d.ts"],
+  "include": ["backend/Declarations.d.ts", "frontend/SetupTests.tsx"],
   "compilerOptions": {
     "esModuleInterop": true,
     "module": "esnext",

@@ -4,6 +4,7 @@ const { WebpackManifestPlugin } = require("webpack-manifest-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 const ForkTsCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin");
 const ReactRefreshWebpackPlugin = require("@pmmmwh/react-refresh-webpack-plugin");
+const webpack = require("webpack");
 
 /**
  *
@@ -91,6 +92,9 @@ module.exports = async (webpackConfigEnv, argv) => {
       ],
     },
     plugins: [
+      new webpack.DefinePlugin({
+        [`global.IN_WEBPACK`]: JSON.stringify(true),
+      }),
       new MiniCssExtractPlugin({
         filename: isProd ? "[name].[contenthash].css" : "[name].css",
       }),
