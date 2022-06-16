@@ -12,6 +12,11 @@ const schema = {
     defaultValue: S.literal("gen_random_uuid()"),
     primaryKey: true,
   },
+  customerOrgId: {
+    type: DataTypes.UUID,
+    allowNull: false,
+    defaultValue: S.literal("gen_random_uuid()"),
+  },
   accountId: {
     type: DataTypes.UUID,
     allowNull: false,

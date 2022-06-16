@@ -17,5 +17,13 @@ module.exports = {
       },
     },
   },
-  safelist: [`ml-14`, `ml-40`, `lg:w-14`, `lg:w-40`, `lg:ml-14`, `lg:ml-40`],
+  safelist: [
+    `ml-14`,
+    `ml-40`,
+    `lg:w-14`,
+    `lg:w-40`,
+    `lg:ml-14`,
+    `lg:ml-40`,
+    "bg-gray-100",
+  ],
 };

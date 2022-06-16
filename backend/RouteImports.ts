@@ -10,6 +10,7 @@ import "./RestAPI/OrgSettings/GetStaticWebSettings";
 import "./RestAPI/Deployments/GetDeploymentCredentials";
 import "./RestAPI/Environments/GetEnvironments";
 import "./RestAPI/Microfrontends/GetMicrofrontends";
+import "./RestAPI/Microfrontends/MicrofrontendDownloads";
 
 // The default API Handler responds with a 404
 import "./ApiNotFound";

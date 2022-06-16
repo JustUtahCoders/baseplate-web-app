@@ -42,6 +42,7 @@ module.exports = {
       [
         {
           accountId: sampleUserId,
+          customerOrgId: sampleCustomerOrgId,
           cause: "baseplateWebApp",
           status: "success",
           environmentId: sampleEnvironmentId,
@@ -49,6 +50,7 @@ module.exports = {
         },
         {
           accountId: sampleUserId,
+          customerOrgId: sampleCustomerOrgId,
           cause: "deploymentCLI",
           status: "failure",
           environmentId: sampleEnvironmentId,
