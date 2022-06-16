@@ -116,7 +116,6 @@
     "@aws-sdk/client-s3": "^3.95.0",
     "@aws-sdk/client-sts": "^3.95.0",
     "@aws-sdk/client-timestream-query": "^3.109.0",
-    "@aws-sdk/client-timestream-write": "^3.109.0",
     "@baseplate-sdk/utils": "^3.1.2",
     "@mdx-js/node-loader": "^2.1.1",
     "@mdx-js/react": "^2.1.1",
