@@ -9,11 +9,15 @@ export function RouteWithCustomerOrgId(props: RouteWithCustomerOrgIdProps) {
       <Route
         path={`/console/:customerOrgId/${props.pathSuffix}`}
         element={props.element}
-      />
+      >
+        {props.children}
+      </Route>
       <Route
         path={`/console/${props.pathSuffix}`}
         element={<RedirectWithCustomerOrgId pathSuffix={props.pathSuffix} />}
-      />
+      >
+        {props.children}
+      </Route>
     </>
   );
 }
@@ -21,6 +25,7 @@ export function RouteWithCustomerOrgId(props: RouteWithCustomerOrgIdProps) {
 interface RouteWithCustomerOrgIdProps {
   pathSuffix: string;
   element: ReactNode;
+  children?: ReactNode;
 }
 
 function RedirectWithCustomerOrgId(props: RedirectWithCustomerOrgIdProps) {

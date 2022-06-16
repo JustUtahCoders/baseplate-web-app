@@ -31,11 +31,9 @@ export enum ButtonKind {
 
 export function buttonClasses(kind: ButtonKind, extraClassName: string = "") {
   const kindClasses = buttonKindClasses[kind] || "";
-  const ubiquitousClasses = `inline-block`;
 
   return always(kindClasses)
     .always(extraClassName)
-    .always(ubiquitousClasses)
     .maybe(styledButtonClasses, styledButtonKinds.includes(kind))
     .toString();
 }
@@ -48,7 +46,7 @@ const buttonKindClasses = {
   [ButtonKind.primary]: "bg-primary text-white",
   [ButtonKind.secondary]:
     "text-gray-500 border-gray-500 border hover:text-gray-500",
-  [ButtonKind.transparent]: "text-primary hover:text-primary",
+  [ButtonKind.transparent]: "no-underline hover:no-underline",
   [ButtonKind.classic]:
     "text-primary underline hover:text-primary hover:underline",
   [ButtonKind.icon]:

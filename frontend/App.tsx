@@ -2,21 +2,71 @@ import { StaticRouter } from "react-router-dom/server";
 import { Route, Routes } from "react-router";
 import { BrowserRouter } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "react-query";
-import { Login } from "./Auth/Login";
-import { ResetPassword } from "./Auth/ResetPassword";
-import { ResetPasswordEmailSent } from "./Auth/ResetPasswordEmailSent";
-import { FinishAccountCreation } from "./Auth/FinishAccountCreation";
-import { Docs } from "./Docs/Docs";
-import { DocsPage } from "./Docs/DocsPage";
-import { createContext, useState } from "react";
+import { createContext, lazy, Suspense, useState } from "react";
 import "./App.css";
 import { DocsHome } from "./Docs/DocsHome";
 import { inBrowser } from "./Utils/browserHelpers";
 import { isEqual } from "lodash-es";
-import { ConsoleHome } from "./Console/ConsoleHome";
-import { MicrofrontendsList } from "./Console/MicrofrontendsList";
 import { UserPreferencesAttributes } from "../backend/DB/Models/User/UserPreferences";
 import { RouteWithCustomerOrgId } from "./Utils/RouteWithCustomerOrgId";
+import { MainContent } from "./Styleguide/MainContent";
+import { Loader } from "./Styleguide/Loader";
+
+const Login = lazy(() =>
+  import("./Auth/Login").then((m) => ({ default: m.Login }))
+);
+const ResetPassword = lazy(() =>
+  import("./Auth/ResetPassword").then((m) => ({ default: m.ResetPassword }))
+);
+const ResetPasswordEmailSent = lazy(() =>
+  import("./Auth/ResetPasswordEmailSent").then((m) => ({
+    default: m.ResetPasswordEmailSent,
+  }))
+);
+const FinishAccountCreation = lazy(() =>
+  import("./Auth/FinishAccountCreation").then((m) => ({
+    default: m.FinishAccountCreation,
+  }))
+);
+const Docs = lazy(() =>
+  import("./Docs/Docs").then((m) => ({ default: m.Docs }))
+);
+const DocsPage = lazy(() =>
+  import("./Docs/DocsPage").then((m) => ({ default: m.DocsPage }))
+);
+const ConsoleHome = lazy(() =>
+  import("./Console/ConsoleHome").then((m) => ({ default: m.ConsoleHome }))
+);
+const MicrofrontendsList = lazy(() =>
+  import("./Console/Microfrontends/MicrofrontendsList").then((m) => ({
+    default: m.MicrofrontendsList,
+  }))
+);
+const MicrofrontendDetail = lazy(() =>
+  import("./Console/Microfrontends/MicrofrontendDetail").then((m) => ({
+    default: m.MicrofrontendDetail,
+  }))
+);
+const MicrofrontendHome = lazy(() =>
+  import("./Console/Microfrontends/MicrofrontendDetail").then((m) => ({
+    default: m.MicrofrontendHome,
+  }))
+);
+const MicrofrontendDeployments = lazy(() =>
+  import("./Console/Microfrontends/MicrofrontendDeployments").then((m) => ({
+    default: m.MicrofrontendDeployments,
+  }))
+);
+const MicrofrontendSettings = lazy(() =>
+  import("./Console/Microfrontends/MicrofrontendSettings").then((m) => ({
+    default: m.MicrofrontendSettings,
+  }))
+);
+const MicrofrontendUsers = lazy(() =>
+  import("./Console/Microfrontends/MicrofrontendUsers").then((m) => ({
+    default: m.MicrofrontendUsers,
+  }))
+);
 
 const queryClient = new QueryClient();
 export const RootPropsContext = createContext<AppProps>({
@@ -46,30 +96,56 @@ export function App(props: AppProps) {
     <QueryClientProvider client={queryClient}>
       <RootPropsContext.Provider value={props}>
         <PageLayoutContext.Provider value={{ ...pageLayout, setSecondaryNav }}>
-          <Router location={props.reqUrl}>
-            <Routes>
-              <Route path="/login" element={<Login />} />
-              <Route path="/reset-password" element={<ResetPassword />} />
-              <Route
-                path="/reset-password-email-sent"
-                element={<ResetPasswordEmailSent />}
-              />
-              <Route
-                path="/finish-account-creation"
-                element={<FinishAccountCreation />}
-              />
-              <Route path="/" element={<div>Home</div>} />
-              <Route path="/console" element={<ConsoleHome />} />
-              {RouteWithCustomerOrgId({
-                pathSuffix: "microfrontends",
-                element: <MicrofrontendsList />,
-              })}
-              <Route path="/docs" element={<Docs />}>
-                <Route path="" element={<DocsHome />} />
-                <Route path=":folder1/:docsPage" element={<DocsPage />} />
-              </Route>
-            </Routes>
-          </Router>
+          <Suspense
+            fallback={
+              <MainContent>
+                <Loader description="Loading route" delay={100} />
+              </MainContent>
+            }
+          >
+            <Router location={props.reqUrl}>
+              <Routes>
+                <Route path="/login" element={<Login />} />
+                <Route path="/reset-password" element={<ResetPassword />} />
+                <Route
+                  path="/reset-password-email-sent"
+                  element={<ResetPasswordEmailSent />}
+                />
+                <Route
+                  path="/finish-account-creation"
+                  element={<FinishAccountCreation />}
+                />
+                <Route path="/" element={<div>Home</div>} />
+                <Route path="/console" element={<ConsoleHome />} />
+                {RouteWithCustomerOrgId({
+                  pathSuffix: "microfrontends",
+                  element: <MicrofrontendsList />,
+                })}
+                {RouteWithCustomerOrgId({
+                  pathSuffix: "microfrontends/:microfrontendId",
+                  element: <MicrofrontendDetail />,
+                  children: (
+                    <>
+                      <Route
+                        path="deployments"
+                        element={<MicrofrontendDeployments />}
+                      />
+                      <Route path="users" element={<MicrofrontendUsers />} />
+                      <Route
+                        path="settings"
+                        element={<MicrofrontendSettings />}
+                      />
+                      <Route path="" element={<MicrofrontendHome />} />
+                    </>
+                  ),
+                })}
+                <Route path="/docs" element={<Docs />}>
+                  <Route path="" element={<DocsHome />} />
+                  <Route path=":folder1/:docsPage" element={<DocsPage />} />
+                </Route>
+              </Routes>
+            </Router>
+          </Suspense>
         </PageLayoutContext.Provider>
       </RootPropsContext.Provider>
     </QueryClientProvider>
