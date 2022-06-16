@@ -6,10 +6,10 @@ import { Card, CardFooter } from "../Styleguide/Card";
 import { MainContent } from "../Styleguide/MainContent";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import { FormEvent, useContext, useEffect, useMemo, useState } from "react";
+import { useContext, useMemo, useState } from "react";
 import { RootPropsContext } from "../App";
 import { Input } from "../Styleguide/Input";
-import { Button, ButtonKind } from "../Styleguide/Button";
+import { ButtonKind } from "../Styleguide/Button";
 import Fuse from "fuse.js";
 import { Anchor } from "../Styleguide/Anchor";
 import { MicrofrontendWithLastDeployed } from "../../backend/RestAPI/Microfrontends/GetMicrofrontends";
@@ -25,27 +25,17 @@ export function MicrofrontendsList() {
   const [search, setSearch] = useState("");
   const customerOrgId = useCustomerOrgId();
 
-  useEffect(() => {
-    const ac = new AbortController();
-
-    baseplateFetch<EndpointGetMicrofrontendsDownloadsResBody>(
-      `/api/orgs/${customerOrgId}/microfrontends-downloads`,
-      {
-        signal: ac.signal,
-      }
-    ).then((data) => {
-      setMicrofrontendsDownloads(data.microfrontendDownloads);
-    });
-
-    return () => {
-      ac.abort();
-    };
-  }, [customerOrgId]);
+  const mfeDownloads = useQuery<
+    unknown,
+    Error,
+    EndpointGetMicrofrontendsDownloadsResBody
+  >(`microfrontends-downloads-${customerOrgId}`, async function () {
+    return baseplateFetch<EndpointGetMicrofrontendsDownloadsResBody>(
+      `/api/orgs/${customerOrgId}/microfrontends-downloads`
+    );
+  });
 
   const microfrontends = useMicrofrontends();
-  const [microfrontendsDownloads, setMicrofrontendsDownloads] = useState<
-    EndpointGetMicrofrontendsDownloadsResBody["microfrontendDownloads"] | null
-  >(null);
   const filteredMicrofrontends = useMemo<
     MicrofrontendWithLastDeployed[]
   >(() => {
@@ -81,7 +71,9 @@ export function MicrofrontendsList() {
       {filteredMicrofrontends.map((microfrontend) => (
         <MicrofrontendCard
           microfrontend={microfrontend}
-          downloads={microfrontendsDownloads?.[microfrontend.name]}
+          downloads={
+            mfeDownloads.data?.microfrontendDownloads[microfrontend.name]
+          }
           key={microfrontend.id}
         />
       ))}
