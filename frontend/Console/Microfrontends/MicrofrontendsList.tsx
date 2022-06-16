@@ -1,23 +1,24 @@
 import { useQuery } from "react-query";
-import { EndpointGetMicrofrontendsResBody } from "../../backend/TSEntry";
-import { baseplateFetch } from "../Utils/baseplateFetch";
-import { useCustomerOrgId } from "../Utils/useCustomerOrgId";
-import { Card, CardFooter } from "../Styleguide/Card";
-import { MainContent } from "../Styleguide/MainContent";
+import { EndpointGetMicrofrontendsResBody } from "../../../backend/TSEntry";
+import { baseplateFetch } from "../../Utils/baseplateFetch";
+import { useCustomerOrgId } from "../../Utils/useCustomerOrgId";
+import { Card, CardFooter } from "../../Styleguide/Card";
+import { MainContent } from "../../Styleguide/MainContent";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { useContext, useMemo, useState } from "react";
-import { RootPropsContext } from "../App";
-import { Input } from "../Styleguide/Input";
-import { ButtonKind } from "../Styleguide/Button";
+import { RootPropsContext } from "../../App";
+import { Input } from "../../Styleguide/Input";
+import { ButtonKind } from "../../Styleguide/Button";
 import Fuse from "fuse.js";
-import { Anchor } from "../Styleguide/Anchor";
-import { MicrofrontendWithLastDeployed } from "../../backend/RestAPI/Microfrontends/GetMicrofrontends";
+import { Anchor } from "../../Styleguide/Anchor";
+import { MicrofrontendWithLastDeployed } from "../../../backend/RestAPI/Microfrontends/GetMicrofrontends";
 import {
   EndpointGetMicrofrontendsDownloadsResBody,
   MicrofrontendDownloads,
-} from "../../backend/RestAPI/Microfrontends/MicrofrontendDownloads";
+} from "../../../backend/RestAPI/Microfrontends/MicrofrontendDownloads";
 import { maybe } from "kremling";
+import { PageExplanation, PageHeader } from "../../Styleguide/PageHeader";
 
 dayjs.extend(relativeTime);
 
@@ -52,13 +53,11 @@ export function MicrofrontendsList() {
 
   return (
     <MainContent>
-      <h1 className="text-xl mb-2">Microfrontends List</h1>
-      <p className="mb-8 text-sm text-gray-700">
-        Deploy microfrontends to edge locations around the world.{" "}
-        <Anchor kind={ButtonKind.classic} to="/docs/concepts/microfrontends">
-          Documentation
-        </Anchor>
-      </p>
+      <PageHeader>Microfrontends List</PageHeader>
+      <PageExplanation
+        docsLink="/docs/concepts/microfrontends"
+        briefExplanation="Deploy microfrontends to edge locations around the world"
+      />
       <div className="mb-6">
         <Input
           type="text"
@@ -94,7 +93,7 @@ export function useMicrofrontends(): MicrofrontendWithLastDeployed[] {
         ).microfrontends;
       } else {
         const getMicrofrontends = await import(
-          /* webpackIgnore: true */ "../../backend/RestAPI/Microfrontends/GetMicrofrontends"
+          /* webpackIgnore: true */ "../../../backend/RestAPI/Microfrontends/GetMicrofrontends"
         );
 
         // @ts-ignore
@@ -122,6 +121,7 @@ function MicrofrontendCard({
   downloads?: MicrofrontendDownloads;
 }) {
   const rootProps = useContext(RootPropsContext);
+  const customerOrgId = useCustomerOrgId();
   const scope = microfrontend.useCustomerOrgKeyAsScope
     ? rootProps.userInformation.orgKey
     : microfrontend.scope;
@@ -146,65 +146,71 @@ function MicrofrontendCard({
     weekOverWeekDownloadChange !== null && weekOverWeekDownloadChange < 0;
 
   return (
-    <Card
-      className="mb-4"
-      footer={
-        <CardFooter className="text-gray-700 text-sm flex justify-end">
-          {lastDeployed}
-        </CardFooter>
-      }
+    <Anchor
+      className="block"
+      kind={ButtonKind.transparent}
+      to={`/console/${customerOrgId}/microfrontends/${microfrontend.id}`}
     >
-      <div className="flex justify-between">
-        <div>
-          <div>{microfrontend.name}</div>
-          {scope && (
-            <div className="text-sm text-gray-700">
-              @{scope}/{microfrontend.name}
-            </div>
-          )}
+      <Card
+        className="mb-4"
+        footer={
+          <CardFooter className="text-gray-700 text-sm flex justify-end">
+            {lastDeployed}
+          </CardFooter>
+        }
+      >
+        <div className="flex justify-between">
+          <div>
+            <div>{microfrontend.name}</div>
+            {scope && (
+              <div className="text-sm text-gray-700">
+                @{scope}/{microfrontend.name}
+              </div>
+            )}
+          </div>
+          <div>
+            <div className="text-gray-500 text-xs font-light">Downloads</div>
+            <table className="text-xs font-light table-fixed w-17">
+              <thead>
+                <tr className="text-gray-500">
+                  <th className="font-light w-5">Today</th>
+                  <th className="font-light w-7">Week</th>
+                  <th className="font-light">WoW</th>
+                </tr>
+              </thead>
+              <tbody className="text-gray-700">
+                <tr>
+                  <td>
+                    {formatDownloadCount(
+                      downloadsLoaded,
+                      downloads?.downloadsLast24Hrs
+                    )}
+                  </td>
+                  <td>
+                    {formatDownloadCount(
+                      downloadsLoaded,
+                      downloads?.downloadsLast7Days
+                    )}
+                  </td>
+                  <td
+                    className={maybe("text-lime-500", wowUp).maybe(
+                      "text-red-500",
+                      wowDown
+                    )}
+                  >
+                    {trendArrow(wowUp, wowDown)}
+                    {formatDownloadCount(
+                      downloadsLoaded,
+                      weekOverWeekDownloadChange
+                    )}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
-        <div>
-          <div className="text-gray-500 text-xs font-light">Downloads</div>
-          <table className="text-xs font-light table-fixed w-17">
-            <thead>
-              <tr className="text-gray-500">
-                <th className="font-light w-5">Today</th>
-                <th className="font-light w-7">Week</th>
-                <th className="font-light">WoW</th>
-              </tr>
-            </thead>
-            <tbody className="text-gray-700">
-              <tr>
-                <td>
-                  {formatDownloadCount(
-                    downloadsLoaded,
-                    downloads?.downloadsLast24Hrs
-                  )}
-                </td>
-                <td>
-                  {formatDownloadCount(
-                    downloadsLoaded,
-                    downloads?.downloadsLast7Days
-                  )}
-                </td>
-                <td
-                  className={maybe("text-lime-500", wowUp).maybe(
-                    "text-red-500",
-                    wowDown
-                  )}
-                >
-                  {trendArrow(wowUp, wowDown)}
-                  {formatDownloadCount(
-                    downloadsLoaded,
-                    weekOverWeekDownloadChange
-                  )}
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </Card>
+      </Card>
+    </Anchor>
   );
 }
 

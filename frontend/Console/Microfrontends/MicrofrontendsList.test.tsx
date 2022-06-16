@@ -2,7 +2,7 @@ import { render } from "@testing-library/react";
 import { MicrofrontendsList } from "./MicrofrontendsList";
 import { MemoryRouter, Route, Routes } from "react-router";
 import { QueryClient, QueryClientProvider } from "react-query";
-import { Microfrontend } from "../../backend/DB/Models/Microfrontend/Microfrontend";
+import { Microfrontend } from "../../../backend/DB/Models/Microfrontend/Microfrontend";
 
 describe(`<MicrofrontendsList />`, () => {
   let customerOrgId = "customerOrgId",
