@@ -96,15 +96,14 @@ export function useMicrofrontends(): MicrofrontendWithLastDeployed[] {
         const getMicrofrontends = await import(
           /* webpackIgnore: true */ "../../backend/RestAPI/Microfrontends/GetMicrofrontends"
         );
-        return (
-          // @ts-ignore
-          (
-            await getMicrofrontends.getMicrofrontendsWithDeployedAt(
-              customerOrgId,
-              "deployedAt"
-            )
-          ).microfrontends
+
+        // @ts-ignore
+        const res = await getMicrofrontends.getMicrofrontendsWithDeployedAt(
+          customerOrgId,
+          "deployedAt"
         );
+
+        return res.microfrontends;
       }
     },
     {
