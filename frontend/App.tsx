@@ -94,7 +94,7 @@ export interface AppProps {
 export interface UserInformation {
   isLoggedIn: boolean;
   orgKey?: string;
-  userPreferences: UserPreferencesAttributes;
+  userPreferences?: UserPreferencesAttributes;
 }
 
 export interface SSRResult {

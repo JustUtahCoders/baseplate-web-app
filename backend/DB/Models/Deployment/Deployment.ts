@@ -32,6 +32,7 @@ export class DeploymentModel
     HasManyMethods<{ deployedMicrofrontend: DeployedMicrofrontendModel }>
 {
   declare id: BaseplateUUID;
+  declare customerOrgId: BaseplateUUID;
   declare accountId: BaseplateUUID;
   declare cause: DeploymentCause;
   declare status: DeploymentStatus;
@@ -142,6 +143,7 @@ export class DeploymentModel
 
 export interface DeploymentAttributes extends AuditTargetAttributes {
   id: BaseplateUUID;
+  customerOrgId: BaseplateUUID;
   accountId: BaseplateUUID;
   environmentId: BaseplateUUID;
   cause: DeploymentCause;

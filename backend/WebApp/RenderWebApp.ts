@@ -44,16 +44,17 @@ export const renderWebApp = async (req, res: Response) => {
 
   const userInformation: UserInformation = {
     userPreferences: req.baseplateAccount
-      .userPreferences as UserPreferencesAttributes,
+      ?.userPreferences as UserPreferencesAttributes,
     isLoggedIn: Boolean(req.baseplateAccount),
-    orgKey: "",
   };
 
-  if (userInformation.isLoggedIn && req.query.customerOrgId) {
-    const customerOrg = await CustomerOrgModel.findByPk(
-      req.query.customerOrgId
-    );
-    userInformation.orgKey = customerOrg?.orgKey;
+  if (userInformation.isLoggedIn) {
+    const matchResult = /\/console\/(.+?)\/.+/.exec(req.url);
+    if (matchResult) {
+      const customerOrgId = matchResult[1];
+      const customerOrg = await CustomerOrgModel.findByPk(customerOrgId);
+      userInformation.orgKey = customerOrg?.orgKey;
+    }
   }
 
   const rootProps: AppProps = {

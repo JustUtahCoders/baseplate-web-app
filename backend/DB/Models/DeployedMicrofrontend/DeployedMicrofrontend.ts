@@ -26,7 +26,8 @@ export class DeployedMicrofrontendModel
     BelongsToMethods<{
       deployment: DeploymentModel;
       microfrontend: MicrofrontendModel;
-    }>
+    }>,
+    DefaultModelAttrs
 {
   declare id: BaseplateUUID;
   declare microfrontendId: BaseplateUUID;
@@ -36,6 +37,9 @@ export class DeployedMicrofrontendModel
   declare trailingSlashUrl: string;
   declare deploymentChangedMicrofrontend: boolean;
   declare auditAccountId: BaseplateUUID;
+
+  declare createdAt: Date;
+  declare updatedAt: Date;
 
   declare getDeployment: BelongsToGetAssociationMixin<DeploymentModel>;
   declare setDeployment: BelongsToSetAssociationMixin<DeploymentModel, number>;
@@ -69,7 +73,7 @@ export type DeployedMicrofrontendCreationAttributes = Omit<
 export type DeployedMicrofrontend = DeployedMicrofrontendAttributes &
   DefaultModelAttrs;
 
-const modelName = "DeployedMicrofrontend";
+const modelName = "DeployedMicrofrontends";
 
 modelEvents.once("init", (sequelize) => {
   DeployedMicrofrontendModel.init(currentSchema, { sequelize, modelName });

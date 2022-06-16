@@ -107,6 +107,7 @@ router.post<
 
     const deployment = await DeploymentModel.create({
       accountId,
+      customerOrgId,
       auditAccountId: accountId,
       cause: req.body.cause,
       environmentId: req.body.environmentId,
