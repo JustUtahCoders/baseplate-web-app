@@ -99,7 +99,7 @@ export function App(props: AppProps) {
           <Suspense
             fallback={
               <MainContent>
-                <Loader description="Loading code" />
+                <Loader description="Loading route" delay={100} />
               </MainContent>
             }
           >

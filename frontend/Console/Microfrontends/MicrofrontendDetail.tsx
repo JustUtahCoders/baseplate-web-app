@@ -8,6 +8,7 @@ import { useCustomerOrgId } from "../../Utils/useCustomerOrgId";
 import { Tabs } from "../../Styleguide/Tabs";
 import { useRedirect } from "../../Utils/useRedirect";
 import { Suspense } from "react";
+import { Loader } from "../../Styleguide/Loader";
 
 export function MicrofrontendDetail() {
   const params = useParams<{
@@ -65,7 +66,11 @@ export function MicrofrontendDetail() {
           },
         ]}
       />
-      <Suspense fallback={null}>
+      <Suspense
+        fallback={
+          <Loader description="Loading microfrontend page" delay={100} />
+        }
+      >
         <Outlet />
       </Suspense>
     </MainContent>
