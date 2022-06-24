@@ -11,6 +11,9 @@ import "./RestAPI/Deployments/GetDeploymentCredentials";
 import "./RestAPI/Environments/GetEnvironments";
 import "./RestAPI/Microfrontends/GetMicrofrontends";
 import "./RestAPI/Microfrontends/MicrofrontendDownloads";
+import "./RestAPI/Microfrontends/MicrofrontendStatuses";
+import "./RestAPI/Microfrontends/LatestMicrofrontendDeployments";
+import "./RestAPI/Microfrontends/PatchMicrofrontend";
 
 // The default API Handler responds with a 404
 import "./ApiNotFound";

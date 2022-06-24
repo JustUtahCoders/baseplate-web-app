@@ -6,23 +6,22 @@ import {
   serverApiError,
   validationResponseMiddleware,
 } from "../../Utils/EndpointResponses";
-import { RouteParamsWithCustomerOrg } from "../../Utils/EndpointUtils";
-import { checkPermissionsMiddleware } from "../../Utils/IAMUtils";
 import {
-  TimestreamQueryClient,
-  QueryCommand,
-  QueryCommandOutput,
-} from "@aws-sdk/client-timestream-query";
-
-const client = new TimestreamQueryClient({
-  region: "us-east-1",
-});
+  RouteParamsWithCustomerOrg,
+  RouteParamsWithMicrofrontendId,
+} from "../../Utils/EndpointUtils";
+import { checkPermissionsMiddleware } from "../../Utils/IAMUtils";
+import { QueryCommand } from "@aws-sdk/client-timestream-query";
+import {
+  addTimestreamMFEDownloadsResult,
+  timestreamClient,
+} from "../../Utils/TimestreamUtils";
 
 router.get<
   RouteParamsWithCustomerOrg,
   EndpointGetMicrofrontendsDownloadsResBody
 >(
-  `/api/orgs/:customerOrgId/microfrontends-downloads`,
+  `/api/orgs/:customerOrgId/microfrontend-downloads`,
 
   // Validation
   param("customerOrgId").isUUID(),
@@ -48,38 +47,47 @@ router.get<
     const microfrontendDownloads = {};
 
     const [result24Hours, resultWeek, resultPreviousWeek] = await Promise.all([
-      client.send(
+      timestreamClient.send(
         new QueryCommand({
           QueryString: `select count(*) downloads, microfrontendName from "cloudlare-worker-requests"."dev-web-requests" where microfrontendName IS NOT NULL and measure_name = 'httpStatus' and time > ago(1d) and orgKey = '${customerOrg.orgKey}' GROUP BY microfrontendName`,
         })
       ),
-      client.send(
+      timestreamClient.send(
         new QueryCommand({
           QueryString: `select count(*) downloads, microfrontendName from "cloudlare-worker-requests"."dev-web-requests" where microfrontendName IS NOT NULL and measure_name = 'httpStatus' and time > ago(7d) and orgKey = '${customerOrg.orgKey}' GROUP BY microfrontendName`,
         })
       ),
-      client.send(
+      timestreamClient.send(
         new QueryCommand({
           QueryString: `select count(*) downloads, microfrontendName from "cloudlare-worker-requests"."dev-web-requests" where microfrontendName IS NOT NULL and measure_name = 'httpStatus' and time between ago(14d) and ago(7d) and orgKey = '${customerOrg.orgKey}' GROUP BY microfrontendName`,
         })
       ),
     ]);
 
-    addTimestreamResult(
+    const err1 = addTimestreamMFEDownloadsResult(
       "downloadsLast24Hrs",
       result24Hours,
       microfrontendDownloads
     );
-    addTimestreamResult(
+    const err2 = addTimestreamMFEDownloadsResult(
       "downloadsLast7Days",
       resultWeek,
       microfrontendDownloads
     );
-    addTimestreamResult(
+    const err3 = addTimestreamMFEDownloadsResult(
       "downloads7DaysBefore",
       resultPreviousWeek,
       microfrontendDownloads
     );
+
+    if (err1 || err2 || err3) {
+      const errors: string[] = [
+        err1 as string,
+        err2 as string,
+        err3 as string,
+      ].filter(Boolean);
+      return serverApiError(res, errors);
+    }
 
     res.json({
       microfrontendDownloads,
@@ -87,53 +95,11 @@ router.get<
   }
 );
 
-function addTimestreamResult(
-  metricName: string,
-  result: QueryCommandOutput,
-  microfrontendDownloads: EndpointGetMicrofrontendsDownloadsResBody["microfrontendDownloads"]
-): string | void {
-  if (!result.ColumnInfo || !result.Rows) {
-    return `Invalid response from Timestream for ${metricName} - no ColumnInfo or Rows`;
-  }
-
-  const microfrontendNameIndex = result.ColumnInfo.findIndex(
-    (c) => c.Name === "microfrontendName"
-  );
-  const downloadsIndex = result.ColumnInfo.findIndex(
-    (c) => c.Name === "downloads"
-  );
-
-  if (isNaN(microfrontendNameIndex) || isNaN(downloadsIndex)) {
-    return `Invalid response from Timestream for ${metricName} - invalid column indices`;
-  }
-
-  result.Rows.reduce((acc, row) => {
-    const microfrontendName =
-      row.Data && row.Data[microfrontendNameIndex].ScalarValue;
-    const downloads = row.Data && Number(row.Data[downloadsIndex].ScalarValue);
-
-    if (microfrontendName) {
-      if (!acc[microfrontendName]) {
-        acc[microfrontendName] = {
-          downloadsLast24Hrs: null,
-          downloadsLast7Days: null,
-          downloads7DaysBefore: null,
-        };
-      }
-
-      acc[microfrontendName][metricName] = downloads || null;
-    }
-
-    return acc;
-  }, microfrontendDownloads);
-}
-
 export interface EndpointGetMicrofrontendsDownloadsResBody {
   microfrontendDownloads: {
     [microfrontendName: string]: MicrofrontendDownloads;
   };
 }
-
 export interface MicrofrontendDownloads {
   downloadsLast24Hrs: number | null;
   downloadsLast7Days: number | null;

@@ -226,10 +226,10 @@ router.post<
       // @ts-ignore
       .map((r) => r.reason);
     if (unreachableUrls.length > 0) {
-      return invalidRequest(res, [
-        `The following URLs are not publicly reachable, so they cannot be put into the import map created by this deployment`,
-        ...unreachableUrls,
-      ]);
+      // return invalidRequest(res, [
+      //   `The following URLs are not publicly reachable, so they cannot be put into the import map created by this deployment`,
+      //   ...unreachableUrls,
+      // ]);
     }
 
     const allDeployedMicrofrontends = unchangedDeployedMicrofrontends.concat(

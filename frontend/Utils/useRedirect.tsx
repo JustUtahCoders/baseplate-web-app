@@ -5,7 +5,8 @@ import { inBrowser } from "./browserHelpers";
 
 export function useRedirect(
   redirectUrl: string,
-  shouldRedirect: boolean = true
+  shouldRedirect: boolean = true,
+  replace: boolean = false
 ) {
   const rootProps = useContext(RootPropsContext);
   const navigate = useNavigate();
@@ -16,7 +17,9 @@ export function useRedirect(
 
   useEffect(() => {
     if (shouldRedirect) {
-      navigate(redirectUrl);
+      navigate(redirectUrl, {
+        replace,
+      });
     }
-  }, [navigate, redirectUrl, shouldRedirect]);
+  }, [navigate, redirectUrl, shouldRedirect, replace]);
 }

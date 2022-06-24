@@ -7,3 +7,8 @@ export interface AnyRouteParams {
 export interface RouteParamsWithCustomerOrg extends AnyRouteParams {
   customerOrgId: BaseplateUUID;
 }
+
+export interface RouteParamsWithMicrofrontendId
+  extends RouteParamsWithCustomerOrg {
+  microfrontendId: BaseplateUUID;
+}

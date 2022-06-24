@@ -4,8 +4,6 @@ import { baseplateFetch } from "../../Utils/baseplateFetch";
 import { useCustomerOrgId } from "../../Utils/useCustomerOrgId";
 import { Card, CardFooter } from "../../Styleguide/Card";
 import { MainContent } from "../../Styleguide/MainContent";
-import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
 import { useContext, useMemo, useState } from "react";
 import { RootPropsContext } from "../../App";
 import { Input } from "../../Styleguide/Input";
@@ -19,8 +17,7 @@ import {
 } from "../../../backend/RestAPI/Microfrontends/MicrofrontendDownloads";
 import { maybe } from "kremling";
 import { PageExplanation, PageHeader } from "../../Styleguide/PageHeader";
-
-dayjs.extend(relativeTime);
+import dayjs from "dayjs";
 
 export function MicrofrontendsList() {
   const [search, setSearch] = useState("");
@@ -30,9 +27,9 @@ export function MicrofrontendsList() {
     unknown,
     Error,
     EndpointGetMicrofrontendsDownloadsResBody
-  >(`microfrontends-downloads-${customerOrgId}`, async function () {
+  >(`microfrontend-downloads-${customerOrgId}`, async function () {
     return baseplateFetch<EndpointGetMicrofrontendsDownloadsResBody>(
-      `/api/orgs/${customerOrgId}/microfrontends-downloads`
+      `/api/orgs/${customerOrgId}/microfrontend-downloads`
     );
   });
 
@@ -56,7 +53,7 @@ export function MicrofrontendsList() {
       <PageHeader>Microfrontends List</PageHeader>
       <PageExplanation
         docsLink="/docs/concepts/microfrontends"
-        briefExplanation="Deploy microfrontends to edge locations around the world"
+        briefExplanation="Deploy microfrontends to edge locations around the world."
       />
       <div className="mb-6">
         <Input

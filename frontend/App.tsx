@@ -1,3 +1,4 @@
+import "./Utils/dayjsUtils";
 import { StaticRouter } from "react-router-dom/server";
 import { Route, Routes } from "react-router";
 import { BrowserRouter } from "react-router-dom";
@@ -57,9 +58,9 @@ const MicrofrontendDeployments = lazy(() =>
     default: m.MicrofrontendDeployments,
   }))
 );
-const MicrofrontendSettings = lazy(() =>
-  import("./Console/Microfrontends/MicrofrontendSettings").then((m) => ({
-    default: m.MicrofrontendSettings,
+const MicrofrontendConfiguration = lazy(() =>
+  import("./Console/Microfrontends/MicrofrontendConfiguration").then((m) => ({
+    default: m.MicrofrontendConfiguration,
   }))
 );
 const MicrofrontendUsers = lazy(() =>
@@ -132,8 +133,8 @@ export function App(props: AppProps) {
                       />
                       <Route path="users" element={<MicrofrontendUsers />} />
                       <Route
-                        path="settings"
-                        element={<MicrofrontendSettings />}
+                        path="configuration"
+                        element={<MicrofrontendConfiguration />}
                       />
                       <Route path="" element={<MicrofrontendHome />} />
                     </>

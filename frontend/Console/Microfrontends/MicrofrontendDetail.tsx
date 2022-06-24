@@ -1,22 +1,40 @@
 import { capitalize } from "lodash-es";
-import { Outlet, useParams } from "react-router";
+import { matchRoutes, Outlet, useParams, useLocation } from "react-router";
 import { MainContent } from "../../Styleguide/MainContent";
 import { PageExplanation, PageHeader } from "../../Styleguide/PageHeader";
 import { useMicrofrontends } from "./MicrofrontendsList";
 import { Breadcrumbs } from "../../Styleguide/Breadcrumbs";
-import { useCustomerOrgId } from "../../Utils/useCustomerOrgId";
 import { Tabs } from "../../Styleguide/Tabs";
 import { useRedirect } from "../../Utils/useRedirect";
-import { Suspense } from "react";
+import { Suspense, useState } from "react";
 import { Loader } from "../../Styleguide/Loader";
 
 export function MicrofrontendDetail() {
+  const [cnt, setCnt] = useState(0);
   const params = useParams<{
     microfrontendId: string;
     customerOrgId: string;
   }>();
+
+  // For some reason, <Outlet>'s don't get executed on the server?
+  // So the useRedirect in MicrofrontendHome doesn't get executed server side, but I want it to
+  const location = useLocation();
+  const { customerOrgId, microfrontendId } = useParams<{
+    customerOrgId: string;
+    microfrontendId: string;
+  }>();
+  const isHomePage = Boolean(
+    matchRoutes(
+      [{ path: "/console/:orgId/microfrontends/:microfrontendId" }],
+      location.pathname
+    )
+  );
+  useRedirect(
+    `/console/${customerOrgId}/microfrontends/${microfrontendId}/deployments`,
+    isHomePage
+  );
+
   const microfrontends = useMicrofrontends();
-  const customerOrgId = useCustomerOrgId();
 
   const microfrontend = microfrontends.find(
     (m) => m.id === params.microfrontendId
@@ -45,10 +63,12 @@ export function MicrofrontendDetail() {
           },
         ]}
       />
-      <PageHeader>{capitalize(microfrontend.name)} microfrontend</PageHeader>
+      <PageHeader badgeText="microfrontend">
+        {capitalize(microfrontend.name)}
+      </PageHeader>
       <PageExplanation
         docsLink="/docs/concepts/microfrontends"
-        briefExplanation={`View and manage settings, users, and deployments for the ${microfrontend.name} microfrontend.`}
+        briefExplanation={`View and manage configuration, users, and deployments for the ${microfrontend.name} microfrontend.`}
       />
       <Tabs
         items={[
@@ -61,8 +81,8 @@ export function MicrofrontendDetail() {
             href: `/console/${customerOrgId}/microfrontends/${microfrontend.id}/users`,
           },
           {
-            label: "Settings",
-            href: `/console/${customerOrgId}/microfrontends/${microfrontend.id}/settings`,
+            label: "Configuration",
+            href: `/console/${customerOrgId}/microfrontends/${microfrontend.id}/configuration`,
           },
         ]}
       />
@@ -71,10 +91,14 @@ export function MicrofrontendDetail() {
           <Loader description="Loading microfrontend page" delay={100} />
         }
       >
-        <Outlet />
+        <Outlet context={{ microfrontend, rerender }} />
       </Suspense>
     </MainContent>
   );
+
+  function rerender() {
+    setCnt(cnt + 1);
+  }
 }
 
 export function MicrofrontendHome() {
@@ -83,7 +107,9 @@ export function MicrofrontendHome() {
     microfrontendId: string;
   }>();
   useRedirect(
-    `/console/${params.customerOrgId}/microfrontends/${params.microfrontendId}/deployments`
+    `/console/${params.customerOrgId}/microfrontends/${params.microfrontendId}/deployments`,
+    true,
+    true
   );
 
   return null;

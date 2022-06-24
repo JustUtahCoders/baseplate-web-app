@@ -169,7 +169,7 @@ export enum DeploymentStatus {
 modelEvents.once("init", (sequelize) => {
   DeploymentModel.init(currentSchema, {
     sequelize,
-    modelName: "Deployment",
+    modelName: "Deployments",
   });
 });
 

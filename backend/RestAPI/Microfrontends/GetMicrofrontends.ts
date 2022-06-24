@@ -3,7 +3,7 @@ import sequelize, { Op } from "sequelize";
 import { DeployedMicrofrontendModel } from "../../DB/Models/DeployedMicrofrontend/DeployedMicrofrontend";
 import { BaseplatePermission } from "../../DB/Models/IAM/Permission";
 import {
-  MicrofrontendAttributes,
+  Microfrontend,
   MicrofrontendModel,
 } from "../../DB/Models/Microfrontend/Microfrontend";
 import { BaseplateUUID } from "../../DB/Models/SequelizeTSHelpers";
@@ -83,12 +83,11 @@ export async function getMicrofrontendsWithDeployedAt(
         if (first.deployedAt && second.deployedAt) {
           return first.deployedAt > second.deployedAt ? -1 : 1;
         } else if (first.deployedAt) {
-          return -1;
-        } else {
           return 1;
+        } else {
+          return -1;
         }
       } else {
-        // @ts-ignore
         return first.updatedAt > second.updatedAt ? -1 : 1;
       }
     }
@@ -101,7 +100,7 @@ export interface EndpointGetMicrofrontendsReqQuery {
   sort: "deployedAt" | "updatedAt";
 }
 
-export type MicrofrontendWithLastDeployed = MicrofrontendAttributes & {
+export type MicrofrontendWithLastDeployed = Microfrontend & {
   deployedAt: Date | null;
 };
 

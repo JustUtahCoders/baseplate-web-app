@@ -5,10 +5,25 @@ import {
   BelongsToGetAssociationMixin,
   BelongsToSetAssociationMixin,
   BelongsToCreateAssociationMixin,
+  HasManyGetAssociationsMixin,
+  HasManyCountAssociationsMixin,
+  HasManyHasAssociationMixin,
+  HasManyHasAssociationsMixin,
+  HasManySetAssociationsMixin,
+  HasManyAddAssociationMixin,
+  HasManyAddAssociationsMixin,
+  HasManyRemoveAssociationMixin,
+  HasManyRemoveAssociationsMixin,
+  HasManyCreateAssociationMixin,
 } from "sequelize";
-import { BaseplateUUID, BelongsToMethods } from "../SequelizeTSHelpers";
+import {
+  BaseplateUUID,
+  BelongsToMethods,
+  HasManyMethods,
+} from "../SequelizeTSHelpers";
 import { CustomerOrgModel } from "../CustomerOrg/CustomerOrg";
 import { currentSchema } from "./EnvironmentSchema";
+import { DeploymentModel } from "../Deployment/Deployment";
 import {
   AuditModel,
   AuditTargetAttributes,
@@ -18,9 +33,9 @@ import {
 export class EnvironmentModel
   extends Model<EnvironmentAttributes, EnvironmentCreationAttributes>
   implements
-    DefaultModelAttrs,
-    EnvironmentAttributes,
-    BelongsToMethods<{ customerOrg: CustomerOrgModel }>
+    Environment,
+    BelongsToMethods<{ customerOrg: CustomerOrgModel }>,
+    HasManyMethods<{ deployment: DeploymentModel }>
 {
   declare id: BaseplateUUID;
   declare customerOrgId: BaseplateUUID;
@@ -41,6 +56,23 @@ export class EnvironmentModel
     number
   >;
   declare createCustomerOrg: BelongsToCreateAssociationMixin<CustomerOrgModel>;
+
+  declare getDeployments: HasManyGetAssociationsMixin<DeploymentModel>;
+  declare countDeployments: HasManyCountAssociationsMixin;
+  declare hasDeployment: HasManyHasAssociationMixin<DeploymentModel, number>;
+  declare hasDeployments: HasManyHasAssociationsMixin<DeploymentModel, number>;
+  declare setDeployments: HasManySetAssociationsMixin<DeploymentModel, number>;
+  declare addDeployment: HasManyAddAssociationMixin<DeploymentModel, number>;
+  declare addDeployments: HasManyAddAssociationsMixin<DeploymentModel, number>;
+  declare removeDeployment: HasManyRemoveAssociationMixin<
+    DeploymentModel,
+    number
+  >;
+  declare removeDeployments: HasManyRemoveAssociationsMixin<
+    DeploymentModel,
+    number
+  >;
+  declare createDeployment: HasManyCreateAssociationMixin<DeploymentModel>;
 }
 
 export interface EnvironmentAttributes extends AuditTargetAttributes {
@@ -79,5 +111,10 @@ modelEvents.once("associate", () => {
       name: "customerOrgId",
       allowNull: false,
     },
+  });
+
+  EnvironmentModel.hasMany(DeploymentModel, {
+    foreignKey: "environmentId",
+    as: "deployment",
   });
 });
