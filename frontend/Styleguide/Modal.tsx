@@ -17,6 +17,20 @@ export function Modal(props: ModalProps) {
     };
   }, []);
 
+  useEffect(() => {
+    window.addEventListener("keyup", hotKeys);
+
+    return () => {
+      window.removeEventListener("keyup", hotKeys);
+    };
+
+    function hotKeys(evt: KeyboardEvent) {
+      if (evt.key === "Escape") {
+        props.close();
+      }
+    }
+  });
+
   if (!containerEl) {
     return null;
   }

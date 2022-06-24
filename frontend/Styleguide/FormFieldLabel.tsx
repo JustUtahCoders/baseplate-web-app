@@ -2,12 +2,18 @@ import { HTMLProps } from "react";
 import { always } from "kremling";
 
 export function FormFieldLabel(props: FormFieldLabelProps) {
-  const { className, children, ...otherProps } = props;
+  const {
+    className,
+    children,
+    orientation = "vertical",
+    ...otherProps
+  } = props;
 
   return (
     <label
       className={always(className as string)
-        .always("text-coolGray-700 mb-1 text-sm")
+        .always("text-coolGray-700 text-sm")
+        .toggle("mb-1", "ml-4", orientation)
         .toString()}
       {...otherProps}
     >
@@ -16,4 +22,6 @@ export function FormFieldLabel(props: FormFieldLabelProps) {
   );
 }
 
-export interface FormFieldLabelProps extends HTMLProps<HTMLLabelElement> {}
+export interface FormFieldLabelProps extends HTMLProps<HTMLLabelElement> {
+  orientation?: "vertical" | "horizontal";
+}

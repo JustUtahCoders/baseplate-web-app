@@ -44,6 +44,7 @@ export function created(res: Response, obj: object) {
 }
 
 export function serverApiError(res: Response, msg: string | string[]) {
+  console.error(msg);
   res.status(500).send({
     errors: Array.isArray(msg) ? msg : [msg],
   });

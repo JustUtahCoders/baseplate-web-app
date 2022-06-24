@@ -12,7 +12,7 @@ export function Loader({ description, delay = 100 }: LoaderProps) {
     return () => {
       clearTimeout(timeoutId);
     };
-  }, [show]);
+  }, [show, delay]);
 
   if (!show) {
     return null;

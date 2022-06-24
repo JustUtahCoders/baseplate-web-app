@@ -16,10 +16,8 @@ import {
 } from "../Audit/Audit";
 
 export class MicrofrontendModel
-  extends Model<MicrofrontendAttributes, MicrofrontendCreationAttributes>
-  implements
-    MicrofrontendAttributes,
-    BelongsToMethods<{ customerOrg: CustomerOrgModel }>
+  extends Model<Microfrontend, MicrofrontendCreationAttributes>
+  implements Microfrontend, BelongsToMethods<{ customerOrg: CustomerOrgModel }>
 {
   declare id: BaseplateUUID;
   declare customerOrgId: BaseplateUUID;
@@ -51,7 +49,7 @@ export interface MicrofrontendAttributes extends AuditTargetAttributes {
 
     This is a borrowed naming convention from the NPM ecosystem
   */
-  scope?: string;
+  scope?: string | null;
   /*
     Each customer has an orgKey property that can be used as the scope. The orgKey
     is used in baseplate-cloudflare-worker to identify which customer the request is for.
