@@ -8,6 +8,7 @@ import { Tabs } from "../../Styleguide/Tabs";
 import { useRedirect } from "../../Utils/useRedirect";
 import { Suspense, useState } from "react";
 import { Loader } from "../../Styleguide/Loader";
+import { useQueryClient } from "react-query";
 
 export function MicrofrontendDetail() {
   const [cnt, setCnt] = useState(0);
@@ -15,6 +16,7 @@ export function MicrofrontendDetail() {
     microfrontendId: string;
     customerOrgId: string;
   }>();
+  const queryClient = useQueryClient();
 
   // For some reason, <Outlet>'s don't get executed on the server?
   // So the useRedirect in MicrofrontendHome doesn't get executed server side, but I want it to
@@ -91,12 +93,13 @@ export function MicrofrontendDetail() {
           <Loader description="Loading microfrontend page" delay={100} />
         }
       >
-        <Outlet context={{ microfrontend, rerender }} />
+        <Outlet context={{ microfrontend, refetchMicrofrontend }} />
       </Suspense>
     </MainContent>
   );
 
-  function rerender() {
+  function refetchMicrofrontend() {
+    queryClient.removeQueries(`microfrontends-${customerOrgId}`);
     setCnt(cnt + 1);
   }
 }

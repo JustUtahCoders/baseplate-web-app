@@ -1,9 +1,4 @@
-import {
-  useMutation,
-  useQuery,
-  useQueryClient,
-  UseQueryResult,
-} from "react-query";
+import { useMutation, useQuery, UseQueryResult } from "react-query";
 import { useOutletContext, useParams } from "react-router";
 import { BaseplateUUID } from "../../../backend/DB/Models/SequelizeTSHelpers";
 import { Loader } from "../../Styleguide/Loader";
@@ -31,11 +26,10 @@ export function MicrofrontendConfiguration() {
     customerOrgId: BaseplateUUID;
     microfrontendId: BaseplateUUID;
   }>();
-  const { microfrontend, rerender } = useOutletContext<{
+  const { microfrontend, refetchMicrofrontend } = useOutletContext<{
     microfrontend: MicrofrontendWithLastDeployed;
-    rerender(): void;
+    refetchMicrofrontend(): void;
   }>();
-  const queryClient = useQueryClient();
   const rootProps = useContext(RootPropsContext);
   const activeQuery = useQuery<
     unknown,
@@ -240,13 +234,12 @@ export function MicrofrontendConfiguration() {
   );
 
   function cancelEdit() {
-    queryClient.removeQueries(`microfrontends-${customerOrgId}`);
-    rerender();
+    refetchMicrofrontend();
     setFieldToEdit(null);
   }
 }
 
-function useLastMicrofrontendDeployments(
+export function useLastMicrofrontendDeployments(
   microfrontendId: BaseplateUUID
 ): UseQueryResult<EndpointGetLatestMicrofrontendDeploymentsResBody> {
   const customerOrgId = useCustomerOrgId();
@@ -257,7 +250,13 @@ function useLastMicrofrontendDeployments(
   >(`last-microfrontend-deployments-${microfrontendId}`, async () => {
     return baseplateFetch<EndpointGetLatestMicrofrontendDeploymentsResBody>(
       `/api/orgs/${customerOrgId}/microfrontends/${microfrontendId}/latest-deployments`
-    );
+    ).then((d) => {
+      d.latestEnvironmentDeployments.push(
+        ...d.latestEnvironmentDeployments,
+        ...d.latestEnvironmentDeployments
+      );
+      return d;
+    });
   });
 }
 
