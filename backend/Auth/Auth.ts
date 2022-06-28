@@ -30,7 +30,6 @@ import { Op } from "sequelize";
 import validator from "validator";
 import bcrypt from "bcryptjs";
 import {
-  UserPreferences,
   UserPreferencesAttributes,
   UserPreferencesModel,
 } from "../DB/Models/User/UserPreferences";
