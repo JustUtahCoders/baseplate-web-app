@@ -28,9 +28,9 @@ import { AccountRoleModel } from "../IAM/AccountRole";
 import { UserPreferencesModel } from "./UserPreferences";
 
 export class UserModel
-  extends Model<UserAttributes, UserCreationAttributes>
+  extends Model<User, UserCreationAttributes>
   implements
-    UserAttributes,
+    User,
     BelongsToManyMethods<{
       customerOrg: CustomerOrgModel;
       role: AccountRoleModel;
