@@ -31,7 +31,8 @@ export function MicrofrontendDetail() {
   );
   useRedirect(
     `/console/${customerOrgId}/microfrontends/${microfrontendId}/deployments`,
-    isHomePage
+    isHomePage,
+    true
   );
 
   const microfrontends = useMicrofrontends();

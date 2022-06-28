@@ -68,6 +68,14 @@ const MicrofrontendUsers = lazy(() =>
     default: m.MicrofrontendUsers,
   }))
 );
+const SelectOrg = lazy(() =>
+  import("./Console/SelectOrg").then((m) => ({ default: m.SelectOrg }))
+);
+const ConsoleOrgHome = lazy(() =>
+  import("./Console/ConsoleOrgHome").then((m) => ({
+    default: m.ConsoleOrgHome,
+  }))
+);
 
 const queryClient = new QueryClient();
 export const RootPropsContext = createContext<AppProps>({
@@ -140,6 +148,11 @@ export function App(props: AppProps) {
                     </>
                   ),
                 })}
+                <Route path="/console/select-org" element={<SelectOrg />} />
+                <Route
+                  path="/console/:customerOrgId"
+                  element={<ConsoleOrgHome />}
+                />
                 <Route path="/docs" element={<Docs />}>
                   <Route path="" element={<DocsHome />} />
                   <Route path=":folder1/:docsPage" element={<DocsPage />} />

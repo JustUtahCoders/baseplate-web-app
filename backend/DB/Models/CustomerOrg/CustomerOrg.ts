@@ -47,9 +47,9 @@ import {
 import { StaticWebSettingsModel } from "./StaticWebSettings";
 
 export class CustomerOrgModel
-  extends Model<CustomerOrgAttributes, CustomerOrgCreationAttributes>
+  extends Model<CustomerOrg, CustomerOrgCreationAttributes>
   implements
-    CustomerOrgAttributes,
+    CustomerOrg,
     BelongsToMethods<{ billingUser: UserModel }>,
     BelongsToManyMethods<{ user: UserModel }>,
     HasManyMethods<{ environment: EnvironmentModel }>,

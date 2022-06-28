@@ -2,7 +2,10 @@ import { always } from "kremling";
 import { HTMLProps, ReactNode } from "react";
 
 export function Card(props: CardProps) {
-  const { className, footer, children, header, ...otherProps } = props;
+  const { className, footer, children, header, contentProps, ...otherProps } =
+    props;
+  const { className: contentClassName, ...otherContentProps } =
+    contentProps || {};
 
   return (
     <div
@@ -13,7 +16,12 @@ export function Card(props: CardProps) {
       {...otherProps}
     >
       {header}
-      <div className="px-3.5">{children}</div>
+      <div
+        className={always("px-3.5").always(contentClassName as string)}
+        {...otherContentProps}
+      >
+        {children}
+      </div>
       {footer}
     </div>
   );
@@ -22,6 +30,7 @@ export function Card(props: CardProps) {
 export interface CardProps extends HTMLProps<HTMLDivElement> {
   footer?: ReactNode;
   header?: ReactNode;
+  contentProps?: HTMLProps<HTMLDivElement>;
 }
 
 export function CardFooter(props: CardFooterProps) {

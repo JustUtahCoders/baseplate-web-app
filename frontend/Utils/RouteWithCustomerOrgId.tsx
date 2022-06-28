@@ -35,7 +35,7 @@ function RedirectWithCustomerOrgId(props: RedirectWithCustomerOrgIdProps) {
   const redirectUrl = mostRecentCustomerOrgId
     ? `/console/${mostRecentCustomerOrgId}/${props.pathSuffix}`
     : "/console/select-org";
-  useRedirect(redirectUrl);
+  useRedirect(redirectUrl, true, true);
 
   return null;
 }
