@@ -161,6 +161,9 @@ router.post<
                   trailingSlashUrl: lastDeployment.trailingSlashUrl,
                   deploymentChangedMicrofrontend: false,
                   auditAccountId: accountId,
+                  alias1: microfrontend.alias1,
+                  alias2: microfrontend.alias2,
+                  alias3: microfrontend.alias3,
                 };
               }
             }

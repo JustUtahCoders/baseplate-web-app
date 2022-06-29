@@ -17,10 +17,7 @@ import {
 } from "../Audit/Audit";
 
 export class DeployedMicrofrontendModel
-  extends Model<
-    DeployedMicrofrontendAttributes,
-    DeployedMicrofrontendCreationAttributes
-  >
+  extends Model<DeployedMicrofrontend, DeployedMicrofrontendCreationAttributes>
   implements
     DeployedMicrofrontendAttributes,
     BelongsToMethods<{
@@ -37,6 +34,9 @@ export class DeployedMicrofrontendModel
   declare trailingSlashUrl: string;
   declare deploymentChangedMicrofrontend: boolean;
   declare auditAccountId: BaseplateUUID;
+  declare alias1?: string;
+  declare alias2?: string;
+  declare alias3?: string;
 
   declare createdAt: Date;
   declare updatedAt: Date;
@@ -62,6 +62,9 @@ export interface DeployedMicrofrontendAttributes extends AuditTargetAttributes {
   bareImportSpecifier: BaseplateUUID;
   entryUrl: string;
   trailingSlashUrl?: string;
+  alias1?: string;
+  alias2?: string;
+  alias3?: string;
   deploymentChangedMicrofrontend: boolean;
 }
 

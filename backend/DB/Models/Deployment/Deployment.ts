@@ -27,7 +27,7 @@ import { EnvironmentModel } from "../Environment/Environment";
 export class DeploymentModel
   extends Model<DeploymentAttributes, DeploymentCreationAttributes>
   implements
-    DeploymentAttributes,
+    Deployment,
     HasManyMethods<{ deploymentLog: DeploymentLogModel }>,
     HasManyMethods<{ deployedMicrofrontend: DeployedMicrofrontendModel }>
 {
@@ -51,12 +51,19 @@ export class DeploymentModel
     };
 
     deployedMicrofrontends.forEach((deployedMicrofrontend) => {
-      importMap.imports[deployedMicrofrontend.bareImportSpecifier] =
-        deployedMicrofrontend.entryUrl;
-      if (deployedMicrofrontend.trailingSlashUrl) {
-        importMap.imports[deployedMicrofrontend.bareImportSpecifier + "/"] =
-          deployedMicrofrontend.trailingSlashUrl;
-      }
+      const importSpecifiers: string[] = [
+        deployedMicrofrontend.bareImportSpecifier,
+        deployedMicrofrontend.alias1,
+        deployedMicrofrontend.alias2,
+        deployedMicrofrontend.alias3,
+      ].filter(Boolean) as string[];
+      importSpecifiers.forEach((specifier) => {
+        importMap.imports[specifier] = deployedMicrofrontend.entryUrl;
+        if (deployedMicrofrontend.trailingSlashUrl) {
+          importMap.imports[specifier + "/"] =
+            deployedMicrofrontend.trailingSlashUrl;
+        }
+      });
     });
 
     return importMap;

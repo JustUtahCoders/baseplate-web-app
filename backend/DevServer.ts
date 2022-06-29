@@ -29,11 +29,20 @@ const server = http.createServer((req, res) => {
     try {
       const proxyReqHeaders = { ...req.headers };
       delete proxyReqHeaders.connection;
-      proxyResponse = await fetch(url.href, {
-        // @ts-ignore
-        headers: proxyReqHeaders,
-      });
+
+      const hasBody =
+        req.headers["content-length"] &&
+        Number(req.headers["content-length"]) &&
+        req.method !== "GET" &&
+        req.method !== "HEAD";
+      const fetchOptions: RequestInit = {
+        method: req.method,
+        headers: proxyReqHeaders as unknown as HeadersInit,
+        body: hasBody ? (req as unknown as ReadableStream) : null,
+      };
+      proxyResponse = await fetch(url.href, fetchOptions);
     } catch (err) {
+      console.error(err);
       if (!warningLogged) {
         warningLogged = true;
         console.log("Proxy server waiting for nodemon restart to complete");

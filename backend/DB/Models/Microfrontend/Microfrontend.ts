@@ -25,6 +25,9 @@ export class MicrofrontendModel
   declare scope: string;
   declare useCustomerOrgKeyAsScope: boolean;
   declare auditAccountId: BaseplateUUID;
+  declare alias1?: string;
+  declare alias2?: string;
+  declare alias3?: string;
 
   declare createdAt: Date;
   declare updatedAt: Date;
@@ -55,6 +58,10 @@ export interface MicrofrontendAttributes extends AuditTargetAttributes {
     is used in baseplate-cloudflare-worker to identify which customer the request is for.
   */
   useCustomerOrgKeyAsScope: boolean;
+
+  alias1?: string;
+  alias2?: string;
+  alias3?: string;
 }
 
 export type MicrofrontendCreationAttributes = Omit<

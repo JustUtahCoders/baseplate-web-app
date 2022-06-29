@@ -48,6 +48,18 @@ const schema = {
     type: DataTypes.STRING,
     allowNull: true,
   },
+  alias1: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  alias2: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  alias3: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
   auditAccountId: {
     type: DataTypes.UUID,
     allowNull: false,
