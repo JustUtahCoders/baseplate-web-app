@@ -26,11 +26,11 @@ router.patch<
   // Validation
   param("customerOrgId").isUUID(),
   param("microfrontendId").isUUID(),
-  body("name").isString().optional(),
-  body("scope").isString().optional({ nullable: true }),
-  body("alias1").isString().optional({ nullable: true }),
-  body("alias2").isString().optional({ nullable: true }),
-  body("alias3").isString().optional({ nullable: true }),
+  body("name").isString().notEmpty().optional(),
+  body("scope").isString().notEmpty().optional({ nullable: true }),
+  body("alias1").isString().notEmpty().optional({ nullable: true }),
+  body("alias2").isString().notEmpty().optional({ nullable: true }),
+  body("alias3").isString().notEmpty().optional({ nullable: true }),
   body("useCustomerOrgKeyAsScope").isBoolean().optional(),
   validationResponseMiddleware,
 

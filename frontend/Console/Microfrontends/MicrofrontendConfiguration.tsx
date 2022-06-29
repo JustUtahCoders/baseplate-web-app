@@ -1,13 +1,11 @@
 import { useMutation, useQuery, UseQueryResult } from "react-query";
 import { useOutletContext, useParams } from "react-router";
 import { BaseplateUUID } from "../../../backend/DB/Models/SequelizeTSHelpers";
-import { Loader } from "../../Styleguide/Loader";
-import { ErrorLoading } from "../../Styleguide/ErrorLoading";
 import { baseplateFetch } from "../../Utils/baseplateFetch";
 import { EndpointGetMicrofrontendActiveResBody } from "../../../backend/RestAPI/Microfrontends/MicrofrontendStatuses";
 import { Card, CardHeader } from "../../Styleguide/Card";
 import { ConfigurationTable } from "../../Styleguide/ConfigurationTable";
-import { FormEvent, useContext, useEffect, useState } from "react";
+import { FormEvent, useContext, useEffect, useRef, useState } from "react";
 import { RootPropsContext } from "../../App";
 import { Modal } from "../../Styleguide/Modal";
 import { MicrofrontendWithLastDeployed } from "../../../backend/RestAPI/Microfrontends/GetMicrofrontends";
@@ -18,23 +16,18 @@ import { Microfrontend } from "../../../backend/DB/Models/Microfrontend/Microfro
 import { FormField } from "../../Styleguide/FormField";
 import { FormFieldLabel } from "../../Styleguide/FormFieldLabel";
 import { Input } from "../../Styleguide/Input";
+import { isEmpty } from "lodash-es";
 
 export function MicrofrontendConfiguration() {
-  const { customerOrgId, microfrontendId } = useParams<{
-    customerOrgId: BaseplateUUID;
-    microfrontendId: BaseplateUUID;
-  }>();
   const { microfrontend, refetchMicrofrontend } = useOutletContext<{
     microfrontend: MicrofrontendWithLastDeployed;
     refetchMicrofrontend(): void;
   }>();
   const rootProps = useContext(RootPropsContext);
-  const activeQuery = useMicrofrontendActiveQuery();
   const [fieldToEdit, setFieldToEdit] = useState<EditableField | null>(null);
 
   const hasScope =
     microfrontend.useCustomerOrgKeyAsScope || microfrontend.scope;
-  const isActive = activeQuery.data?.isActive;
   const scope = hasScope
     ? microfrontend.useCustomerOrgKeyAsScope
       ? rootProps.userInformation.orgKey
@@ -44,24 +37,12 @@ export function MicrofrontendConfiguration() {
     ? `@${scope}/${microfrontend.name}`
     : microfrontend.name;
 
-  if (activeQuery.isLoading) {
-    return (
-      <Loader
-        description={`Loading ${microfrontend.name} microfrontend activity`}
-      />
-    );
-  }
-
-  if (activeQuery.error) {
-    return (
-      <ErrorLoading
-        thingBeingLoaded={`${microfrontend.name} microfrontend activity`}
-      />
-    );
-  }
-
   const EditComponent = fieldToEdit && editComponents[fieldToEdit];
-  const aliases = ["@convex/settings", "@convex/user-settings"];
+  const aliases: string[] = [
+    microfrontend.alias1,
+    microfrontend.alias2,
+    microfrontend.alias3,
+  ].filter(Boolean) as string[];
 
   return (
     <Card
@@ -114,9 +95,9 @@ export function MicrofrontendConfiguration() {
               {
                 label: "Aliases",
                 element:
-                  aliases.length > 0
+                  aliases.length === 0
                     ? "\u2014"
-                    : aliases.map((alias) => <div>{alias}</div>),
+                    : aliases.map((alias) => <div key={alias}>{alias}</div>),
                 editable: true,
                 handleEdit() {
                   setFieldToEdit(EditableField.aliases);
@@ -155,55 +136,7 @@ export function useLastMicrofrontendDeployments(
   });
 }
 
-function EditName({ microfrontend, close }: EditProps) {
-  const { customerOrgId, microfrontendId } = useParams<{
-    customerOrgId: string;
-    microfrontendId: string;
-  }>();
-  const submitMutation = useMutation<
-    Microfrontend,
-    Error,
-    FormEvent<HTMLFormElement>
-  >((evt) => {
-    evt.preventDefault();
-    return baseplateFetch<Microfrontend>(
-      `/api/orgs/${customerOrgId}/microfrontends/${microfrontendId}`,
-      {
-        method: "PATCH",
-        body: {
-          ...microfrontend,
-          name,
-        },
-      }
-    );
-  });
-
-  useEffect(() => {
-    if (submitMutation.isSuccess) {
-      close();
-    }
-  });
-
-  return (
-    <form onSubmit={submitMutation.mutate}>
-      <div className="flex justify-end">
-        <Button
-          type="button"
-          kind={ButtonKind.secondary}
-          onClick={close}
-          className="mr-4"
-        >
-          Cancel
-        </Button>
-        <Button type="submit" kind={ButtonKind.primary}>
-          Save
-        </Button>
-      </div>
-    </form>
-  );
-}
-
-function EditScope({ microfrontend, close }: EditProps) {
+function EditSpecifier({ microfrontend, close }: EditProps) {
   const { customerOrgId, microfrontendId } = useParams<{
     customerOrgId: string;
     microfrontendId: string;
@@ -276,6 +209,10 @@ function EditScope({ microfrontend, close }: EditProps) {
 
   return (
     <form onSubmit={submitMutation.mutate}>
+      <p className="text-xs mb-4 text-gray-600">
+        The import specifier is the name of the microfrontend used in your code
+        when importing the microfrontend.
+      </p>
       <FormField>
         <FormFieldLabel>Import Specifier</FormFieldLabel>
         <div className="text-sm text-gray-600">{importSpecifier}</div>
@@ -377,6 +314,144 @@ function EditScope({ microfrontend, close }: EditProps) {
   );
 }
 
+function EditAliases({ microfrontend, close }) {
+  const { customerOrgId, microfrontendId } = useParams<{
+    customerOrgId: string;
+    microfrontendId: string;
+  }>();
+  const [alias1, setAlias1] = useState(microfrontend.alias1 ?? "");
+  const [alias2, setAlias2] = useState(microfrontend.alias2 ?? "");
+  const [alias3, setAlias3] = useState(microfrontend.alias3 ?? "");
+  const alias1Ref = useRef<HTMLInputElement>(null);
+  const alias2Ref = useRef<HTMLInputElement>(null);
+  const alias3Ref = useRef<HTMLInputElement>(null);
+
+  const submitMutation = useMutation<
+    Microfrontend,
+    Error,
+    FormEvent<HTMLFormElement>
+  >((evt) => {
+    evt.preventDefault();
+    let patch: Partial<Microfrontend> = {
+      alias1: alias1 || null,
+      alias2: alias2 || null,
+      alias3: alias3 || null,
+    };
+
+    return baseplateFetch<Microfrontend>(
+      `/api/orgs/${customerOrgId}/microfrontends/${microfrontendId}`,
+      {
+        method: "PATCH",
+        body: patch,
+      }
+    );
+  });
+
+  useEffect(() => {
+    if (submitMutation.isSuccess) {
+      close();
+    }
+  });
+
+  return (
+    <form onSubmit={submitMutation.mutate}>
+      <p className="text-xs mb-4 text-gray-600">
+        Aliases are alternate import specifiers for this microfrontend that
+        appear in the import map. They can help you slowly migrate your code to
+        use a new name for the microfrontend.
+      </p>
+      <FormField className="relative">
+        <FormFieldLabel htmlFor="alias1">Alias 1</FormFieldLabel>
+        <Input
+          ref={alias1Ref}
+          type="text"
+          value={alias1}
+          onChange={(evt) => setAlias1(evt.target.value)}
+          placeholder="@org/navbar"
+        />
+        {!isEmpty(alias1) && (
+          <Button
+            type="button"
+            onClick={clearAlias1}
+            kind={ButtonKind.transparent}
+            className="absolute right-2 top-1/2"
+          >
+            {"\u24e7"}
+          </Button>
+        )}
+      </FormField>
+      <FormField className="mt-4 relative">
+        <FormFieldLabel htmlFor="alias2">Alias 2</FormFieldLabel>
+        <Input
+          ref={alias2Ref}
+          type="text"
+          value={alias2}
+          onChange={(evt) => setAlias2(evt.target.value)}
+          placeholder="@org/navbar"
+        />
+        {!isEmpty(alias2) && (
+          <Button
+            type="button"
+            onClick={clearAlias2}
+            kind={ButtonKind.transparent}
+            className="absolute right-2 top-1/2"
+          >
+            {"\u24e7"}
+          </Button>
+        )}
+      </FormField>
+      <FormField className="mt-4 relative">
+        <FormFieldLabel htmlFor="alias3">Alias 3</FormFieldLabel>
+        <Input
+          ref={alias3Ref}
+          type="text"
+          value={alias3}
+          onChange={(evt) => setAlias3(evt.target.value)}
+          placeholder="@org/navbar"
+        />
+        {!isEmpty(alias3) && (
+          <Button
+            type="button"
+            onClick={clearAlias3}
+            kind={ButtonKind.transparent}
+            className="absolute right-2 top-1/2"
+          >
+            {"\u24e7"}
+          </Button>
+        )}
+      </FormField>
+      <div className="flex justify-end mt-8">
+        <Button
+          type="button"
+          kind={ButtonKind.secondary}
+          onClick={close}
+          className="mr-4"
+        >
+          Cancel
+        </Button>
+        <Button type="submit" kind={ButtonKind.primary}>
+          Save
+        </Button>
+      </div>
+    </form>
+  );
+
+  function clearAlias1() {
+    setAlias1("");
+    alias1Ref.current?.focus();
+  }
+
+  function clearAlias2() {
+    setAlias2("");
+    alias2Ref.current?.focus();
+  }
+
+  function clearAlias3() {
+    setAlias3("");
+    alias3Ref.current?.focus();
+  }
+}
+
 export function useMicrofrontendActiveQuery(): UseQueryResult<
   EndpointGetMicrofrontendActiveResBody,
   Error
@@ -395,10 +470,6 @@ export function useMicrofrontendActiveQuery(): UseQueryResult<
   );
 }
 
-function EditAliases() {
-  return <div>Hi</div>;
-}
-
 interface EditProps {
   microfrontend: Microfrontend;
   close(): any;
@@ -410,6 +481,6 @@ enum EditableField {
 }
 
 const editComponents = {
-  [EditableField.specifier]: EditScope,
+  [EditableField.specifier]: EditSpecifier,
   [EditableField.aliases]: EditAliases,
 };
