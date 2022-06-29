@@ -1,7 +1,10 @@
 import { always } from "kremling";
-import { HTMLProps, ReactNode } from "react";
+import { forwardRef, HTMLProps, ReactNode, Ref } from "react";
 
-export function Card(props: CardProps) {
+export const Card = forwardRef<HTMLDivElement, CardProps>(function Card(
+  props,
+  ref
+) {
   const { className, footer, children, header, contentProps, ...otherProps } =
     props;
   const { className: contentClassName, ...otherContentProps } =
@@ -9,6 +12,7 @@ export function Card(props: CardProps) {
 
   return (
     <div
+      ref={ref}
       className={always(className as string)
         .always("border border-gray-300 rounded bg-white")
         .toggle("pt-1.5", "py-1.5", footer)
@@ -25,7 +29,7 @@ export function Card(props: CardProps) {
       {footer}
     </div>
   );
-}
+});
 
 export interface CardProps extends HTMLProps<HTMLDivElement> {
   footer?: ReactNode;
