@@ -250,14 +250,7 @@ export function useLastMicrofrontendDeployments(
   >(`last-microfrontend-deployments-${microfrontendId}`, async () => {
     return baseplateFetch<EndpointGetLatestMicrofrontendDeploymentsResBody>(
       `/api/orgs/${customerOrgId}/microfrontends/${microfrontendId}/latest-deployments`
-    ).then((d) => {
-      // d.latestEnvironmentDeployments.push(
-      //   ...d.latestEnvironmentDeployments,
-      //   ...d.latestEnvironmentDeployments
-      // );
-      // d.latestEnvironmentDeployments.splice(7, 2)
-      return d;
-    });
+    );
   });
 }
 
