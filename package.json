@@ -17,7 +17,8 @@
   "scripts": {
     "develop": "concurrently \"pnpm:develop:*\"",
     "dev:vscode": "concurrently \"pnpm:develop:db\" \"pnpm:develop:frontend\" \"pnpm:develop:backend:types\"",
-    "develop:backend": "cross-env \"NODE_OPTIONS=--experimental-loader @node-loader/core  --experimental-specifier-resolution=node\" IS_RUNNING_LOCALLY=true BASEPLATE_ENV=dev nodemon --signal SIGINT backend/Server.ts --watch backend --watch migrations --watch frontend --watch docs --ext tsx,ts,js,md,mdx,ejs",
+    "develop:backend:proxy": "cross-env \"NODE_OPTIONS=--loader ts-node/esm\" node backend/DevServer.ts",
+    "develop:backend": "cross-env \"NODE_OPTIONS=--experimental-loader @node-loader/core  --experimental-specifier-resolution=node\" IS_RUNNING_LOCALLY=true BASEPLATE_ENV=dev PORT=7601 nodemon --signal SIGINT backend/Server.ts --watch backend --watch migrations --watch frontend --watch docs --ext tsx,ts,js,md,mdx,ejs",
     "develop:backend:types": "tsc --noEmit --watch --preserveWatchOutput",
     "develop:db": "docker-compose up",
     "develop:frontend": "webpack serve --config webpack.config.cjs --port 7700",
