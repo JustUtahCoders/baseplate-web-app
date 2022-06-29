@@ -62,6 +62,8 @@ const server = http.createServer((req, res) => {
           res.write(data.value);
         }
       }
+    } else {
+      res.end();
     }
   }
 });
