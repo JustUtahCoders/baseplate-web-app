@@ -87,6 +87,10 @@ export function MicrofrontendDetail() {
             label: "Configuration",
             href: `/console/${customerOrgId}/microfrontends/${microfrontend.id}/configuration`,
           },
+          {
+            label: "About",
+            href: `/console/${customerOrgId}/microfrontends/${microfrontend.id}/about`,
+          },
         ]}
       />
       <Suspense

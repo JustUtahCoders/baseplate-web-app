@@ -48,7 +48,7 @@ const buttonKindClasses = {
     "text-gray-500 border-gray-500 border hover:text-gray-500",
   [ButtonKind.transparent]: "no-underline hover:no-underline",
   [ButtonKind.classic]:
-    "text-primary underline hover:text-primary hover:underline",
+    "text-link underline hover:text-primary hover:underline",
   [ButtonKind.icon]:
-    "text-primary hover:bg-gray-200 inline-flex justify-items-center align-items-center p-2 rounded",
+    "text-link hover:bg-gray-200 inline-flex justify-items-center align-items-center p-2 rounded",
 };

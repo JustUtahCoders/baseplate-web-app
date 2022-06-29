@@ -4,12 +4,6 @@ import { Button, ButtonKind } from "./Button";
 export function ConfigurationTable(props: ConfigurationTableProps) {
   return (
     <table className="text-sm">
-      <thead>
-        <tr className="border-b">
-          <th></th>
-          <th></th>
-        </tr>
-      </thead>
       <tbody>
         {props.sections.map((section) => (
           <Fragment key={section.label}>
@@ -30,8 +24,8 @@ export function ConfigurationTable(props: ConfigurationTableProps) {
                   return (
                     <tr className="border-b" key={index}>
                       <td className="pl-8 w-60">{sectionItem.label}</td>
-                      <td>
-                        {sectionItem.element}
+                      <td className="text-gray-600 flex items-center">
+                        <div>{sectionItem.element}</div>
                         {sectionItem.editable && (
                           <Button
                             className="ml-4"
@@ -49,8 +43,8 @@ export function ConfigurationTable(props: ConfigurationTableProps) {
               } else {
                 const sectionItem = item as SectionItem;
                 secondColumn = (
-                  <td>
-                    {sectionItem.element}
+                  <td className="text-gray-600 flex items-center">
+                    <div>{sectionItem.element}</div>
                     {sectionItem.editable && (
                       <Button
                         className="ml-4"

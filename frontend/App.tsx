@@ -76,6 +76,11 @@ const ConsoleOrgHome = lazy(() =>
     default: m.ConsoleOrgHome,
   }))
 );
+const MicrofrontendAbout = lazy(() =>
+  import("./Console/Microfrontends/MicrofrontendAbout").then((m) => ({
+    default: m.MicrofrontendAbout,
+  }))
+);
 
 const queryClient = new QueryClient();
 export const RootPropsContext = createContext<AppProps>({
@@ -144,6 +149,7 @@ export function App(props: AppProps) {
                         path="configuration"
                         element={<MicrofrontendConfiguration />}
                       />
+                      <Route path="about" element={<MicrofrontendAbout />} />
                       <Route path="" element={<MicrofrontendHome />} />
                     </>
                   ),

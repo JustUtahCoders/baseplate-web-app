@@ -13,8 +13,6 @@ import { Modal } from "../../Styleguide/Modal";
 import { MicrofrontendWithLastDeployed } from "../../../backend/RestAPI/Microfrontends/GetMicrofrontends";
 import { EndpointGetLatestMicrofrontendDeploymentsResBody } from "../../../backend/RestAPI/Microfrontends/LatestMicrofrontendDeployments";
 import { useCustomerOrgId } from "../../Utils/useCustomerOrgId";
-import { unmistakablyIntelligibleDateFormat } from "../../Utils/dayjsUtils";
-import { Anchor } from "../../Styleguide/Anchor";
 import { Button, ButtonKind } from "../../Styleguide/Button";
 import { Microfrontend } from "../../../backend/DB/Models/Microfrontend/Microfrontend";
 import { FormField } from "../../Styleguide/FormField";
@@ -31,23 +29,12 @@ export function MicrofrontendConfiguration() {
     refetchMicrofrontend(): void;
   }>();
   const rootProps = useContext(RootPropsContext);
-  const activeQuery = useQuery<
-    unknown,
-    Error,
-    EndpointGetMicrofrontendActiveResBody
-  >(`microfrontend-statuses-${customerOrgId}-${microfrontendId}`, async () =>
-    baseplateFetch(
-      `/api/orgs/${customerOrgId}/microfrontends/${microfrontendId}/statuses`
-    )
-  );
+  const activeQuery = useMicrofrontendActiveQuery();
   const [fieldToEdit, setFieldToEdit] = useState<EditableField | null>(null);
-  const latestDeploymentsQuery = useLastMicrofrontendDeployments(
-    microfrontendId as string
-  );
 
   const hasScope =
     microfrontend.useCustomerOrgKeyAsScope || microfrontend.scope;
-  const isActive = activeQuery.data?.isActive && false;
+  const isActive = activeQuery.data?.isActive;
   const scope = hasScope
     ? microfrontend.useCustomerOrgKeyAsScope
       ? rootProps.userInformation.orgKey
@@ -73,23 +60,8 @@ export function MicrofrontendConfiguration() {
     );
   }
 
-  if (latestDeploymentsQuery.isLoading) {
-    return (
-      <Loader
-        description={`Loading ${microfrontend.name} latest deployments`}
-      />
-    );
-  }
-
-  if (latestDeploymentsQuery.error) {
-    return (
-      <ErrorLoading
-        thingBeingLoaded={`${microfrontend.name} latest deployments`}
-      />
-    );
-  }
-
   const EditComponent = fieldToEdit && editComponents[fieldToEdit];
+  const aliases = ["@convex/settings", "@convex/user-settings"];
 
   return (
     <Card
@@ -107,14 +79,14 @@ export function MicrofrontendConfiguration() {
               {
                 label: "Specifier",
                 element: importSpecifier,
+                editable: true,
+                handleEdit() {
+                  setFieldToEdit(EditableField.specifier);
+                },
               },
               {
                 label: "Name",
                 element: microfrontend.name,
-                editable: !isActive,
-                handleEdit() {
-                  setFieldToEdit(EditableField.name);
-                },
               },
               {
                 label: "Scope",
@@ -122,106 +94,35 @@ export function MicrofrontendConfiguration() {
                   {
                     label: "Default Organization Scope",
                     element: rootProps.userInformation.orgKey,
-                    handleEdit() {
-                      setFieldToEdit(EditableField.scope);
-                    },
                   },
                   {
                     label: "Use Scope",
                     element: hasScope ? "Yes" : "No",
-                    editable: !isActive,
-                    handleEdit() {
-                      setFieldToEdit(EditableField.scope);
-                    },
                   },
                   {
                     label: "Use Organization Scope",
                     element: microfrontend.useCustomerOrgKeyAsScope
                       ? "Yes"
                       : "No",
-                    editable: !isActive,
-                    handleEdit() {
-                      setFieldToEdit(EditableField.scope);
-                    },
                   },
                   {
                     label: "Custom Scope",
                     element: microfrontend.scope || "\u2014",
-                    editable: !isActive,
-                    handleEdit() {
-                      setFieldToEdit(EditableField.scope);
-                    },
                   },
                 ],
               },
-            ],
-          },
-          {
-            label: "Usage",
-            items: [
               {
-                label: "Active",
-                element: !isActive ? "Yes" : "No",
-              },
-              {
-                label: "Last Deployed",
-                element: unmistakablyIntelligibleDateFormat(
-                  microfrontend.deployedAt
-                ),
-              },
-              {
-                label: "Created",
-                element: unmistakablyIntelligibleDateFormat(
-                  microfrontend.createdAt
-                ),
-              },
-              {
-                label: "Updated",
-                element: unmistakablyIntelligibleDateFormat(
-                  microfrontend.updatedAt
-                ),
+                label: "Aliases",
+                element:
+                  aliases.length > 0
+                    ? "\u2014"
+                    : aliases.map((alias) => <div>{alias}</div>),
+                editable: true,
+                handleEdit() {
+                  setFieldToEdit(EditableField.aliases);
+                },
               },
             ],
-          },
-          {
-            label: "Environments",
-            items:
-              latestDeploymentsQuery.data!.latestEnvironmentDeployments.map(
-                (latestDeploy) => ({
-                  label: latestDeploy.environment.name,
-                  items: [
-                    {
-                      label: "Entry URL",
-                      element: latestDeploy.entryUrl ? (
-                        <Anchor
-                          rel="noopener"
-                          target="_blank"
-                          href={latestDeploy.entryUrl}
-                          kind={ButtonKind.classic}
-                        >
-                          {latestDeploy.entryUrl}
-                        </Anchor>
-                      ) : (
-                        "\u2014"
-                      ),
-                    },
-                    {
-                      label: "Latest Deployment",
-                      element: unmistakablyIntelligibleDateFormat(
-                        latestDeploy.latestDeployment
-                      ),
-                    },
-                    {
-                      label: "Total Deployments",
-                      element: isNaN(latestDeploy.deploymentCount as number)
-                        ? "0"
-                        : (
-                            latestDeploy.deploymentCount as number
-                          ).toLocaleString(),
-                    },
-                  ],
-                })
-              ),
           },
         ]}
       />
@@ -259,7 +160,6 @@ function EditName({ microfrontend, close }: EditProps) {
     customerOrgId: string;
     microfrontendId: string;
   }>();
-  const [name, setName] = useState(microfrontend.name);
   const submitMutation = useMutation<
     Microfrontend,
     Error,
@@ -286,19 +186,6 @@ function EditName({ microfrontend, close }: EditProps) {
 
   return (
     <form onSubmit={submitMutation.mutate}>
-      <FormField className="mb-8">
-        <FormFieldLabel htmlFor="microfrontend-name">
-          Microfrontend name
-        </FormFieldLabel>
-        <Input
-          autoFocus
-          id="microfrontend-name"
-          type="text"
-          value={name}
-          onChange={(evt) => setName(evt.target.value)}
-          placeholder={microfrontend.name}
-        />
-      </FormField>
       <div className="flex justify-end">
         <Button
           type="button"
@@ -322,6 +209,7 @@ function EditScope({ microfrontend, close }: EditProps) {
     microfrontendId: string;
   }>();
   const rootProps = useContext(RootPropsContext);
+  const [name, setName] = useState(microfrontend.name);
   const [selection, setSelection] = useState(() => {
     if (microfrontend.useCustomerOrgKeyAsScope) {
       return "useCustomerOrgKeyAsScope";
@@ -356,6 +244,11 @@ function EditScope({ microfrontend, close }: EditProps) {
         scope: customScope,
       };
     }
+
+    if (name !== microfrontend.name) {
+      patch.name = name;
+    }
+
     return baseplateFetch<Microfrontend>(
       `/api/orgs/${customerOrgId}/microfrontends/${microfrontendId}`,
       {
@@ -379,17 +272,30 @@ function EditScope({ microfrontend, close }: EditProps) {
     scope = customScope;
   }
 
-  const importSpecifier = scope
-    ? `@${scope}/${microfrontend.name}`
-    : microfrontend.name;
+  const importSpecifier = scope ? `@${scope}/${name}` : name;
 
   return (
     <form onSubmit={submitMutation.mutate}>
-      <div>Import Specifier</div>
-      <div className="text-sm">{importSpecifier}</div>
-      <fieldset className="mt-8">
-        <legend>Scope</legend>
-        <FormField className="mt-4">
+      <FormField>
+        <FormFieldLabel>Import Specifier</FormFieldLabel>
+        <div className="text-sm text-gray-600">{importSpecifier}</div>
+      </FormField>
+      <FormField className="my-4">
+        <FormFieldLabel htmlFor="microfrontend-name">
+          Microfrontend name
+        </FormFieldLabel>
+        <Input
+          autoFocus
+          id="microfrontend-name"
+          type="text"
+          value={name}
+          onChange={(evt) => setName(evt.target.value)}
+          placeholder={microfrontend.name}
+        />
+      </FormField>
+      <fieldset>
+        <legend className="text-gray-800 text-sm">Scope</legend>
+        <FormField className="mt-1">
           <div className="flex items-center">
             <Input
               id="org-key-as-scope"
@@ -441,7 +347,7 @@ function EditScope({ microfrontend, close }: EditProps) {
         </FormField>
       </fieldset>
       {selection === "customScope" && (
-        <FormField className="mt-4 mb-8">
+        <FormField className="mt-4">
           <FormFieldLabel htmlFor="custom-scope-text">
             Custom scope
           </FormFieldLabel>
@@ -454,7 +360,7 @@ function EditScope({ microfrontend, close }: EditProps) {
           />
         </FormField>
       )}
-      <div className="flex justify-end">
+      <div className="flex justify-end mt-8">
         <Button
           type="button"
           kind={ButtonKind.secondary}
@@ -471,17 +377,39 @@ function EditScope({ microfrontend, close }: EditProps) {
   );
 }
 
+export function useMicrofrontendActiveQuery(): UseQueryResult<
+  EndpointGetMicrofrontendActiveResBody,
+  Error
+> {
+  const { customerOrgId, microfrontendId } = useParams<{
+    customerOrgId: string;
+    microfrontendId: string;
+  }>();
+
+  return useQuery<unknown, Error, EndpointGetMicrofrontendActiveResBody>(
+    `microfrontend-statuses-${customerOrgId}-${microfrontendId}`,
+    async () =>
+      baseplateFetch(
+        `/api/orgs/${customerOrgId}/microfrontends/${microfrontendId}/statuses`
+      )
+  );
+}
+
+function EditAliases() {
+  return <div>Hi</div>;
+}
+
 interface EditProps {
   microfrontend: Microfrontend;
   close(): any;
 }
 
 enum EditableField {
-  name = "name",
-  scope = "scope",
+  specifier = "specifier",
+  aliases = "aliases",
 }
 
 const editComponents = {
-  [EditableField.name]: EditName,
-  [EditableField.scope]: EditScope,
+  [EditableField.specifier]: EditScope,
+  [EditableField.aliases]: EditAliases,
 };
