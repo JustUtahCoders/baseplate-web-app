@@ -67,6 +67,7 @@ specifiers:
   fork-ts-checker-webpack-plugin: ^7.2.11
   fuse.js: ^6.6.2
   googleapis: ^100.0.0
+  http-proxy: ^1.18.1
   husky: ^8.0.1
   jest: ^28.1.0
   jest-cli: ^28.1.0
@@ -203,6 +204,7 @@ devDependencies:
   eslint-config-ts-react-important-stuff: 3.0.0_eslint@8.16.0
   file-loader: 6.2.0_webpack@5.72.1
   fork-ts-checker-webpack-plugin: 7.2.11_d3ofjbjbkerjqvgldod72xzm2y
+  http-proxy: 1.18.1
   husky: 8.0.1
   jest: 28.1.0_ucs5py5trtrgec2ppulvmog6re
   jest-cli: 28.1.0_ucs5py5trtrgec2ppulvmog6re
@@ -6212,7 +6214,7 @@ packages:
     dev: false
 
   /eventemitter3/4.0.7:
-    resolution: {integrity: sha512-8guHBZCwKnFhYdHr2ysuRWErTwhoN2X8XELRlrRwpmfeY2jjuUN4taQMsULKUVo1K4DvZl+0pgfyoysHxvmvEw==, registry: https://gitlab.com/api/v4/packages/npm/, tarball: https://gitlab.com/api/v4/packages/npm/eventemitter3/-/eventemitter3-4.0.7.tgz}
+    resolution: {integrity: sha512-8guHBZCwKnFhYdHr2ysuRWErTwhoN2X8XELRlrRwpmfeY2jjuUN4taQMsULKUVo1K4DvZl+0pgfyoysHxvmvEw==}
     dev: true
 
   /events/3.3.0:
@@ -6506,7 +6508,7 @@ packages:
     dev: true
 
   /follow-redirects/1.15.0:
-    resolution: {integrity: sha512-aExlJShTV4qOUOL7yF1U5tvLCB0xQuudbf6toyYA0E/acBNw71mvjFTnLaRp50aQaYocMR0a/RMMBIHeZnGyjQ==, registry: https://gitlab.com/api/v4/packages/npm/, tarball: https://gitlab.com/api/v4/packages/npm/follow-redirects/-/follow-redirects-1.15.0.tgz}
+    resolution: {integrity: sha512-aExlJShTV4qOUOL7yF1U5tvLCB0xQuudbf6toyYA0E/acBNw71mvjFTnLaRp50aQaYocMR0a/RMMBIHeZnGyjQ==}
     engines: {node: '>=4.0'}
     peerDependencies:
       debug: '*'
@@ -7073,7 +7075,7 @@ packages:
     dev: true
 
   /http-proxy/1.18.1:
-    resolution: {integrity: sha512-7mz/721AbnJwIVbnaSv1Cz3Am0ZLT/UBwkC92VlxhXv/k/BBQfM2fXElQNC27BVGr0uwUpplYPQM9LnaBMR5NQ==, registry: https://gitlab.com/api/v4/packages/npm/, tarball: https://gitlab.com/api/v4/packages/npm/http-proxy/-/http-proxy-1.18.1.tgz}
+    resolution: {integrity: sha512-7mz/721AbnJwIVbnaSv1Cz3Am0ZLT/UBwkC92VlxhXv/k/BBQfM2fXElQNC27BVGr0uwUpplYPQM9LnaBMR5NQ==}
     engines: {node: '>=8.0.0'}
     dependencies:
       eventemitter3: 4.0.7
@@ -10048,7 +10050,7 @@ packages:
     dev: true
 
   /requires-port/1.0.0:
-    resolution: {integrity: sha1-kl0mAdOaxIXgkc8NpcbmlNw9yv8=, registry: https://gitlab.com/api/v4/packages/npm/, tarball: https://gitlab.com/api/v4/packages/npm/requires-port/-/requires-port-1.0.0.tgz}
+    resolution: {integrity: sha512-KigOCHcocU3XODJxsu8i/j8T9tzT4adHiecwORRQ0ZZFcp7ahwXuRU1m+yuO90C5ZUyGeGfocHDI14M3L3yDAQ==}
     dev: true
 
   /resolve-cwd/3.0.0:

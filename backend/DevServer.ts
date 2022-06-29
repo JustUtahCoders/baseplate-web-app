@@ -1,71 +1,38 @@
+import httpProxy from "http-proxy";
 import http from "node:http";
-import { URL } from "node:url";
 
+const proxy = httpProxy.createProxyServer({});
 const server = http.createServer((req, res) => {
+  req.setMaxListeners(100);
   let attempts = 0,
-    warningLogged = false;
+    warned = false;
 
-  attemptProxyRequest();
+  attemptProxy();
 
-  async function attemptProxyRequest() {
-    if (++attempts > 60) {
-      console.log(
-        "Proxy server is giving up on waiting for backend to boot up"
-      );
-      res.statusCode = 502;
-      res.statusMessage = "Bad Gateway";
-      res.setHeader("content-type", "application/json");
-      res.write(
-        JSON.stringify({
-          error: "Proxy Server unable to reach baseplate web app server",
-        })
-      );
-      res.end();
-      return;
-    }
-
-    const url = new URL(req.url!, "http://localhost:7601");
-    let proxyResponse;
-    try {
-      const proxyReqHeaders = { ...req.headers };
-      delete proxyReqHeaders.connection;
-      proxyResponse = await fetch(url.href, {
-        // @ts-ignore
-        headers: proxyReqHeaders,
-      });
-    } catch (err) {
-      if (!warningLogged) {
-        warningLogged = true;
-        console.log("Proxy server waiting for nodemon restart to complete");
-      }
-      setTimeout(attemptProxyRequest, 50);
-      return;
-    }
-
-    proxyResponse.headers.forEach((value, key) => {
-      res.setHeader(key, value);
-    });
-
-    res.statusCode = proxyResponse.status;
-    res.statusMessage = proxyResponse.statusText;
-
-    if (proxyResponse.body) {
-      const reader = await proxyResponse.body.getReader();
-      let done = false;
-      while (!done) {
-        const data = await reader.read();
-        if (data.done) {
-          res.end();
-          done = true;
+  function attemptProxy() {
+    proxy.web(
+      req,
+      res,
+      {
+        target: "http://localhost:7601",
+      },
+      (err) => {
+        if (++attempts > 30) {
+          console.log(
+            "Proxy server giving up after 30 attempts to connect to baseplate-web-app backend server"
+          );
         } else {
-          res.write(data.value);
+          if (warned) {
+            console.log(
+              "Proxy server waiting for baseplate-web-app backend server to become healthy"
+            );
+          }
+          setTimeout(attemptProxy, 50);
         }
       }
-    } else {
-      res.end();
-    }
+    );
   }
 });
 
-console.log("Starting proxy server");
+console.log("starting proxy server");
 server.listen(7600);

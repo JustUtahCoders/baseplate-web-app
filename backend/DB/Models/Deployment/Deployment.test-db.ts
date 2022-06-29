@@ -12,7 +12,7 @@ import {
 } from "./Deployment";
 
 describe("DeploymentModel", () => {
-  let deployment: DeploymentModel;
+  let deployment: DeploymentModel | null;
 
   dbHelpers();
 
@@ -29,6 +29,7 @@ describe("DeploymentModel", () => {
   it(`can create and retrieve deployments`, async () => {
     try {
       deployment = await DeploymentModel.create({
+        customerOrgId: getCustomerOrg().id,
         cause: DeploymentCause.baseplateWebApp,
         status: DeploymentStatus.success,
         accountId: getUser().id,
@@ -49,13 +50,14 @@ describe("DeploymentModel", () => {
       },
     });
 
-    expect(deployment.cause).toBe(DeploymentCause.baseplateWebApp);
-    expect(deployment.status).toBe(DeploymentStatus.success);
+    expect(deployment!.cause).toBe(DeploymentCause.baseplateWebApp);
+    expect(deployment!.status).toBe(DeploymentStatus.success);
   });
 
   it(`can derive the import map from DeployedMicrofrontend rows`, async () => {
     try {
       deployment = await DeploymentModel.create({
+        customerOrgId: getCustomerOrg().id,
         cause: DeploymentCause.baseplateWebApp,
         status: DeploymentStatus.success,
         accountId: getUser().id,
@@ -82,6 +84,7 @@ describe("DeploymentModel", () => {
     await deployment.createDeployedMicrofrontend({
       auditAccountId: getUser().id,
       microfrontendId: microfrontend.id,
+      deploymentId: deployment.id,
       deploymentChangedMicrofrontend: true,
       bareImportSpecifier: `@${getCustomerOrg().orgKey}/navbar`,
       entryUrl: `https://cdn.baseplate.cloud/${
@@ -90,11 +93,14 @@ describe("DeploymentModel", () => {
       trailingSlashUrl: `https://cdn.baseplate.cloud/${
         getCustomerOrg().orgKey
       }/apps/navbar/`,
+      alias1: "@test/navbar",
+      alias2: "@yoshi/navbar",
     });
 
     await deployment.createDeployedMicrofrontend({
       auditAccountId: getUser().id,
       microfrontendId: microfrontend.id,
+      deploymentId: deployment.id,
       deploymentChangedMicrofrontend: true,
       bareImportSpecifier: `@${getCustomerOrg().orgKey}/settings`,
       entryUrl: `https://cdn.baseplate.cloud/${
@@ -111,6 +117,18 @@ describe("DeploymentModel", () => {
           getCustomerOrg().orgKey
         }/apps/navbar/navbar.v1.js`,
         [`@${getCustomerOrg().orgKey}/navbar/`]: `https://cdn.baseplate.cloud/${
+          getCustomerOrg().orgKey
+        }/apps/navbar/`,
+        "@test/navbar": `https://cdn.baseplate.cloud/${
+          getCustomerOrg().orgKey
+        }/apps/navbar/navbar.v1.js`,
+        "@test/navbar/": `https://cdn.baseplate.cloud/${
+          getCustomerOrg().orgKey
+        }/apps/navbar/`,
+        "@yoshi/navbar": `https://cdn.baseplate.cloud/${
+          getCustomerOrg().orgKey
+        }/apps/navbar/navbar.v1.js`,
+        "@yoshi/navbar/": `https://cdn.baseplate.cloud/${
           getCustomerOrg().orgKey
         }/apps/navbar/`,
         [`@${

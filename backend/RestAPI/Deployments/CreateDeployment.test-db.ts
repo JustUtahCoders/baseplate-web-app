@@ -59,8 +59,9 @@ describe(`POST /api/deployments`, () => {
       response.body.deployment.id
     );
     expect(deployment).toBeTruthy();
-    expect(deployment.status).toBe("success");
-    const deployedMicrofrontends = await deployment.getDeployedMicrofrontends();
+    expect(deployment!.status).toBe("success");
+    const deployedMicrofrontends =
+      await deployment!.getDeployedMicrofrontends();
 
     expect(deployedMicrofrontends.length).toBe(1);
     expect(deployedMicrofrontends[0].entryUrl).toBe(
@@ -69,7 +70,7 @@ describe(`POST /api/deployments`, () => {
       }/apps/navbar/navbar.v2.js`
     );
 
-    const importMap = await deployment.deriveImportMap();
+    const importMap = await deployment!.deriveImportMap();
 
     expect(importMap).toEqual({
       imports: {

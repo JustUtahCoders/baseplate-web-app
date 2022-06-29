@@ -26,8 +26,11 @@ router.patch<
   // Validation
   param("customerOrgId").isUUID(),
   param("microfrontendId").isUUID(),
-  body("name").isString().optional(),
-  body("scope").isString().optional({ nullable: true }),
+  body("name").isString().notEmpty().optional(),
+  body("scope").isString().notEmpty().optional({ nullable: true }),
+  body("alias1").isString().notEmpty().optional({ nullable: true }),
+  body("alias2").isString().notEmpty().optional({ nullable: true }),
+  body("alias3").isString().notEmpty().optional({ nullable: true }),
   body("useCustomerOrgKeyAsScope").isBoolean().optional(),
   validationResponseMiddleware,
 
@@ -91,6 +94,9 @@ router.patch<
       name: req.body.name,
       scope: req.body.scope,
       useCustomerOrgKeyAsScope: req.body.useCustomerOrgKeyAsScope,
+      alias1: req.body.alias1,
+      alias2: req.body.alias2,
+      alias3: req.body.alias3,
     };
 
     for (let key in patch) {
