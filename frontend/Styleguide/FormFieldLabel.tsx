@@ -12,7 +12,7 @@ export function FormFieldLabel(props: FormFieldLabelProps) {
   return (
     <label
       className={always(className as string)
-        .always("text-coolGray-700 text-sm")
+        .always("text-gray-800 text-sm")
         .toggle("mb-1", "ml-4", orientation)
         .toString()}
       {...otherProps}

@@ -11,6 +11,9 @@ module.exports = {
         primary: {
           DEFAULT: "#2a467b",
         },
+        link: {
+          DEFAULT: "blue",
+        },
       },
       outline: {
         primary: ["2px solid #2a467b"],

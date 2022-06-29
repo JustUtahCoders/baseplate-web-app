@@ -34,7 +34,6 @@ const server = http.createServer((req, res) => {
         headers: proxyReqHeaders,
       });
     } catch (err) {
-      console.error(err);
       if (!warningLogged) {
         warningLogged = true;
         console.log("Proxy server waiting for nodemon restart to complete");

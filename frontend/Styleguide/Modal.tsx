@@ -46,7 +46,7 @@ export function Modal(props: ModalProps) {
       >
         <header className="flex items-center justify-between mb-2 pt-5 px-5 pb-2">
           <h1 className="text-xl">{props.title}</h1>
-          <Button kind={ButtonKind.icon} onClick={props.close}>
+          <Button type="button" kind={ButtonKind.icon} onClick={props.close}>
             <Icon variant={IconVariant.close} alt="Close Modal Icon" />
           </Button>
         </header>

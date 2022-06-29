@@ -32,7 +32,9 @@ export function MicrofrontendDeployments() {
   const deploymentCardRef = useCallback<(node: HTMLDivElement) => void>(
     (node) => {
       setCardDiv(node);
-      setCols(numPipelineCols(node.getBoundingClientRect().width));
+      if (node) {
+        setCols(numPipelineCols(node.getBoundingClientRect().width));
+      }
     },
     []
   );
