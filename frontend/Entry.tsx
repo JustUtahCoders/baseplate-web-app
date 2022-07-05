@@ -8,4 +8,7 @@ const rootProps = JSON.parse(
     .textContent as string
 ) as AppProps;
 
-hydrateRoot(document.getElementById("react-root"), <App {...rootProps} />);
+hydrateRoot(
+  document.getElementById("react-root") as HTMLDivElement,
+  <App {...rootProps} />
+);

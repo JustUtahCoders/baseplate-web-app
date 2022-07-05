@@ -14,19 +14,19 @@ export class AuditModel<ModelAttributes>
   declare auditAccountId: BaseplateUUID;
   declare auditItemId: BaseplateUUID;
   declare auditTimestamp: Date;
-  declare auditEventType: string;
-  declare oldRowData: Partial<ModelAttributes>;
-  declare newRowData: Partial<ModelAttributes>;
+  declare auditEventType: "INSERT" | "UPDATE" | "DELETE";
+  declare oldRowData: Partial<ModelAttributes> | null;
+  declare newRowData: Partial<ModelAttributes> | null;
 }
 
 export interface AuditAttributes<ModelAttributes> {
   id: BaseplateUUID;
   auditAccountId: BaseplateUUID;
   auditItemId: BaseplateUUID;
-  auditEventType: string;
+  auditEventType: "INSERT" | "UPDATE" | "DELETE";
   auditTimestamp: Date;
-  oldRowData: Partial<ModelAttributes>;
-  newRowData: Partial<ModelAttributes>;
+  oldRowData: Partial<ModelAttributes> | null;
+  newRowData: Partial<ModelAttributes> | null;
 }
 
 export interface AuditTargetAttributes {
@@ -50,9 +50,14 @@ export function initAuditModel(
   modelEvents.once("init", (sequelize) => {
     const auditInitOptions = sequelizeOptions(parentModelName);
 
+    const parentModelSuffix = parentModelName.endsWith("s") ? "" : "s";
+    const tableName = parentModelName + parentModelSuffix + "Audit";
+
     ThisModel.init(auditInitOptions, {
       sequelize,
       timestamps: false,
+      modelName: tableName,
+      tableName,
     });
   });
 

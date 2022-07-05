@@ -1,12 +1,19 @@
-import { always } from "kremling";
+import { always, maybe } from "kremling";
 import { forwardRef, HTMLProps, ReactNode, Ref } from "react";
 
 export const Card = forwardRef<HTMLDivElement, CardProps>(function Card(
   props,
   ref
 ) {
-  const { className, footer, children, header, contentProps, ...otherProps } =
-    props;
+  const {
+    className,
+    contentPadding = true,
+    footer,
+    children,
+    header,
+    contentProps,
+    ...otherProps
+  } = props;
   const { className: contentClassName, ...otherContentProps } =
     contentProps || {};
 
@@ -15,13 +22,15 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(function Card(
       ref={ref}
       className={always(className as string)
         .always("border border-gray-300 rounded bg-white")
-        .toggle("pt-1.5", "py-1.5", footer)
+        .toggle("pt-1.5", "py-1.5", footer || !contentPadding)
         .toString()}
       {...otherProps}
     >
       {header}
       <div
-        className={always("px-3.5").always(contentClassName as string)}
+        className={maybe("px-3.5", contentPadding).always(
+          contentClassName as string
+        )}
         {...otherContentProps}
       >
         {children}
@@ -35,6 +44,7 @@ export interface CardProps extends HTMLProps<HTMLDivElement> {
   footer?: ReactNode;
   header?: ReactNode;
   contentProps?: HTMLProps<HTMLDivElement>;
+  contentPadding?: boolean;
 }
 
 export function CardFooter(props: CardFooterProps) {
