@@ -14,6 +14,7 @@ import "./RestAPI/Microfrontends/MicrofrontendDownloads";
 import "./RestAPI/Microfrontends/MicrofrontendStatuses";
 import "./RestAPI/Microfrontends/LatestMicrofrontendDeployments";
 import "./RestAPI/Microfrontends/PatchMicrofrontend";
+import "./RestAPI/Microfrontends/GetMicrofrontendUsers";
 import "./RestAPI/OrgSettings/GetAllCustomerOrgs";
 
 // The default API Handler responds with a 404

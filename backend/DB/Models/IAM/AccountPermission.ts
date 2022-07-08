@@ -12,6 +12,7 @@ import {
 } from "../Audit/Audit";
 import { DefaultModelAttrs } from "../DefaultModelAttrs";
 import { BaseplateUUID, BelongsToMethods } from "../SequelizeTSHelpers";
+import { UserModel } from "../User/User";
 import { currentSchema } from "./AccountPermissionSchema";
 import { PermissionModel } from "./Permission";
 
@@ -22,7 +23,7 @@ export class AccountPermissionModel
   >
   implements
     AccountPermissionAttributes,
-    BelongsToMethods<{ permission: PermissionModel }>
+    BelongsToMethods<{ permission: PermissionModel; user: UserModel }>
 {
   declare id: BaseplateUUID;
   declare customerOrgId: BaseplateUUID;
@@ -38,6 +39,10 @@ export class AccountPermissionModel
   declare getPermission: BelongsToGetAssociationMixin<PermissionModel>;
   declare setPermission: BelongsToSetAssociationMixin<PermissionModel, number>;
   declare createPermission: BelongsToCreateAssociationMixin<PermissionModel>;
+
+  declare getUser: BelongsToGetAssociationMixin<UserModel>;
+  declare setUser: BelongsToSetAssociationMixin<UserModel, number>;
+  declare createUser: BelongsToCreateAssociationMixin<UserModel>;
 }
 
 export interface AccountPermissionAttributes extends AuditTargetAttributes {
@@ -73,5 +78,10 @@ modelEvents.once("associate", () => {
   AccountPermissionModel.belongsTo(PermissionModel, {
     as: "permission",
     foreignKey: "permissionId",
+  });
+
+  AccountPermissionModel.belongsTo(UserModel, {
+    as: "user",
+    foreignKey: "accountId",
   });
 });
