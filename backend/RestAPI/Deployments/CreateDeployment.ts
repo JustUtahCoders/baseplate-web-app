@@ -64,7 +64,7 @@ router.post<
     .isURL(urlValidations)
     .matches(/^\/?.*\/$/)
     .optional(),
-  query("skipUrlReachable").isBoolean().default(false),
+  query("skipUrlReachable").isBoolean().optional().default(false),
   validationResponseMiddleware,
 
   // Permissions
