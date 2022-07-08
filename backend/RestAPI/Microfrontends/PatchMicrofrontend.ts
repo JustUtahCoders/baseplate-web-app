@@ -1,4 +1,5 @@
 import { body, param } from "express-validator";
+import { isString } from "lodash-es";
 import { BaseplatePermission } from "../../DB/Models/IAM/Permission";
 import {
   Microfrontend,
@@ -27,7 +28,7 @@ router.patch<
   param("customerOrgId").isUUID(),
   param("microfrontendId").isUUID(),
   body("name").isString().notEmpty().optional(),
-  body("scope").isString().notEmpty().optional({ nullable: true }),
+  body("scope").isString().optional({ nullable: true }),
   body("alias1").isString().notEmpty().optional({ nullable: true }),
   body("alias2").isString().notEmpty().optional({ nullable: true }),
   body("alias3").isString().notEmpty().optional({ nullable: true }),
@@ -81,7 +82,7 @@ router.patch<
 
     if (
       req.body.useCustomerOrgKeyAsScope === false &&
-      !req.body.scope &&
+      !isString(req.body.scope) &&
       !microfrontend.scope
     ) {
       return invalidRequest(

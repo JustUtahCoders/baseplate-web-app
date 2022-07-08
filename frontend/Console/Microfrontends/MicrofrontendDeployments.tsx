@@ -1,5 +1,4 @@
 import { BaseplateUUID } from "../../../backend/DB/Models/SequelizeTSHelpers";
-import { useParams } from "react-router";
 import { Card, CardHeader } from "../../Styleguide/Card";
 import { useLastMicrofrontendDeployments } from "./MicrofrontendConfiguration";
 import { Loader } from "../../Styleguide/Loader";
@@ -7,14 +6,27 @@ import { unmistakablyIntelligibleDateFormat } from "../../Utils/dayjsUtils";
 import { chunk, isUndefined } from "lodash-es";
 import { Fragment, useState, useMemo, useEffect, useCallback } from "react";
 import { always } from "kremling";
+import { useQuery } from "react-query";
+import { baseplateFetch } from "../../Utils/baseplateFetch";
+import { EndpointGetMicrofrontendAuditResBody } from "../../../backend/RestAPI/Microfrontends/MicrofrontendAudit";
+import { AuditItemRow } from "../Audit/AuditItemRow";
+import { AuditItem } from "../../../backend/RestAPI/Audit/AuditTypes";
+import { useMicrofrontendParams } from "../../Utils/paramHelpers";
 
 export function MicrofrontendDeployments() {
-  const { customerOrgId, microfrontendId } = useParams<{
-    customerOrgId: BaseplateUUID;
-    microfrontendId: BaseplateUUID;
-  }>();
+  const { customerOrgId, microfrontendId } = useMicrofrontendParams();
   const latestDeploymentsQuery = useLastMicrofrontendDeployments(
     microfrontendId as string
+  );
+  const auditItemsQuery = useQuery<unknown, Error, AuditItem[]>(
+    `microfrontend-audit-${microfrontendId}`,
+    async () => {
+      const responseJson =
+        await baseplateFetch<EndpointGetMicrofrontendAuditResBody>(
+          `/api/orgs/${customerOrgId}/microfrontends/${microfrontendId}/audits`
+        );
+      return responseJson.auditItems;
+    }
   );
   const [cardDiv, setCardDiv] = useState<HTMLDivElement | null>(null);
   const [cols, setCols] = useState<number>(3);
@@ -175,7 +187,12 @@ export function MicrofrontendDeployments() {
       <Card
         className="mt-12"
         header={<CardHeader>Audit Trail</CardHeader>}
-      ></Card>
+        contentPadding={false}
+      >
+        {auditItemsQuery.data?.map((auditItem, i) => (
+          <AuditItemRow key={i} auditItem={auditItem} />
+        ))}
+      </Card>
     </>
   );
 }

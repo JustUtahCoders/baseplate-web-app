@@ -1,7 +1,7 @@
 import { useQuery } from "react-query";
 import { EndpointGetMicrofrontendsResBody } from "../../../backend/TSEntry";
 import { baseplateFetch } from "../../Utils/baseplateFetch";
-import { useCustomerOrgId } from "../../Utils/useCustomerOrgId";
+import { useConsoleParams } from "../../Utils/paramHelpers";
 import { Card, CardFooter } from "../../Styleguide/Card";
 import { MainContent } from "../../Styleguide/MainContent";
 import { useContext, useMemo, useState } from "react";
@@ -21,7 +21,7 @@ import dayjs from "dayjs";
 
 export function MicrofrontendsList() {
   const [search, setSearch] = useState("");
-  const customerOrgId = useCustomerOrgId();
+  const { customerOrgId } = useConsoleParams();
 
   const mfeDownloads = useQuery<
     unknown,
@@ -78,7 +78,7 @@ export function MicrofrontendsList() {
 }
 
 export function useMicrofrontends(): MicrofrontendWithLastDeployed[] {
-  const customerOrgId = useCustomerOrgId();
+  const { customerOrgId } = useConsoleParams();
   const queryResult = useQuery<unknown, Error, MicrofrontendWithLastDeployed[]>(
     `microfrontends-${customerOrgId}`,
     async function () {
@@ -118,7 +118,7 @@ function MicrofrontendCard({
   downloads?: MicrofrontendDownloads;
 }) {
   const rootProps = useContext(RootPropsContext);
-  const customerOrgId = useCustomerOrgId();
+  const { customerOrgId } = useConsoleParams();
   const scope = microfrontend.useCustomerOrgKeyAsScope
     ? rootProps.userInformation.orgKey
     : microfrontend.scope;

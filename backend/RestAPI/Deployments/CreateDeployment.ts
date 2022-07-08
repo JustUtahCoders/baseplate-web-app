@@ -1,4 +1,4 @@
-import { body, param } from "express-validator";
+import { body, param, query } from "express-validator";
 import { CustomerOrgModel } from "../../DB/Models/CustomerOrg/CustomerOrg";
 import {
   DeployedMicrofrontendCreationAttributes,
@@ -64,6 +64,7 @@ router.post<
     .isURL(urlValidations)
     .matches(/^\/?.*\/$/)
     .optional(),
+  query("skipUrlReachable").isBoolean().optional().default(false),
   validationResponseMiddleware,
 
   // Permissions
@@ -208,21 +209,26 @@ router.post<
       });
 
     // Verify that the entryUrl is publicly reachable
-    const publiclyReachableResults = await Promise.allSettled(
-      changedDeployedMicrofrontends.map(
-        async (changedDeployedMicrofrontend) => {
-          try {
-            const response = await fetch(changedDeployedMicrofrontend.entryUrl);
-            if (!response.ok) {
-              // Not throwing an Error, which is unusual, but intentional here
-              throw changedDeployedMicrofrontend.entryUrl;
-            }
-          } catch {
-            throw changedDeployedMicrofrontend.entryUrl;
-          }
-        }
-      )
-    );
+    const publiclyReachableResults =
+      req.query.skipUrlReachable !== "true"
+        ? await Promise.allSettled(
+            changedDeployedMicrofrontends.map(
+              async (changedDeployedMicrofrontend) => {
+                try {
+                  const response = await fetch(
+                    changedDeployedMicrofrontend.entryUrl
+                  );
+                  if (!response.ok) {
+                    // Not throwing an Error, which is unusual, but intentional here
+                    throw changedDeployedMicrofrontend.entryUrl;
+                  }
+                } catch {
+                  throw changedDeployedMicrofrontend.entryUrl;
+                }
+              }
+            )
+          )
+        : [];
 
     const unreachableUrls = publiclyReachableResults
       .filter((r) => r.status === "rejected")
@@ -290,4 +296,8 @@ interface ChangedMicrofrontend {
 export interface EndpointCreateDeploymentResBody {
   deployment: DeploymentAttributes;
   importMap: ImportMap;
+}
+
+export interface EndpointCreateDeploymentQuery {
+  skipUrlReachable?: boolean;
 }

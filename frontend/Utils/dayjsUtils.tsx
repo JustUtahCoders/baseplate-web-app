@@ -8,11 +8,14 @@ dayjs.extend(advancedFormat);
 dayjs.extend(relativeTime);
 
 export function unmistakablyIntelligibleDateFormat(
-  date: Date | string | null | undefined
+  date: Date | string | null | undefined,
+  includeSeconds: boolean = false
 ): string {
   if (!date) {
     return "\u2014";
   } else {
-    return dayjs(date).format("YYYY-MM-DD hh:mm z");
+    return dayjs(date).format(
+      `YYYY-MM-DD hh:mm${includeSeconds ? ":ss" : ""} z`
+    );
   }
 }

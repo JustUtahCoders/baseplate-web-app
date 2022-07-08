@@ -1,5 +1,5 @@
 import { capitalize } from "lodash-es";
-import { matchRoutes, Outlet, useParams, useLocation } from "react-router";
+import { matchRoutes, Outlet, useLocation } from "react-router";
 import { MainContent } from "../../Styleguide/MainContent";
 import { PageExplanation, PageHeader } from "../../Styleguide/PageHeader";
 import { useMicrofrontends } from "./MicrofrontendsList";
@@ -9,22 +9,16 @@ import { useRedirect } from "../../Utils/useRedirect";
 import { Suspense, useState } from "react";
 import { Loader } from "../../Styleguide/Loader";
 import { useQueryClient } from "react-query";
+import { useMicrofrontendParams } from "../../Utils/paramHelpers";
 
 export function MicrofrontendDetail() {
   const [cnt, setCnt] = useState(0);
-  const params = useParams<{
-    microfrontendId: string;
-    customerOrgId: string;
-  }>();
+  const { customerOrgId, microfrontendId } = useMicrofrontendParams();
   const queryClient = useQueryClient();
 
   // For some reason, <Outlet>'s don't get executed on the server?
   // So the useRedirect in MicrofrontendHome doesn't get executed server side, but I want it to
   const location = useLocation();
-  const { customerOrgId, microfrontendId } = useParams<{
-    customerOrgId: string;
-    microfrontendId: string;
-  }>();
   const isHomePage = Boolean(
     matchRoutes(
       [{ path: "/console/:orgId/microfrontends/:microfrontendId" }],
@@ -39,9 +33,7 @@ export function MicrofrontendDetail() {
 
   const microfrontends = useMicrofrontends();
 
-  const microfrontend = microfrontends.find(
-    (m) => m.id === params.microfrontendId
-  );
+  const microfrontend = microfrontends.find((m) => m.id === microfrontendId);
 
   if (!microfrontend) {
     return (
@@ -110,10 +102,7 @@ export function MicrofrontendDetail() {
 }
 
 export function MicrofrontendHome() {
-  const params = useParams<{
-    customerOrgId: string;
-    microfrontendId: string;
-  }>();
+  const params = useMicrofrontendParams();
   useRedirect(
     `/console/${params.customerOrgId}/microfrontends/${params.microfrontendId}/deployments`,
     true,

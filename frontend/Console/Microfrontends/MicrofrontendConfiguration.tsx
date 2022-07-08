@@ -1,5 +1,5 @@
 import { useMutation, useQuery, UseQueryResult } from "react-query";
-import { useOutletContext, useParams } from "react-router";
+import { useOutletContext } from "react-router";
 import { BaseplateUUID } from "../../../backend/DB/Models/SequelizeTSHelpers";
 import { baseplateFetch } from "../../Utils/baseplateFetch";
 import { EndpointGetMicrofrontendActiveResBody } from "../../../backend/RestAPI/Microfrontends/MicrofrontendStatuses";
@@ -10,7 +10,10 @@ import { RootPropsContext } from "../../App";
 import { Modal } from "../../Styleguide/Modal";
 import { MicrofrontendWithLastDeployed } from "../../../backend/RestAPI/Microfrontends/GetMicrofrontends";
 import { EndpointGetLatestMicrofrontendDeploymentsResBody } from "../../../backend/RestAPI/Microfrontends/LatestMicrofrontendDeployments";
-import { useCustomerOrgId } from "../../Utils/useCustomerOrgId";
+import {
+  useConsoleParams,
+  useMicrofrontendParams,
+} from "../../Utils/paramHelpers";
 import { Button, ButtonKind } from "../../Styleguide/Button";
 import { Microfrontend } from "../../../backend/DB/Models/Microfrontend/Microfrontend";
 import { FormField } from "../../Styleguide/FormField";
@@ -124,7 +127,7 @@ export function MicrofrontendConfiguration() {
 export function useLastMicrofrontendDeployments(
   microfrontendId: BaseplateUUID
 ): UseQueryResult<EndpointGetLatestMicrofrontendDeploymentsResBody> {
-  const customerOrgId = useCustomerOrgId();
+  const { customerOrgId } = useConsoleParams();
   return useQuery<
     unknown,
     Error,
@@ -137,10 +140,7 @@ export function useLastMicrofrontendDeployments(
 }
 
 function EditSpecifier({ microfrontend, close }: EditProps) {
-  const { customerOrgId, microfrontendId } = useParams<{
-    customerOrgId: string;
-    microfrontendId: string;
-  }>();
+  const { customerOrgId, microfrontendId } = useMicrofrontendParams();
   const rootProps = useContext(RootPropsContext);
   const [name, setName] = useState(microfrontend.name);
   const [selection, setSelection] = useState(() => {
@@ -169,7 +169,7 @@ function EditSpecifier({ microfrontend, close }: EditProps) {
     } else if (selection === "noScope") {
       patch = {
         useCustomerOrgKeyAsScope: false,
-        scope: null,
+        scope: "",
       };
     } else {
       patch = {
@@ -315,10 +315,7 @@ function EditSpecifier({ microfrontend, close }: EditProps) {
 }
 
 function EditAliases({ microfrontend, close }) {
-  const { customerOrgId, microfrontendId } = useParams<{
-    customerOrgId: string;
-    microfrontendId: string;
-  }>();
+  const { customerOrgId, microfrontendId } = useMicrofrontendParams();
   const [alias1, setAlias1] = useState(microfrontend.alias1 ?? "");
   const [alias2, setAlias2] = useState(microfrontend.alias2 ?? "");
   const [alias3, setAlias3] = useState(microfrontend.alias3 ?? "");
@@ -456,10 +453,7 @@ export function useMicrofrontendActiveQuery(): UseQueryResult<
   EndpointGetMicrofrontendActiveResBody,
   Error
 > {
-  const { customerOrgId, microfrontendId } = useParams<{
-    customerOrgId: string;
-    microfrontendId: string;
-  }>();
+  const { customerOrgId, microfrontendId } = useMicrofrontendParams();
 
   return useQuery<unknown, Error, EndpointGetMicrofrontendActiveResBody>(
     `microfrontend-statuses-${customerOrgId}-${microfrontendId}`,
