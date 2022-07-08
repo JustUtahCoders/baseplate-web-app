@@ -66,65 +66,80 @@ module.exports = {
       },
     ]);
 
-    const orgOwnerPerms = await queryInterface.rawSelect(
-      "RolePermissions",
-      {
-        where: {
-          roleId: orgOwnerRoleId,
-        },
-        // https://stackoverflow.com/a/68160787/1958941
-        plain: false,
-      },
-      ["id"]
+    const orgOwnerPerms = await queryInterface.sequelize.query(
+      `
+      SELECT "RolePermissions"."permissionId", "Permissions"."requiresEntityId"
+      FROM "RolePermissions"
+      JOIN "Permissions" ON "RolePermissions"."permissionId" = "Permissions"."id"
+      WHERE "RolePermissions"."roleId" = '${orgOwnerRoleId}'
+    `.trim(),
+      { type: queryInterface.sequelize.QueryTypes.SELECT }
     );
 
-    const mfeOwnerPerms = await queryInterface.rawSelect(
-      "RolePermissions",
-      {
-        where: {
-          roleId: mfeOwnerRoleId,
-        },
-        // https://stackoverflow.com/a/68160787/1958941
-        plain: false,
-      },
-      ["id"]
+    const mfeOwnerPerms = await queryInterface.sequelize.query(
+      `
+      SELECT "RolePermissions"."permissionId", "Permissions"."requiresEntityId"
+      FROM "RolePermissions"
+      JOIN "Permissions" ON "RolePermissions"."permissionId" = "Permissions"."id"
+      WHERE "RolePermissions"."roleId" = '${mfeOwnerRoleId}'
+    `.trim(),
+      { type: queryInterface.sequelize.QueryTypes.SELECT }
     );
 
-    const devPerms = await queryInterface.rawSelect(
-      "RolePermissions",
-      {
-        where: {
-          roleId: devRoleId,
-        },
-        // https://stackoverflow.com/a/68160787/1958941
-        plain: false,
-      },
-      ["id"]
+    const devPerms = await queryInterface.sequelize.query(
+      `
+      SELECT "RolePermissions"."permissionId", "Permissions"."requiresEntityId"
+      FROM "RolePermissions"
+      JOIN "Permissions" ON "RolePermissions"."permissionId" = "Permissions"."id"
+      WHERE "RolePermissions"."roleId" = '${devRoleId}'
+    `.trim(),
+      { type: queryInterface.sequelize.QueryTypes.SELECT }
     );
 
-    const allAccountPerms = orgOwnerPerms
-      .map((p) => ({
-        customerOrgId: sampleCustomerOrgId,
-        accountId: sampleUserId,
-        permissionId: p.permissionId,
-        auditAccountId: baseplateWebAppToken,
-      }))
-      .concat(
-        mfeOwnerPerms.map((p) => ({
+    const microfrontends = await queryInterface.rawSelect(
+      "Microfrontends",
+      {
+        where: {
           customerOrgId: sampleCustomerOrgId,
-          accountId: mfeOwnerUserId,
-          permissionId: p.permissionId,
-          auditAccountId: baseplateWebAppToken,
-        }))
-      )
-      .concat(
-        devPerms.map((p) => ({
-          customerOrgId: sampleCustomerOrgId,
-          accountId: devUserId,
-          permissionId: p.permissionId,
-          auditAccountId: baseplateWebAppToken,
-        }))
-      );
+        },
+        plain: false,
+      },
+      ["id"]
+    );
+
+    const permissionsToAccountPermissions = (permissions, accountId) => {
+      return permissions.reduce((acc, permission) => {
+        if (permission.requiresEntityId) {
+          acc.push(
+            ...microfrontends.map((microfrontendId) => ({
+              customerOrgId: sampleCustomerOrgId,
+              accountId,
+              permissionId: permission.permissionId,
+              entityId: microfrontendId.id,
+              auditAccountId: baseplateWebAppToken,
+            }))
+          );
+        } else {
+          acc.push({
+            customerOrgId: sampleCustomerOrgId,
+            accountId,
+            permissionId: permission.permissionId,
+            auditAccountId: baseplateWebAppToken,
+          });
+        }
+
+        return acc;
+      }, []);
+    };
+
+    const allAccountPerms = permissionsToAccountPermissions(
+      orgOwnerPerms,
+      sampleUserId
+    )
+      .concat(permissionsToAccountPermissions(mfeOwnerPerms, mfeOwnerUserId))
+      .concat(permissionsToAccountPermissions(devPerms, devUserId));
+
+    console.log("allAccountPerms", allAccountPerms);
 
     await queryInterface.bulkInsert("AccountPermissions", allAccountPerms);
 

@@ -49,6 +49,10 @@ export class UserModel
   declare createdAt: Date;
   declare updatedAt: Date;
 
+  public getShareableUserAttributes(): ShareableUserAttributes {
+    return userToShareableAttributes(this);
+  }
+
   declare getUserPreferences: HasOneGetAssociationMixin<UserPreferencesModel>;
   declare setUserPreferences: HasOneSetAssociationMixin<
     UserPreferencesModel,
@@ -151,6 +155,11 @@ export type UserCreationAttributes = Omit<UserAttributes, "id">;
 
 export type User = UserAttributes & DefaultModelAttrs;
 
+export type ShareableUserAttributes = Omit<
+  Omit<User, "password">,
+  "githubProfileId"
+>;
+
 modelEvents.once("init", (sequelize) => {
   UserModel.init(currentSchema, {
     sequelize,
@@ -180,3 +189,16 @@ modelEvents.once("associate", (sequelize) => {
     foreignKey: "userId",
   });
 });
+
+export function userToShareableAttributes(
+  user: UserModel
+): ShareableUserAttributes {
+  return {
+    id: user.id,
+    email: user.email,
+    givenName: user.givenName,
+    familyName: user.familyName,
+    createdAt: user.createdAt,
+    updatedAt: user.updatedAt,
+  };
+}
