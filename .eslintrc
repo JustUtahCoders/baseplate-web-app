@@ -2,6 +2,13 @@
   "extends": "ts-react-important-stuff",
   "parser": "@babel/eslint-parser",
   "rules": {
-    "no-console": "off"
+    "no-console": "off",
+    "jsx-a11y/label-has-associated-control": [
+      "error",
+      {
+        "labelComponents": ["FormFieldLabel"],
+        "controlComponents": ["Input"]
+      }
+    ]
   }
 }

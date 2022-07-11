@@ -3585,7 +3585,7 @@ packages:
     dev: true
 
   /@reach/auto-id/0.17.0_ef5jwxihqo6n7gxfmzogljlgcm:
-    resolution: {integrity: sha512-ud8iPwF52RVzEmkHq1twuqGuPA+moreumUHdtgvU3sr3/15BNhwp3KyDLrKKSz0LP1r3V4pSdyF9MbYM8BoSjA==, registry: https://gitlab.com/api/v4/packages/npm/, tarball: https://gitlab.com/api/v4/packages/npm/@reach/auto-id/-/auto-id-0.17.0.tgz}
+    resolution: {integrity: sha512-ud8iPwF52RVzEmkHq1twuqGuPA+moreumUHdtgvU3sr3/15BNhwp3KyDLrKKSz0LP1r3V4pSdyF9MbYM8BoSjA==}
     peerDependencies:
       react: ^16.8.0 || 17.x
       react-dom: ^16.8.0 || 17.x
@@ -9071,7 +9071,7 @@ packages:
     dev: false
 
   /object-assign/4.1.1:
-    resolution: {integrity: sha1-IQmtx5ZYh8/AXLvUQsrIv7s2CGM=, registry: https://gitlab.com/api/v4/packages/npm/, tarball: https://gitlab.com/api/v4/packages/npm/object-assign/-/object-assign-4.1.1.tgz}
+    resolution: {integrity: sha512-rJgTQnkUnH1sFw8yT6VSU3zD3sWmu6sZhIseY8VX+GRu3P6F7Fu+JNDoXfklElbLJSnc3FUQHVe4cU5hj+BcUg==}
     engines: {node: '>=0.10.0'}
     dev: false
 
@@ -9666,7 +9666,7 @@ packages:
     dev: true
 
   /prop-types/15.8.1:
-    resolution: {integrity: sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg==, registry: https://gitlab.com/api/v4/packages/npm/, tarball: https://gitlab.com/api/v4/packages/npm/prop-types/-/prop-types-15.8.1.tgz}
+    resolution: {integrity: sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg==}
     dependencies:
       loose-envify: 1.4.0
       object-assign: 4.1.1
@@ -9782,7 +9782,7 @@ packages:
       scheduler: 0.22.0
 
   /react-is/16.13.1:
-    resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==, registry: https://gitlab.com/api/v4/packages/npm/, tarball: https://gitlab.com/api/v4/packages/npm/react-is/-/react-is-16.13.1.tgz}
+    resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
     dev: false
 
   /react-is/17.0.2:
@@ -9790,7 +9790,7 @@ packages:
     dev: true
 
   /react-is/18.1.0:
-    resolution: {integrity: sha512-Fl7FuabXsJnV5Q1qIOQwx/sagGF18kogb4gpfcG4gjLBWO0WDiiz1ko/ExayuxE7InyQkBLkxRFG5oxY6Uu3Kg==, registry: https://gitlab.com/api/v4/packages/npm/, tarball: https://gitlab.com/api/v4/packages/npm/react-is/-/react-is-18.1.0.tgz}
+    resolution: {integrity: sha512-Fl7FuabXsJnV5Q1qIOQwx/sagGF18kogb4gpfcG4gjLBWO0WDiiz1ko/ExayuxE7InyQkBLkxRFG5oxY6Uu3Kg==}
     dev: true
 
   /react-query/3.39.0_ef5jwxihqo6n7gxfmzogljlgcm:
@@ -10869,7 +10869,7 @@ packages:
     dev: true
 
   /tiny-warning/1.0.3:
-    resolution: {integrity: sha512-lBN9zLN/oAf68o3zNXYrdCt1kP8WsiGW8Oo2ka41b2IM5JL/S1CTyX1rW0mb/zSuJun0ZUrDxx4sqvYS2FWzPA==, registry: https://gitlab.com/api/v4/packages/npm/, tarball: https://gitlab.com/api/v4/packages/npm/tiny-warning/-/tiny-warning-1.0.3.tgz}
+    resolution: {integrity: sha512-lBN9zLN/oAf68o3zNXYrdCt1kP8WsiGW8Oo2ka41b2IM5JL/S1CTyX1rW0mb/zSuJun0ZUrDxx4sqvYS2FWzPA==}
     dev: false
 
   /tmp/0.0.33:

@@ -259,7 +259,23 @@ module.exports = {
       manageMFESettingsPerm,
     ]);
 
-    const orgOwnerPerms = permissions;
+    const orgOwnerPerms = [
+      viewOrgSettingsPerm,
+      manageOrgSettingsPerm,
+      viewOrgBillingPerm,
+      viewOrgUsersPerm,
+      manageOrgUsersPerm,
+      manageOrgOwnerPerm,
+      manageAllMFEOwnersPerm,
+      triggerAllMFEDeployments,
+      viewAllMFEDeployments,
+      viewAllMFEUsers,
+      manageAllMFEUsers,
+      createMFEPerm,
+      manageAllMFESettingsPerm,
+      viewEnvironmentsPerm,
+      manageEnvironmentsPerm,
+    ];
 
     const rolePermissionsToInsert = devPerms
       .map((p) => ({

@@ -108,17 +108,19 @@ router.get<
         >[],
       ]);
 
-    const ownerAP = thisMicrofrontendPermissions.find(
+    const ownerAPs = thisMicrofrontendPermissions.filter(
       (ap) => ap.permissionId === manageOneMFEOwnerPermission.id
     );
 
-    if (!ownerAP) {
+    if (ownerAPs.length === 0) {
       return serverApiError(res, "No owner found for this microfrontend");
     }
 
     res.json({
-      owner: userToShareableAttributes(ownerAP.user),
-      allMicrofrontendUsers: allMicrofrontendsAccountPermissions
+      thisMicrofrontendOwners: ownerAPs.map((ap) =>
+        userToShareableAttributes(ap.user)
+      ),
+      microfrontendAdmins: allMicrofrontendsAccountPermissions
         .filter((ap) => ap.user)
         .map((ap) => userToShareableAttributes(ap.user)),
       thisMicrofrontendUsers: thisMicrofrontendPermissions
@@ -129,7 +131,7 @@ router.get<
 );
 
 export interface EndpointGetMicrofrontendUsersResBody {
-  owner: ShareableUserAttributes;
-  allMicrofrontendUsers: ShareableUserAttributes[];
+  thisMicrofrontendOwners: ShareableUserAttributes[];
+  microfrontendAdmins: ShareableUserAttributes[];
   thisMicrofrontendUsers: ShareableUserAttributes[];
 }

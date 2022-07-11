@@ -63,9 +63,9 @@ const MicrofrontendConfiguration = lazy(() =>
     default: m.MicrofrontendConfiguration,
   }))
 );
-const MicrofrontendUsers = lazy(() =>
-  import("./Console/Microfrontends/MicrofrontendUsers").then((m) => ({
-    default: m.MicrofrontendUsers,
+const MicrofrontendAccess = lazy(() =>
+  import("./Console/Microfrontends/MicrofrontendAccess").then((m) => ({
+    default: m.MicrofrontendAccess,
   }))
 );
 const SelectOrg = lazy(() =>
@@ -144,7 +144,7 @@ export function App(props: AppProps) {
                         path="deployments"
                         element={<MicrofrontendDeployments />}
                       />
-                      <Route path="users" element={<MicrofrontendUsers />} />
+                      <Route path="access" element={<MicrofrontendAccess />} />
                       <Route
                         path="configuration"
                         element={<MicrofrontendConfiguration />}
