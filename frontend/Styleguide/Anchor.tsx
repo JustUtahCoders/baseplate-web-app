@@ -1,8 +1,15 @@
 import { Link, LinkProps } from "react-router-dom";
-import { buttonClasses, ButtonKind } from "./Button";
+import { buttonClasses, ButtonKind, ButtonSize } from "./Button";
 
 export function Anchor(props: AnchorProps) {
-  const { kind, className, children, to, ...otherProps } = props;
+  const {
+    kind,
+    className,
+    buttonSize = ButtonSize.large,
+    children,
+    to,
+    ...otherProps
+  } = props;
 
   // Use react-router (no page reload) when "to" prop is passed
   // Use <a> (with page reload) when "href" prop is passed
@@ -12,13 +19,17 @@ export function Anchor(props: AnchorProps) {
     const to: string = props.to as string;
 
     return (
-      <Link to={to} className={buttonClasses(kind, className)} {...otherProps}>
+      <Link
+        to={to}
+        className={buttonClasses(kind, buttonSize, className)}
+        {...otherProps}
+      >
         {children}
       </Link>
     );
   } else {
     return (
-      <a className={buttonClasses(kind, className)} {...otherProps}>
+      <a className={buttonClasses(kind, buttonSize, className)} {...otherProps}>
         {children}
       </a>
     );
@@ -27,6 +38,7 @@ export function Anchor(props: AnchorProps) {
 
 export type AnchorProps = Omit<LinkProps, "to"> & {
   kind: ButtonKind;
+  buttonSize?: ButtonSize;
   to?: string;
   href?: string;
 };

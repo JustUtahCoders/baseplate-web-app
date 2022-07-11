@@ -65,12 +65,13 @@ export function CardFooter(props: CardFooterProps) {
 export interface CardFooterProps extends HTMLProps<HTMLDivElement> {}
 
 export function CardHeader(props: CardHeaderProps) {
-  const { className, children, ...otherProps } = props;
+  const { className, contentPadding = true, children, ...otherProps } = props;
 
   return (
     <div
       className={always(className as string)
-        .always("border-b border-gray-300 mb-1.5 pb-4 pt-2.5 px-3.5")
+        .always("border-b border-gray-300 pb-4 pt-2.5 px-3.5")
+        .maybe("mb-1.5", contentPadding)
         .toString()}
       {...otherProps}
     >
@@ -79,4 +80,6 @@ export function CardHeader(props: CardHeaderProps) {
   );
 }
 
-export interface CardHeaderProps extends HTMLProps<HTMLDivElement> {}
+export interface CardHeaderProps extends HTMLProps<HTMLDivElement> {
+  contentPadding?: boolean;
+}

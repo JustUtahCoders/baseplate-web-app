@@ -214,7 +214,7 @@ function EditSpecifier({ microfrontend, close }: EditProps) {
         when importing the microfrontend.
       </p>
       <FormField>
-        <FormFieldLabel>Import Specifier</FormFieldLabel>
+        <span className="text-gray-800 text-sm mb-1">Import Specifier</span>
         <div className="text-sm text-gray-600">{importSpecifier}</div>
       </FormField>
       <FormField className="my-4">

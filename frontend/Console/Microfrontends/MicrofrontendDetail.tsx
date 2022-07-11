@@ -72,8 +72,8 @@ export function MicrofrontendDetail() {
             href: `/console/${customerOrgId}/microfrontends/${microfrontend.id}/deployments`,
           },
           {
-            label: "Users",
-            href: `/console/${customerOrgId}/microfrontends/${microfrontend.id}/users`,
+            label: "Access",
+            href: `/console/${customerOrgId}/microfrontends/${microfrontend.id}/access`,
           },
           {
             label: "Configuration",
