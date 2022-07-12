@@ -38,7 +38,7 @@ describe(`POST /api/deployments`, () => {
     const response = await request(app)
       .post(
         `/api/orgs/${getCustomerOrg().id}/deployments?baseplateToken=${
-          getBaseplateToken().id
+          getBaseplateToken().secretAccessKey
         }`
       )
       .send({
@@ -107,7 +107,7 @@ describe(`POST /api/deployments`, () => {
 
     const reqUrl = `/api/orgs/${
       getCustomerOrg().id
-    }/deployments?baseplateToken=${getBaseplateToken().id}`;
+    }/deployments?baseplateToken=${getBaseplateToken().secretAccessKey}`;
 
     // must start with /
     expect(
@@ -178,7 +178,7 @@ describe(`POST /api/deployments`, () => {
 
     const reqUrl = `/api/orgs/${
       getCustomerOrg().id
-    }/deployments?baseplateToken=${getBaseplateToken().id}`;
+    }/deployments?baseplateToken=${getBaseplateToken().secretAccessKey}`;
 
     // must start with /
     expect(
@@ -248,7 +248,7 @@ describe(`POST /api/deployments`, () => {
 
     const reqUrl = `/api/orgs/${
       getCustomerOrg().id
-    }/deployments?baseplateToken=${getBaseplateToken().id}`;
+    }/deployments?baseplateToken=${getBaseplateToken().secretAccessKey}`;
 
     // must start with /
     let response = await request(app).post(reqUrl).send(reqBody("/navbar.js"));
