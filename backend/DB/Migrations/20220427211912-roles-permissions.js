@@ -171,13 +171,13 @@ module.exports = {
           name: "allEnvironments.view",
           humanReadableName: "View all environments",
           description: "View all code environments that can be deployed to",
-          requiresEntityId: true,
+          requiresEntityId: false,
         },
         {
           name: "allEnvironments.manage",
           humanReadableName: "Manage all environments",
           description: "Rename, create, or delete code environments.",
-          requiresEntityId: true,
+          requiresEntityId: false,
         },
       ],
       {

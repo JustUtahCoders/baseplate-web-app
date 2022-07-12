@@ -31,7 +31,7 @@ import {
 } from "../Audit/Audit";
 
 export class EnvironmentModel
-  extends Model<EnvironmentAttributes, EnvironmentCreationAttributes>
+  extends Model<Environment, EnvironmentCreationAttributes>
   implements
     Environment,
     BelongsToMethods<{ customerOrg: CustomerOrgModel }>,
@@ -88,8 +88,8 @@ export interface EnvironmentAttributes extends AuditTargetAttributes {
 export type EnvironmentCreationAttributes = Omit<EnvironmentAttributes, "id">;
 
 export type Environment = Omit<
-  Omit<EnvironmentAttributes & DefaultModelAttrs, "auditAccountId">,
-  "customerOrgId"
+  EnvironmentAttributes & DefaultModelAttrs,
+  "auditAccountId"
 >;
 
 export class EnvironmentAuditModel extends AuditModel<EnvironmentAttributes> {}
