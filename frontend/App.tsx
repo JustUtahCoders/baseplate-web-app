@@ -43,6 +43,11 @@ const MicrofrontendsList = lazy(() =>
     default: m.MicrofrontendsList,
   }))
 );
+const EnvironmentsList = lazy(() =>
+  import("./Console/Environments/EnvironmentsList").then((m) => ({
+    default: m.EnvironmentsList,
+  }))
+);
 const MicrofrontendDetail = lazy(() =>
   import("./Console/Microfrontends/MicrofrontendDetail").then((m) => ({
     default: m.MicrofrontendDetail,
@@ -153,6 +158,10 @@ export function App(props: AppProps) {
                       <Route path="" element={<MicrofrontendHome />} />
                     </>
                   ),
+                })}
+                {RouteWithCustomerOrgId({
+                  pathSuffix: "environments",
+                  element: <EnvironmentsList />,
                 })}
                 <Route path="/console/select-org" element={<SelectOrg />} />
                 <Route
