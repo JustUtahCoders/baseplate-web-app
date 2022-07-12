@@ -14,7 +14,7 @@ import "./RestAPI/Microfrontends/MicrofrontendDownloads";
 import "./RestAPI/Microfrontends/MicrofrontendStatuses";
 import "./RestAPI/Microfrontends/LatestMicrofrontendDeployments";
 import "./RestAPI/Microfrontends/PatchMicrofrontend";
-import "./RestAPI/Microfrontends/GetMicrofrontendUsers";
+import "./RestAPI/Microfrontends/GetMicrofrontendAccessList";
 import "./RestAPI/OrgSettings/GetAllCustomerOrgs";
 import "./RestAPI/Microfrontends/MicrofrontendAudit";
 

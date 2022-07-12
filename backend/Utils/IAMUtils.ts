@@ -10,10 +10,7 @@ import {
   ModelWithIncludes,
 } from "../DB/Models/SequelizeTSHelpers";
 import { UserModel } from "../DB/Models/User/User";
-import {
-  UserPreferences,
-  UserPreferencesAttributes,
-} from "../DB/Models/User/UserPreferences";
+import { UserPreferencesAttributes } from "../DB/Models/User/UserPreferences";
 import { notAuthorized } from "./EndpointResponses";
 
 export function findMissingPermissions(
@@ -55,7 +52,7 @@ export function findMissingPermissions(
       });
 
       if (!hasPermission) {
-        missingPermissions.push(p.permission);
+        missingPermissions.push(`Missing permission ${p.permission}`);
       }
     } else {
       const p = thisPermission as CompoundRequiredPermission;

@@ -82,6 +82,34 @@ module.exports = {
         customerOrgId: insertedCustomerOrg.id,
       },
     ]);
+
+    const baseplateWebAppToken = await queryInterface.rawSelect(
+      "AuthTokens",
+      {
+        where: {
+          authTokenType: "webAppCodeAccess",
+        },
+      },
+      ["id"]
+    );
+
+    const [personalAccessToken] = await queryInterface.bulkInsert(
+      "AuthTokens",
+      [
+        {
+          userId: devUser.id,
+          customerOrgId: insertedCustomerOrg.id,
+          authTokenType: "personalAccessToken",
+          name: "Dev's Personal Token",
+          auditAccountId: baseplateWebAppToken,
+          lastUsed: null,
+          dateRevoked: null,
+        },
+      ],
+      {
+        returning: true,
+      }
+    );
   },
 
   async down(queryInterface, Sequelize) {
@@ -132,7 +160,7 @@ module.exports = {
       "Users",
       {
         where: {
-          email: mfeOwnerUserEmail,
+          email: devUserEmail,
         },
         plain: false,
       },

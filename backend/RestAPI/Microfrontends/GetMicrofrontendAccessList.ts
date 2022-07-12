@@ -6,11 +6,7 @@ import {
   PermissionModel,
 } from "../../DB/Models/IAM/Permission";
 import { ModelWithIncludes } from "../../DB/Models/SequelizeTSHelpers";
-import {
-  ShareableUserAttributes,
-  UserModel,
-  userToShareableAttributes,
-} from "../../DB/Models/User/User";
+import { ShareableUserAttributes, UserModel } from "../../DB/Models/User/User";
 import { router } from "../../Router";
 import {
   serverApiError,
@@ -24,9 +20,9 @@ import {
 
 router.get<
   RouteParamsWithMicrofrontendId,
-  EndpointGetMicrofrontendUsersResBody
+  EndpointGetMicrofrontendAccessResBody
 >(
-  `/api/orgs/:customerOrgId/microfrontends/:microfrontendId/users`,
+  `/api/orgs/:customerOrgId/microfrontends/:microfrontendId/access`,
 
   // Validation
   param("customerOrgId").isUUID(),
@@ -36,7 +32,7 @@ router.get<
   // Permissions
   (req, res, next) => {
     checkPermissionsMiddleware(req, res, next, {
-      permission: BaseplatePermission.ViewAllMicrofrontendUsers,
+      permission: BaseplatePermission.ViewAllMicrofrontendAccess,
     });
   },
 
@@ -108,30 +104,57 @@ router.get<
         >[],
       ]);
 
-    const ownerAPs = thisMicrofrontendPermissions.filter(
+    const ownerAP = thisMicrofrontendPermissions.find(
       (ap) => ap.permissionId === manageOneMFEOwnerPermission.id
     );
 
-    if (ownerAPs.length === 0) {
+    if (!ownerAP) {
       return serverApiError(res, "No owner found for this microfrontend");
     }
 
     res.json({
-      thisMicrofrontendOwners: ownerAPs.map((ap) =>
-        userToShareableAttributes(ap.user)
-      ),
-      microfrontendAdmins: allMicrofrontendsAccountPermissions
-        .filter((ap) => ap.user)
-        .map((ap) => userToShareableAttributes(ap.user)),
-      thisMicrofrontendUsers: thisMicrofrontendPermissions
-        .filter((ap) => ap.permissionId === deployOneMFEPermission.id)
-        .map((ap) => userToShareableAttributes(ap.user)),
+      accessList: [],
     });
   }
 );
 
-export interface EndpointGetMicrofrontendUsersResBody {
-  thisMicrofrontendOwners: ShareableUserAttributes[];
-  microfrontendAdmins: ShareableUserAttributes[];
-  thisMicrofrontendUsers: ShareableUserAttributes[];
+export interface EndpointGetMicrofrontendAccessResBody {
+  accessList: EntityWithAccess[];
+}
+
+export enum EntityType {
+  user = "user",
+  personalAccessToken = "personalAccessToken",
+  serviceAccountToken = "serviceAccountToken",
+}
+
+export enum EntityAccess {
+  collaborator = "collaborator",
+  owner = "owner",
+  admin = "admin",
+}
+
+export type EntityWithAccess =
+  | UserWithAccess
+  | PersonalAccessTokenWithAccess
+  | ServiceAccountTokenWithAccess;
+
+export interface UserWithAccess {
+  entityType: EntityType.user;
+  user: ShareableUserAttributes;
+  access: EntityAccess;
+}
+
+export interface PersonalAccessTokenWithAccess {
+  entityType: EntityType.personalAccessToken;
+  user: ShareableUserAttributes;
+  access: EntityAccess;
+  lastUsed: Date | null;
+}
+
+export interface ServiceAccountTokenWithAccess {
+  entityType: EntityType.serviceAccountToken;
+  name: string;
+  access: EntityAccess;
+  lastUsed: Date | null;
 }

@@ -74,15 +74,15 @@ module.exports = {
           requiresEntityId: false,
         },
         {
-          name: "customerOrgs.users.view",
-          humanReadableName: "View organization users",
+          name: "customerOrgs.access.view",
+          humanReadableName: "View organization access",
           description:
-            "View your organization's users, including their permissions and roles.",
+            "View your organization's users and service account tokens, including their permissions and roles.",
           requiresEntityId: false,
         },
         {
           name: "customerOrgs.users.manage",
-          humanReadableName: "Manage organization users",
+          humanReadableName: "Manage organization access",
           description:
             "Manage your organization's users, including their permissions and roles. Invite new users or deactivate existing users.",
           requiresEntityId: false,
@@ -114,17 +114,17 @@ module.exports = {
           requiresEntityId: false,
         },
         {
-          name: "allMicrofrontends.users.view",
-          humanReadableName: "View users for all microfrontends",
+          name: "allMicrofrontends.access.view",
+          humanReadableName: "View access for all microfrontends",
           description:
-            "View which users have access to a microfrontend, and which user owns a microfrontend.",
+            "View which users and service account tokens have access to a microfrontend, and which users own a microfrontend.",
           requiresEntityId: false,
         },
         {
-          name: "allMicrofrontends.users.manage",
-          humanReadableName: "Manage users for all microfrontends",
+          name: "allMicrofrontends.access.manage",
+          humanReadableName: "Manage access for all microfrontends",
           description:
-            "Manage which users own or have access to your organization's microfrontends.",
+            "Manage which users and service account tokens own or have access to your organization's microfrontends.",
           requiresEntityId: false,
         },
         {
@@ -154,10 +154,11 @@ module.exports = {
           requiresEntityId: true,
         },
         {
-          name: "microfrontend.users.manage",
-          humanReadableName: "Manage a specific microfrontend's users",
+          name: "microfrontend.access.manage",
+          humanReadableName:
+            "Manage a specific microfrontend's users and service account tokens",
           description:
-            "Manage which users have access to deploy a microfrontend.",
+            "Manage which users and service account tokens have access to deploy a microfrontend.",
           requiresEntityId: true,
         },
         {
@@ -171,13 +172,13 @@ module.exports = {
           name: "allEnvironments.view",
           humanReadableName: "View all environments",
           description: "View all code environments that can be deployed to",
-          requiresEntityId: true,
+          requiresEntityId: false,
         },
         {
           name: "allEnvironments.manage",
           humanReadableName: "Manage all environments",
           description: "Rename, create, or delete code environments.",
-          requiresEntityId: true,
+          requiresEntityId: false,
         },
       ],
       {
@@ -189,19 +190,19 @@ module.exports = {
       viewOrgSettingsPerm,
       manageOrgSettingsPerm,
       viewOrgBillingPerm,
-      viewOrgUsersPerm,
-      manageOrgUsersPerm,
+      viewOrgAccessPerm,
+      manageOrgAccessPerm,
       manageOrgOwnerPerm,
       manageAllMFEOwnersPerm,
       triggerAllMFEDeployments,
       viewAllMFEDeployments,
-      viewAllMFEUsers,
-      manageAllMFEUsers,
+      viewAllMFEAccess,
+      manageAllMFEAccess,
       createMFEPerm,
       manageAllMFESettingsPerm,
       manageMFEOwnerPerm,
       triggerMFEDeploymentPerm,
-      manageMFEUsersPerm,
+      manageMFEAccessPerm,
       manageMFESettingsPerm,
       viewEnvironmentsPerm,
       manageEnvironmentsPerm,
@@ -245,9 +246,9 @@ module.exports = {
 
     const devPerms = [
       viewAllMFEDeployments,
-      viewAllMFEUsers,
+      viewAllMFEAccess,
       viewEnvironmentsPerm,
-      viewOrgUsersPerm,
+      viewOrgAccessPerm,
       createMFEPerm,
       viewOrgSettingsPerm,
     ];
@@ -255,7 +256,7 @@ module.exports = {
     const mfeOwnerPerms = devPerms.concat([
       manageMFEOwnerPerm,
       triggerMFEDeploymentPerm,
-      manageMFEUsersPerm,
+      manageMFEAccessPerm,
       manageMFESettingsPerm,
     ]);
 
@@ -263,14 +264,14 @@ module.exports = {
       viewOrgSettingsPerm,
       manageOrgSettingsPerm,
       viewOrgBillingPerm,
-      viewOrgUsersPerm,
-      manageOrgUsersPerm,
+      viewOrgAccessPerm,
+      manageOrgAccessPerm,
       manageOrgOwnerPerm,
       manageAllMFEOwnersPerm,
       triggerAllMFEDeployments,
       viewAllMFEDeployments,
-      viewAllMFEUsers,
-      manageAllMFEUsers,
+      viewAllMFEAccess,
+      manageAllMFEAccess,
       createMFEPerm,
       manageAllMFESettingsPerm,
       viewEnvironmentsPerm,

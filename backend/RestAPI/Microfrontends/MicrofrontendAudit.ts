@@ -39,16 +39,7 @@ router.get<
   // Permissions,
   (req, res, next) => {
     checkPermissionsMiddleware(req, res, next, {
-      operator: PermissionOperator.or,
-      permissionList: [
-        {
-          permission: BaseplatePermission.ManageOneMicrofrontendSettings,
-          entityId: req.params.microfrontendId,
-        },
-        {
-          permission: BaseplatePermission.ManageAllMicrofrontendSettings,
-        },
-      ],
+      permission: BaseplatePermission.ViewAllMicrofrontendDeployments,
     });
   },
 

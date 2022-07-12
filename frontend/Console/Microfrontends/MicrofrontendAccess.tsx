@@ -1,5 +1,5 @@
 import { useQuery } from "react-query";
-import { EndpointGetMicrofrontendUsersResBody } from "../../../backend/RestAPI/Microfrontends/GetMicrofrontendUsers";
+import { EndpointGetMicrofrontendAccessResBody } from "../../../backend/RestAPI/Microfrontends/GetMicrofrontendAccessList";
 import { Card, CardHeader } from "../../Styleguide/Card";
 import { Loader } from "../../Styleguide/Loader";
 import { baseplateFetch } from "../../Utils/baseplateFetch";
@@ -18,10 +18,10 @@ export function MicrofrontendAccess() {
   const usersQuery = useQuery<
     unknown,
     Error,
-    EndpointGetMicrofrontendUsersResBody
+    EndpointGetMicrofrontendAccessResBody
   >(`microfrontend-users-${microfrontendId}`, async () => {
-    return baseplateFetch<EndpointGetMicrofrontendUsersResBody>(
-      `/api/orgs/${customerOrgId}/microfrontends/${microfrontendId}/users`
+    return baseplateFetch<EndpointGetMicrofrontendAccessResBody>(
+      `/api/orgs/${customerOrgId}/microfrontends/${microfrontendId}/access`
     );
   });
   const accessList = useMemo<UserWithAccess[]>(() => {
@@ -31,15 +31,15 @@ export function MicrofrontendAccess() {
 
     const processedUsers: { [key: string]: UserWithAccess } = {};
     const accessList: UserWithAccess[] = [];
-    processList(BaseplateUserAccess.admin, usersQuery.data.microfrontendAdmins);
-    processList(
-      BaseplateUserAccess.owner,
-      usersQuery.data.thisMicrofrontendOwners
-    );
-    processList(
-      BaseplateUserAccess.collaborator,
-      usersQuery.data.thisMicrofrontendUsers
-    );
+    // processList(BaseplateUserAccess.admin, usersQuery.data.microfrontendAdmins);
+    // processList(
+    //   BaseplateUserAccess.owner,
+    //   usersQuery.data.thisMicrofrontendOwners
+    // );
+    // processList(
+    //   BaseplateUserAccess.collaborator,
+    //   usersQuery.data.thisMicrofrontendUsers
+    // );
 
     return accessList;
 

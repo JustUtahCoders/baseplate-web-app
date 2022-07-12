@@ -113,7 +113,8 @@ export function sampleBaseplateToken(
       baseplateToken = await AuthTokenModel.create({
         customerOrgId: getCustomerOrg().id,
         userId: getUser().id,
-        authTokenType: AuthTokenType.baseplateApiToken,
+        authTokenType: AuthTokenType.serviceAccountToken,
+        auditAccountId: getUser().id,
       });
 
       const role = await RoleModel.findOne({
@@ -134,8 +135,8 @@ export function sampleBaseplateToken(
           auditAccountId: baseplateToken.id,
           customerOrgId: getCustomerOrg().id,
           permissionId: rolePermission.id,
-          entityId: null,
-          dateRevoked: null,
+          entityId: undefined,
+          dateRevoked: undefined,
         }))
       );
     })

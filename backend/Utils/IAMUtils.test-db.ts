@@ -43,7 +43,9 @@ describe(`IAMUtils`, () => {
               customerOrgId,
               requiredPermissions
             )
-          ).toEqual([BaseplatePermission.CreateMicrofrontend]);
+          ).toEqual([
+            `Missing permission ${BaseplatePermission.CreateMicrofrontend}`,
+          ]);
         });
 
         it(`fails with mismatched accountPermissions`, () => {
@@ -65,7 +67,9 @@ describe(`IAMUtils`, () => {
               customerOrgId,
               requiredPermissions
             )
-          ).toEqual([BaseplatePermission.CreateMicrofrontend]);
+          ).toEqual([
+            `Missing permission ${BaseplatePermission.CreateMicrofrontend}`,
+          ]);
         });
 
         it(`succeeds with correct accountPermissions`, () => {
@@ -105,7 +109,9 @@ describe(`IAMUtils`, () => {
               "87678686",
               requiredPermissions
             )
-          ).toEqual([BaseplatePermission.CreateMicrofrontend]);
+          ).toEqual([
+            `Missing permission ${BaseplatePermission.CreateMicrofrontend}`,
+          ]);
         });
       });
 
@@ -156,7 +162,9 @@ describe(`IAMUtils`, () => {
               customerOrgId,
               requiredPermissions
             )
-          ).toEqual([BaseplatePermission.CreateMicrofrontend]);
+          ).toEqual([
+            `Missing permission ${BaseplatePermission.CreateMicrofrontend}`,
+          ]);
         });
       });
 
@@ -183,7 +191,9 @@ describe(`IAMUtils`, () => {
               customerOrgId,
               requiredPermissions
             )
-          ).toEqual([BaseplatePermission.CreateMicrofrontend]);
+          ).toEqual([
+            `Missing permission ${BaseplatePermission.CreateMicrofrontend}`,
+          ]);
         });
 
         it(`succeeds if dateRevoked is in the future`, () => {
@@ -367,7 +377,9 @@ describe(`IAMUtils`, () => {
             customerOrgId,
             requiredPermissions
           )
-        ).toEqual([BaseplatePermission.ManageAllMicrofrontendSettings]);
+        ).toEqual([
+          `Missing permission ${BaseplatePermission.ManageAllMicrofrontendSettings}`,
+        ]);
       });
     });
 
@@ -389,7 +401,7 @@ describe(`IAMUtils`, () => {
                   permission: BaseplatePermission.ManageAllEnvironments,
                 },
                 {
-                  permission: BaseplatePermission.ManageAllMicrofrontendUsers,
+                  permission: BaseplatePermission.ManageAllMicrofrontendAccess,
                 },
               ],
             },
@@ -432,7 +444,7 @@ describe(`IAMUtils`, () => {
                   permission: BaseplatePermission.ManageAllEnvironments,
                 },
                 {
-                  permission: BaseplatePermission.ManageAllMicrofrontendUsers,
+                  permission: BaseplatePermission.ManageAllMicrofrontendAccess,
                 },
               ],
             },
@@ -454,8 +466,8 @@ describe(`IAMUtils`, () => {
             requiredPermissions
           )
         ).toEqual([
-          BaseplatePermission.DeployAllMicrofrontends,
-          `Missing one of the following permissions: ${BaseplatePermission.ManageAllEnvironments}, ${BaseplatePermission.ManageAllMicrofrontendUsers}`,
+          `Missing permission ${BaseplatePermission.DeployAllMicrofrontends}`,
+          `Missing one of the following permissions: ${BaseplatePermission.ManageAllEnvironments}, ${BaseplatePermission.ManageAllMicrofrontendAccess}`,
         ]);
       });
     });

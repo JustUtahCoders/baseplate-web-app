@@ -12,6 +12,19 @@ const schema = {
     defaultValue: S.literal("gen_random_uuid()"),
     primaryKey: true,
   },
+  authTokenType: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  secretAccessKey: {
+    type: DataTypes.UUID,
+    allowNull: false,
+    defaultValue: S.literal("gen_random_uuid()"),
+  },
+  name: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
   userId: {
     type: DataTypes.UUID,
     allowNull: true,
@@ -32,13 +45,17 @@ const schema = {
     onUpdate: "cascade",
     onDelete: "cascade",
   },
-  authTokenType: {
-    type: DataTypes.STRING,
-    allowNull: false,
+  lastUsed: {
+    type: DataTypes.DATE,
+    allowNull: true,
   },
   dateRevoked: {
     type: DataTypes.DATE,
     allowNull: true,
+  },
+  auditAccountId: {
+    type: DataTypes.UUID,
+    allowNull: false,
   },
   createdAt: {
     type: DataTypes.DATE,

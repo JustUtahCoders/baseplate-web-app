@@ -76,3 +76,15 @@ pnpm exec sequelize db:seed:undo:all
 # Create migration
 pnpm exec sequelize seed:create --name INSERTNAMEHERE
 ```
+
+## Nuking your database
+
+If you want to just nuke your database and start fresh, run the following commands:
+
+```sh
+docker-compose down -v
+docker-compose up -d
+sleep 1
+pnpm exec sequelize db:migrate
+pnpm exec sequelize db:seed:all
+```
