@@ -139,17 +139,16 @@ module.exports = {
       .concat(permissionsToAccountPermissions(mfeOwnerPerms, mfeOwnerUserId))
       .concat(permissionsToAccountPermissions(devPerms, devUserId));
 
-    console.log("allAccountPerms", allAccountPerms);
-
     await queryInterface.bulkInsert("AccountPermissions", allAccountPerms);
 
-    const [baseplateApiToken] = await queryInterface.bulkInsert(
+    const [serviceAccountToken] = await queryInterface.bulkInsert(
       "AuthTokens",
       [
         {
           userId: sampleUserId,
           customerOrgId: sampleCustomerOrgId,
-          authTokenType: "baseplateApiToken",
+          authTokenType: "serviceAccountToken",
+          auditAccountId: baseplateWebAppToken,
         },
       ],
       {
@@ -159,7 +158,7 @@ module.exports = {
 
     const tokenPermissions = orgOwnerPerms.map((p) => ({
       customerOrgId: sampleCustomerOrgId,
-      accountId: baseplateApiToken.id,
+      accountId: serviceAccountToken.id,
       permissionId: p.permissionId,
       auditAccountId: baseplateWebAppToken,
     }));

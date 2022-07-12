@@ -47,11 +47,10 @@ router.post(
     });
 
     if (user) {
-      const payload = { userId: user.id, email: userEmail };
-
       const newAuthToken = await AuthTokenModel.create({
         userId: user.id,
         authTokenType: AuthTokenType.passwordReset,
+        auditAccountId: user.id,
       });
 
       if (newAuthToken) {

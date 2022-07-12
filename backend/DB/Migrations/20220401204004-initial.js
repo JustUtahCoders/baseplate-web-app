@@ -2,6 +2,8 @@
 
 module.exports = {
   async up(queryInterface, Sequelize) {
+    const auditInit = await import("../Models/Audit/AuditInit.js");
+
     await queryInterface.createTable(
       "Users",
       (
@@ -55,14 +57,18 @@ module.exports = {
         await import("../Models/AuthToken/AuthTokenSchema.js")
       ).initialSchema
     );
+    await queryInterface.addIndex("AuthTokens", ["secretAccessKey"]);
 
     await queryInterface.bulkInsert("AuthTokens", [
       {
         userId: null,
         customerOrgId: null,
         authTokenType: "webAppCodeAccess",
+        // Need a UUID not connected to anything to create this
+        auditAccountId: "8392cd4f-c21b-47d2-a4ed-c263239051a6",
       },
     ]);
+    await auditInit.createAuditTable(queryInterface, "AuthTokens");
   },
 
   async down(queryInterface, Sequelize) {

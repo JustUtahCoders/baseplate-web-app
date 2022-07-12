@@ -2,7 +2,11 @@ import { modelEvents } from "../../../InitDB";
 import { CustomerOrgModel } from "../CustomerOrg/CustomerOrg";
 import { DefaultModelAttrs } from "../DefaultModelAttrs";
 import { UserModel } from "../User/User";
-import { BaseplateUUID, BelongsToMethods } from "../SequelizeTSHelpers";
+import {
+  BaseplateUUID,
+  BelongsToMethods,
+  HasManyMethods,
+} from "../SequelizeTSHelpers";
 import {
   Model,
   BelongsToGetAssociationMixin,
@@ -10,6 +14,7 @@ import {
   BelongsToCreateAssociationMixin,
 } from "sequelize";
 import { currentSchema } from "./AuthTokenSchema";
+import { AuditModel, initAuditModel } from "../Audit/Audit";
 
 export class AuthTokenModel
   extends Model<AuthTokenAttributes, AuthTokenCreationAttributes>
@@ -19,10 +24,14 @@ export class AuthTokenModel
     BelongsToMethods<{ user: UserModel; customerOrg: CustomerOrgModel }>
 {
   declare id: BaseplateUUID;
-  declare userId: BaseplateUUID;
-  declare customerOrgId: BaseplateUUID;
   declare authTokenType: AuthTokenType;
+  declare secretAccessKey: BaseplateUUID;
+  declare name?: string;
+  declare userId?: BaseplateUUID;
+  declare customerOrgId?: BaseplateUUID;
+  declare lastUsed?: Date;
   declare dateRevoked: Date;
+  declare auditAccountId: BaseplateUUID;
 
   declare createdAt: Date;
   declare updatedAt: Date;
@@ -41,27 +50,41 @@ export class AuthTokenModel
 
 export interface AuthTokenAttributes {
   id: BaseplateUUID;
+  authTokenType: AuthTokenType;
+  secretAccessKey: BaseplateUUID;
+  auditAccountId: BaseplateUUID;
+  name?: string;
   userId?: BaseplateUUID;
   customerOrgId?: BaseplateUUID;
-  authTokenType: AuthTokenType;
+  lastUsed?: Date;
   dateRevoked?: Date;
 }
 
 export enum AuthTokenType {
   loginMFAEmail = "loginMFAEmail",
   passwordReset = "passwordReset",
-  baseplateApiToken = "baseplateApiToken",
+  serviceAccountToken = "serviceAccountToken",
+  personalAccessToken = "personalAccessToken",
   webAppCodeAccess = "webAppCodeAccess",
 }
 
-export type AuthTokenCreationAttributes = Omit<AuthTokenAttributes, "id">;
+export type AuthTokenCreationAttributes = Omit<
+  Omit<AuthTokenAttributes, "id">,
+  "secretAccessKey"
+>;
 
 export type AuthToken = AuthTokenAttributes & DefaultModelAttrs;
+
+export class AuthTokenAuditModel extends AuditModel<AuthTokenAttributes> {}
+
+const modelName = "AuthToken";
+
+initAuditModel(AuthTokenAuditModel, AuthTokenModel, modelName);
 
 modelEvents.once("init", (sequelize) => {
   AuthTokenModel.init(currentSchema, {
     sequelize,
-    modelName: "AuthToken",
+    modelName,
   });
 });
 

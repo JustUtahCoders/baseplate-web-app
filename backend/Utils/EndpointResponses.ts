@@ -15,9 +15,7 @@ export function notLoggedIn(res: Response, msg: EndpointErrorMessage) {
 
 export function notAuthorized(res: Response, missingPermissions: string[]) {
   return res.status(403).json({
-    errors: missingPermissions.map(
-      (p) => `Permission '${p}' is required to call this endpoint`
-    ),
+    errors: missingPermissions,
   });
 }
 

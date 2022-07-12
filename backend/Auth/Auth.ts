@@ -17,7 +17,10 @@ import {
   validationResponseMiddleware,
 } from "../Utils/EndpointResponses";
 import { User, UserModel } from "../DB/Models/User/User";
-import { AuthTokenModel } from "../DB/Models/AuthToken/AuthToken";
+import {
+  AuthTokenModel,
+  AuthTokenType,
+} from "../DB/Models/AuthToken/AuthToken";
 import {
   BaseplateUUID,
   ModelWithIncludes,
@@ -189,9 +192,22 @@ router.post(
 );
 
 router.use("/", async (req, res, next) => {
-  const userId = req?.session?.passport?.user?.id;
-  const isUsingCookie = Boolean(userId);
+  let accountId: string | undefined = req?.session?.passport?.user?.id;
+  const isUsingCookie = Boolean(accountId);
+  let isUser: boolean = isUsingCookie;
   let baseplateToken: string | undefined;
+  let user: UserModel | undefined,
+    serviceAccount: AuthTokenModel | undefined,
+    isLoggedIn: boolean = false,
+    accountPermissionsPromise:
+      | Promise<
+          ModelWithIncludes<
+            AccountPermissionModel,
+            { permission: PermissionModel }
+          >[]
+        >
+      | undefined,
+    userPreferencesPromise: Promise<UserPreferencesAttributes> | undefined;
 
   if (req.headers.authorization) {
     if (!req.headers.authorization.toLowerCase().startsWith("token ")) {
@@ -217,19 +233,73 @@ router.use("/", async (req, res, next) => {
     ]);
   }
 
-  let accountId: BaseplateUUID | undefined = userId || baseplateToken,
-    user: UserModel | undefined,
-    serviceAccount: AuthTokenModel | undefined,
-    isLoggedIn: boolean = false,
-    accountPermissionsPromise:
-      | Promise<
-          ModelWithIncludes<
-            AccountPermissionModel,
-            { permission: PermissionModel }
-          >[]
-        >
-      | undefined,
-    userPreferencesPromise: Promise<UserPreferencesAttributes> | undefined;
+  if (baseplateToken) {
+    const maybeAuthToken = await AuthTokenModel.findOne({
+      where: {
+        secretAccessKey: baseplateToken,
+      },
+    });
+    if (maybeAuthToken) {
+      if (
+        maybeAuthToken.dateRevoked &&
+        new Date() > maybeAuthToken.dateRevoked
+      ) {
+        return notLoggedIn(res, `Baseplate token is expired`);
+      }
+
+      accountId = maybeAuthToken.id;
+      isLoggedIn = true;
+
+      if (maybeAuthToken.authTokenType === AuthTokenType.serviceAccountToken) {
+        serviceAccount = maybeAuthToken;
+      } else if (
+        maybeAuthToken.authTokenType === AuthTokenType.personalAccessToken
+      ) {
+        if (!maybeAuthToken.userId) {
+          return notLoggedIn(
+            res,
+            `Personal access token not associated with a user`
+          );
+        }
+        accountId = maybeAuthToken.userId;
+        isUser = true;
+      } else if (
+        maybeAuthToken.authTokenType === AuthTokenType.webAppCodeAccess
+      ) {
+        return notLoggedIn(res, `Invalid baseplate token`);
+      }
+
+      // In background, update that the token was used
+      maybeAuthToken.update({
+        lastUsed: new Date(),
+      });
+    } else {
+      return notLoggedIn(res, `Invalid baseplate token`);
+    }
+  }
+
+  if (isUser) {
+    const maybeUser = await UserModel.findByPk(accountId);
+
+    if (maybeUser) {
+      user = maybeUser;
+      userPreferencesPromise = UserPreferencesModel.findOrCreate({
+        where: {
+          userId: user.id,
+        },
+        defaults: {
+          userId: user.id,
+          auditAccountId: user.id,
+        },
+      }).then(([model]) => model.get({ plain: true }));
+      isLoggedIn = true;
+    } else {
+      return notLoggedIn(
+        res,
+        `Invalid ${baseplateToken ? "personal access token" : "auth cookie"}`
+      );
+    }
+  }
 
   if (accountId) {
     // Start db query for account permissions, but do not await it here so that
@@ -253,45 +323,11 @@ router.use("/", async (req, res, next) => {
     >;
   }
 
-  if (isUsingCookie) {
-    const maybeUser = await UserModel.findByPk(userId);
-
-    if (maybeUser) {
-      user = maybeUser;
-      userPreferencesPromise = UserPreferencesModel.findOrCreate({
-        where: {
-          userId: user.id,
-        },
-        defaults: {
-          userId: user.id,
-          auditAccountId: user.id,
-        },
-      }).then(([model]) => model.get({ plain: true }));
-      isLoggedIn = true;
-    } else {
-      return notLoggedIn(res, `Invalid auth cookie`);
-    }
-  } else if (baseplateToken) {
-    const maybeAuthToken = await AuthTokenModel.findByPk(baseplateToken);
-    if (maybeAuthToken) {
-      if (
-        maybeAuthToken.dateRevoked &&
-        new Date() > maybeAuthToken.dateRevoked
-      ) {
-        return notLoggedIn(res, `Baseplate token is expired`);
-      }
-      serviceAccount = maybeAuthToken;
-      isLoggedIn = true;
-    } else {
-      return notLoggedIn(res, `Invalid baseplate token`);
-    }
-  }
-
   if (isLoggedIn) {
     req.baseplateAccount = {
       accountId: accountId!,
-      isServiceAccount: !isUsingCookie,
-      isUser: isUsingCookie,
+      isServiceAccount: Boolean(serviceAccount),
+      isUser,
       serviceAccount,
       userPreferences: await userPreferencesPromise,
       user,

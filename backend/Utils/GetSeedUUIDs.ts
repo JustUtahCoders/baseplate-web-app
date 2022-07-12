@@ -40,16 +40,25 @@ if (process.env.IS_RUNNING_LOCALLY) {
     });
 
     const ownerUser = users.find((u) => u.email === "owner@baseplate.cloud");
+    const devUser = users.find((u) => u.email === "dev@baseplate.cloud");
 
     if (!ownerUser) {
       throw Error(`Unable to find owner user - was DB seeded?`);
     }
 
-    const baseplateApiToken = await AuthTokenModel.findOne({
+    const serviceAccountToken = await AuthTokenModel.findOne({
       where: {
         customerOrgId: customerOrg!.id,
         userId: ownerUser!.id,
-        authTokenType: AuthTokenType.baseplateApiToken,
+        authTokenType: AuthTokenType.serviceAccountToken,
+      },
+    });
+
+    const devUserPersonalAccessToken = await AuthTokenModel.findOne({
+      where: {
+        customerOrgId: customerOrg!.id,
+        userId: devUser!.id,
+        authTokenType: AuthTokenType.personalAccessToken,
       },
     });
 
@@ -66,7 +75,9 @@ if (process.env.IS_RUNNING_LOCALLY) {
     });
 
     res.json({
-      baseplateToken: baseplateApiToken!.id,
+      serviceAccountSecretAccessKey: serviceAccountToken!.secretAccessKey,
+      devUserPersonalAccessSecretAccessKey:
+        devUserPersonalAccessToken!.secretAccessKey,
       customerOrg: {
         id: customerOrg!.id,
       },
@@ -87,7 +98,8 @@ if (process.env.IS_RUNNING_LOCALLY) {
 }
 
 interface ResBody {
-  baseplateToken: BaseplateUUID;
+  serviceAccountSecretAccessKey: BaseplateUUID;
+  devUserPersonalAccessSecretAccessKey: BaseplateUUID;
   users: PartialUser[];
   customerOrg: { id: CustomerOrg["id"] };
   environments: PartialEnvironment[];

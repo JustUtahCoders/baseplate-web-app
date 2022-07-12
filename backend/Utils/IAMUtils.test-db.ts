@@ -389,7 +389,7 @@ describe(`IAMUtils`, () => {
                   permission: BaseplatePermission.ManageAllEnvironments,
                 },
                 {
-                  permission: BaseplatePermission.ManageAllMicrofrontendUsers,
+                  permission: BaseplatePermission.ManageAllMicrofrontendAccess,
                 },
               ],
             },
@@ -432,7 +432,7 @@ describe(`IAMUtils`, () => {
                   permission: BaseplatePermission.ManageAllEnvironments,
                 },
                 {
-                  permission: BaseplatePermission.ManageAllMicrofrontendUsers,
+                  permission: BaseplatePermission.ManageAllMicrofrontendAccess,
                 },
               ],
             },
@@ -455,7 +455,7 @@ describe(`IAMUtils`, () => {
           )
         ).toEqual([
           BaseplatePermission.DeployAllMicrofrontends,
-          `Missing one of the following permissions: ${BaseplatePermission.ManageAllEnvironments}, ${BaseplatePermission.ManageAllMicrofrontendUsers}`,
+          `Missing one of the following permissions: ${BaseplatePermission.ManageAllEnvironments}, ${BaseplatePermission.ManageAllMicrofrontendAccess}`,
         ]);
       });
     });
