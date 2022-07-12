@@ -35,6 +35,6 @@ export function PageExplanation(props: PageExplanationProps) {
 }
 
 export interface PageExplanationProps {
-  briefExplanation: string;
+  briefExplanation: ReactNode;
   docsLink: string;
 }

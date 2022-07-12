@@ -35,24 +35,24 @@ router.get<RouteParamsWithCustomerOrg, EndpointGetEnvironmentsResBody>(
 export async function getEnvironmentsWithDeployedAt(
   customerOrgId: BaseplateUUID
 ): Promise<EndpointGetEnvironmentsResBody> {
-  const environments = await EnvironmentModel.findAll({
-    where: {
-      customerOrgId,
-    },
-  });
-
-  const mostRecentDeployments = await DeploymentModel.findAll({
-    attributes: [
-      [sequelize.fn("max", sequelize.col("createdAt")), "createdAt"],
-      "environmentId",
-    ],
-    where: {
-      environmentId: {
-        [Op.in]: environments.map((m) => m.id),
+  const [environments, mostRecentDeployments] = await Promise.all([
+    EnvironmentModel.findAll({
+      where: {
+        customerOrgId,
       },
-    },
-    group: "environmentId",
-  });
+      order: [["pipelineOrder", "DESC"]],
+    }),
+    DeploymentModel.findAll({
+      attributes: [
+        [sequelize.fn("max", sequelize.col("createdAt")), "createdAt"],
+        "environmentId",
+      ],
+      where: {
+        customerOrgId,
+      },
+      group: "environmentId",
+    }),
+  ]);
 
   const environmentsWithDeployedAt = environments.map((m) => {
     const mostRecentDeployedEnvironment = mostRecentDeployments.find(
@@ -67,13 +67,7 @@ export async function getEnvironmentsWithDeployedAt(
     return environment;
   });
 
-  const sortedEnvironments = environmentsWithDeployedAt.sort(
-    (first, second) => {
-      return first.pipelineOrder > second.pipelineOrder ? -1 : 1;
-    }
-  );
-
-  return { environments: sortedEnvironments };
+  return { environments: environmentsWithDeployedAt };
 }
 
 export interface EndpointGetEnvironmentsResBody {

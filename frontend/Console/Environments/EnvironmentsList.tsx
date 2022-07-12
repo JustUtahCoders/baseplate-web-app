@@ -38,7 +38,13 @@ export function EnvironmentsList() {
       <PageHeader>Environments List</PageHeader>
       <PageExplanation
         docsLink="/docs/concepts/environments"
-        briefExplanation="Environments are standalone, self-contained instances of your web application. Many teams use environments called “development”, “staging”, and “production”."
+        briefExplanation={
+          <span>
+            Environments are standalone, self-contained instances of your web
+            application. Many teams use environments called <em>development</em>
+            , <em>staging</em>, and <em>production</em>.
+          </span>
+        }
       />
       <div className="mb-6">
         <Input
