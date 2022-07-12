@@ -247,6 +247,7 @@ router.use("/", async (req, res, next) => {
         return notLoggedIn(res, `Baseplate token is expired`);
       }
 
+      isUser = false;
       accountId = maybeAuthToken.id;
       isLoggedIn = true;
 
