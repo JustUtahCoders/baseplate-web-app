@@ -12,6 +12,7 @@ import { UserPreferencesAttributes } from "../backend/DB/Models/User/UserPrefere
 import { RouteWithCustomerOrgId } from "./Utils/RouteWithCustomerOrgId";
 import { MainContent } from "./Styleguide/MainContent";
 import { Loader } from "./Styleguide/Loader";
+import { EnvironmentConfiguration } from "./Console/Environments/EnvironmentConfiguration";
 
 const Login = lazy(() =>
   import("./Auth/Login").then((m) => ({ default: m.Login }))
@@ -43,11 +44,6 @@ const MicrofrontendsList = lazy(() =>
     default: m.MicrofrontendsList,
   }))
 );
-const EnvironmentsList = lazy(() =>
-  import("./Console/Environments/EnvironmentsList").then((m) => ({
-    default: m.EnvironmentsList,
-  }))
-);
 const MicrofrontendDetail = lazy(() =>
   import("./Console/Microfrontends/MicrofrontendDetail").then((m) => ({
     default: m.MicrofrontendDetail,
@@ -71,6 +67,31 @@ const MicrofrontendConfiguration = lazy(() =>
 const MicrofrontendAccess = lazy(() =>
   import("./Console/Microfrontends/MicrofrontendAccess").then((m) => ({
     default: m.MicrofrontendAccess,
+  }))
+);
+const EnvironmentsList = lazy(() =>
+  import("./Console/Environments/EnvironmentsList").then((m) => ({
+    default: m.EnvironmentsList,
+  }))
+);
+const EnvironmentDetail = lazy(() =>
+  import("./Console/Environments/EnvironmentDetail").then((m) => ({
+    default: m.EnvironmentDetail,
+  }))
+);
+const EnvironmentHome = lazy(() =>
+  import("./Console/Environments/EnvironmentDetail").then((m) => ({
+    default: m.EnvironmentHome,
+  }))
+);
+const EnvironmenetConfiguration = lazy(() =>
+  import("./Console/Environments/EnvironmentConfiguration").then((m) => ({
+    default: m.EnvironmentConfiguration,
+  }))
+);
+const EnvironmentAccess = lazy(() =>
+  import("./Console/Environments/EnvironmentAccess").then((m) => ({
+    default: m.EnvironmentAccess,
   }))
 );
 const SelectOrg = lazy(() =>
@@ -162,6 +183,20 @@ export function App(props: AppProps) {
                 {RouteWithCustomerOrgId({
                   pathSuffix: "environments",
                   element: <EnvironmentsList />,
+                })}
+                {RouteWithCustomerOrgId({
+                  pathSuffix: "environments/:environmentId",
+                  element: <EnvironmentDetail />,
+                  children: (
+                    <>
+                      <Route
+                        path="configuration"
+                        element={<EnvironmentConfiguration />}
+                      />
+                      <Route path="access" element={<EnvironmentAccess />} />
+                      <Route path="" element={<EnvironmentHome />} />
+                    </>
+                  ),
                 })}
                 <Route path="/console/select-org" element={<SelectOrg />} />
                 <Route
