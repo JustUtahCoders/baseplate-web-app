@@ -7,7 +7,7 @@ export function useConsoleParams(): { customerOrgId: string } {
   };
 }
 
-export function useMicrofrontendParams(): CommonParams {
+export function useMicrofrontendParams(): MicrofrontendParams {
   const params = useParams<{
     customerOrgId: string;
     microfrontendId: string;
@@ -18,7 +18,23 @@ export function useMicrofrontendParams(): CommonParams {
   };
 }
 
-interface CommonParams {
+export function useEnvironmentParams(): EnvironmentParams {
+  const params = useParams<{
+    customerOrgId: string;
+    environmentId: string;
+  }>();
+  return {
+    customerOrgId: params.customerOrgId!,
+    environmentId: params.environmentId!,
+  };
+}
+
+interface MicrofrontendParams {
   customerOrgId: string;
   microfrontendId: string;
+}
+
+interface EnvironmentParams {
+  customerOrgId: string;
+  environmentId: string;
 }
