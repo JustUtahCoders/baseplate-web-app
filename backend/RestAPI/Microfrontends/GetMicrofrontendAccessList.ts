@@ -1,12 +1,24 @@
 import { param } from "express-validator";
 import sequelize from "sequelize";
+import {
+  AuthTokenModel,
+  AuthTokenType,
+} from "../../DB/Models/AuthToken/AuthToken";
 import { AccountPermissionModel } from "../../DB/Models/IAM/AccountPermission";
 import {
   BaseplatePermission,
+  Permission,
   PermissionModel,
 } from "../../DB/Models/IAM/Permission";
-import { ModelWithIncludes } from "../../DB/Models/SequelizeTSHelpers";
-import { ShareableUserAttributes, UserModel } from "../../DB/Models/User/User";
+import {
+  BaseplateUUID,
+  ModelWithIncludes,
+} from "../../DB/Models/SequelizeTSHelpers";
+import {
+  ShareableUserAttributes,
+  UserModel,
+  userToShareableAttributes,
+} from "../../DB/Models/User/User";
 import { router } from "../../Router";
 import {
   serverApiError,
@@ -64,56 +76,113 @@ router.get<
       (p) => p.name === BaseplatePermission.ManageOneMicrofrontendOwner
     )!;
 
-    const includeUser = {
-      model: UserModel,
-      as: "user",
-      foreignKey: "accountId",
-      required: false,
-    };
-
-    const [allMicrofrontendsAccountPermissions, thisMicrofrontendPermissions] =
-      await Promise.all([
-        AccountPermissionModel.findAll({
-          where: {
-            customerOrgId: req.params.customerOrgId,
-            permissionId: manageAllMFEUsersPermission.id,
-          },
-          include: [includeUser],
-        }) as unknown as ModelWithIncludes<
-          AccountPermissionModel,
-          { user: UserModel }
-        >[],
-
-        AccountPermissionModel.findAll({
-          where: {
-            customerOrgId: req.params.customerOrgId,
-            [sequelize.Op.or]: [
-              {
-                permissionId: manageOneMFEOwnerPermission.id,
-              },
-              {
-                permissionId: deployOneMFEPermission.id,
-              },
-            ],
+    const accountPermissions = (await AccountPermissionModel.findAll({
+      where: {
+        customerOrgId: req.params.customerOrgId,
+        [sequelize.Op.or]: [
+          {
+            permissionId: manageOneMFEOwnerPermission.id,
             entityId: req.params.microfrontendId,
           },
-          include: [includeUser],
-        }) as unknown as ModelWithIncludes<
-          AccountPermissionModel,
-          { user: UserModel }
-        >[],
-      ]);
+          {
+            permissionId: deployOneMFEPermission.id,
+            entityId: req.params.microfrontendId,
+          },
+          {
+            permissionId: manageAllMFEUsersPermission.id,
+          },
+        ],
+      },
+      include: [
+        {
+          model: PermissionModel,
+          as: "permission",
+          required: true,
+        },
+        {
+          model: UserModel,
+          as: "user",
+          foreignKey: "accountId",
+          required: false,
+          include: [
+            {
+              model: AuthTokenModel,
+              as: "authTokens",
+              where: {
+                authTokenType: AuthTokenType.personalAccessToken,
+              },
+              required: false,
+            },
+          ],
+        },
+        {
+          model: AuthTokenModel,
+          as: "authToken",
+          foreignKey: "accountId",
+          required: false,
+        },
+      ],
+    })) as unknown as ModelWithIncludes<
+      AccountPermissionModel,
+      {
+        user?: ModelWithIncludes<UserModel, { authTokens?: AuthTokenModel[] }>;
+        authToken?: AuthTokenModel;
+        permission: PermissionModel;
+      }
+    >[];
 
-    const ownerAP = thisMicrofrontendPermissions.find(
-      (ap) => ap.permissionId === manageOneMFEOwnerPermission.id
-    );
+    const accessListMap: Record<BaseplateUUID, EntityWithAccess> = {};
 
-    if (!ownerAP) {
-      return serverApiError(res, "No owner found for this microfrontend");
+    const addPermission = (
+      permission: Permission,
+      newEntry: EntityWithAccess
+    ): EntityWithAccess => {
+      let entry: EntityWithAccess = accessListMap[newEntry.id];
+
+      if (!entry) {
+        entry = accessListMap[newEntry.id] = newEntry;
+      }
+
+      if (!entry.permissions.some((p) => p.id === permission.id)) {
+        entry.permissions.push(permission);
+      }
+
+      return entry;
+    };
+
+    for (let accountPermission of accountPermissions) {
+      if (
+        accountPermission.authToken?.authTokenType ===
+        AuthTokenType.serviceAccountToken
+      ) {
+        const newEntry: ServiceAccountTokenWithAccess = {
+          id: accountPermission.authToken.id,
+          entityType: "serviceAccountToken",
+          name: accountPermission.authToken.name,
+          permissions: [],
+          lastUsed: accountPermission.authToken.lastUsed,
+        };
+        addPermission(accountPermission.permission, newEntry);
+      } else if (accountPermission.user) {
+        const userEntry: UserWithAccess = {
+          id: accountPermission.user.id,
+          entityType: "user",
+          permissions: [],
+          user: accountPermission.user,
+          personalAccessTokens: (accountPermission.user.authTokens || []).map(
+            (authToken) => ({
+              id: authToken.id,
+              name: authToken.name,
+              lastUsed: authToken.lastUsed,
+            })
+          ),
+        };
+        addPermission(accountPermission.permission, userEntry);
+      }
     }
 
     res.json({
-      accessList: [],
+      accessList: Object.values(accessListMap),
     });
   }
 );
@@ -122,39 +191,26 @@ export interface EndpointGetMicrofrontendAccessResBody {
   accessList: EntityWithAccess[];
 }
 
-export enum EntityType {
-  user = "user",
-  personalAccessToken = "personalAccessToken",
-  serviceAccountToken = "serviceAccountToken",
-}
-
-export enum EntityAccess {
-  collaborator = "collaborator",
-  owner = "owner",
-  admin = "admin",
-}
-
-export type EntityWithAccess =
-  | UserWithAccess
-  | PersonalAccessTokenWithAccess
-  | ServiceAccountTokenWithAccess;
+export type EntityWithAccess = UserWithAccess | ServiceAccountTokenWithAccess;
 
 export interface UserWithAccess {
-  entityType: EntityType.user;
+  id: BaseplateUUID;
+  entityType: "user";
   user: ShareableUserAttributes;
-  access: EntityAccess;
+  permissions: Permission[];
+  personalAccessTokens: PersonalAccessToken[];
 }
 
-export interface PersonalAccessTokenWithAccess {
-  entityType: EntityType.personalAccessToken;
-  user: ShareableUserAttributes;
-  access: EntityAccess;
-  lastUsed: Date | null;
+export interface PersonalAccessToken {
+  id: BaseplateUUID;
+  name?: string;
+  lastUsed?: Date;
 }
 
 export interface ServiceAccountTokenWithAccess {
-  entityType: EntityType.serviceAccountToken;
-  name: string;
-  access: EntityAccess;
-  lastUsed: Date | null;
+  id: BaseplateUUID;
+  entityType: "serviceAccountToken";
+  name?: string;
+  permissions: Permission[];
+  lastUsed?: Date;
 }
