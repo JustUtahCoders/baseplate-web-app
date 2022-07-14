@@ -6,67 +6,44 @@ import { baseplateFetch } from "../../Utils/baseplateFetch";
 import { useMicrofrontendParams } from "../../Utils/paramHelpers";
 import { Button, ButtonKind, ButtonSize } from "../../Styleguide/Button";
 import {
-  BaseplateUserAccess,
-  UserAccess,
-  UserWithAccess,
-} from "../../Styleguide/UserAccess";
-import { ShareableUserAttributes } from "../../../backend/DB/Models/User/User";
-import { useMemo } from "react";
+  EntityAccess,
+  EntityWithAccessAndRoles,
+} from "../../Styleguide/EntityAccess";
+import { BaseplatePermission } from "../../../backend/DB/Models/IAM/Permission";
 
 export function MicrofrontendAccess() {
   const { microfrontendId, customerOrgId } = useMicrofrontendParams();
-  const usersQuery = useQuery<
-    unknown,
-    Error,
-    EndpointGetMicrofrontendAccessResBody
-  >(`microfrontend-users-${microfrontendId}`, async () => {
-    return baseplateFetch<EndpointGetMicrofrontendAccessResBody>(
-      `/api/orgs/${customerOrgId}/microfrontends/${microfrontendId}/access`
-    );
-  });
-  const accessList = useMemo<UserWithAccess[]>(() => {
-    if (!usersQuery.data) {
-      return [];
-    }
+  const usersQuery = useQuery<unknown, Error, EntityWithAccessAndRoles[]>(
+    `microfrontend-users-${microfrontendId}`,
+    async () => {
+      const data = await baseplateFetch<EndpointGetMicrofrontendAccessResBody>(
+        `/api/orgs/${customerOrgId}/microfrontends/${microfrontendId}/access`
+      );
 
-    const processedUsers: { [key: string]: UserWithAccess } = {};
-    const accessList: UserWithAccess[] = [];
-    // processList(BaseplateUserAccess.admin, usersQuery.data.microfrontendAdmins);
-    // processList(
-    //   BaseplateUserAccess.owner,
-    //   usersQuery.data.thisMicrofrontendOwners
-    // );
-    // processList(
-    //   BaseplateUserAccess.collaborator,
-    //   usersQuery.data.thisMicrofrontendUsers
-    // );
+      const map: Record<string, EntityWithAccessAndRoles> = {};
 
-    return accessList;
-
-    function processList(
-      accessLevel: BaseplateUserAccess,
-      list: ShareableUserAttributes[]
-    ) {
-      list.forEach((user) => {
-        let userWithAccess: UserWithAccess = processedUsers[user.id];
-
-        if (userWithAccess) {
-          if (accessLevel !== BaseplateUserAccess.collaborator) {
-            userWithAccess.access.push(accessLevel);
-          }
-        } else {
-          userWithAccess = {
-            user,
-            access: [accessLevel],
-          };
-
-          accessList.push(userWithAccess);
-        }
-
-        processedUsers[user.id] = userWithAccess;
+      return data.accessList.map((accessItem) => {
+        // @ts-ignore
+        accessItem.roles = [
+          accessItem.permissions.some(
+            (p) => p.name === "allMicrofrontends.settings.manage"
+          ) && "admin",
+          accessItem.permissions.some(
+            (p) =>
+              p.name === "microfrontend.owner.manage" ||
+              p.name === "allMicrofrontends.settings.manage"
+          ) && "owner",
+          accessItem.permissions.some(
+            (p) =>
+              p.name === "microfrontend.deployments.trigger" ||
+              p.name === "allMicrofrontends.deployments.trigger" ||
+              p.name === "allMicrofrontends.settings.manage"
+          ) && "deployer",
+        ].filter(Boolean);
+        return accessItem;
       });
     }
-  }, [usersQuery.data]);
+  );
 
   if (usersQuery.isLoading) {
     return (
@@ -95,7 +72,7 @@ export function MicrofrontendAccess() {
         </CardHeader>
       }
     >
-      <UserAccess accessList={accessList} />
+      <EntityAccess accessList={usersQuery.data!} />
     </Card>
   );
 }

@@ -12,16 +12,28 @@ import {
   BelongsToGetAssociationMixin,
   BelongsToSetAssociationMixin,
   BelongsToCreateAssociationMixin,
+  BelongsToManyGetAssociationsMixin,
+  BelongsToManyCountAssociationsMixin,
+  BelongsToManyHasAssociationMixin,
+  BelongsToManyHasAssociationsMixin,
+  BelongsToManySetAssociationsMixin,
+  BelongsToManyAddAssociationMixin,
+  BelongsToManyAddAssociationsMixin,
+  BelongsToManyRemoveAssociationMixin,
+  BelongsToManyRemoveAssociationsMixin,
+  BelongsToManyCreateAssociationMixin,
 } from "sequelize";
 import { currentSchema } from "./AuthTokenSchema";
 import { AuditModel, initAuditModel } from "../Audit/Audit";
+import { AccountPermissionModel } from "../IAM/AccountPermission";
 
 export class AuthTokenModel
   extends Model<AuthTokenAttributes, AuthTokenCreationAttributes>
   implements
     AuthTokenAttributes,
     DefaultModelAttrs,
-    BelongsToMethods<{ user: UserModel; customerOrg: CustomerOrgModel }>
+    BelongsToMethods<{ user: UserModel; customerOrg: CustomerOrgModel }>,
+    HasManyMethods<{ permission: AccountPermissionModel }>
 {
   declare id: BaseplateUUID;
   declare authTokenType: AuthTokenType;
@@ -46,6 +58,38 @@ export class AuthTokenModel
     number
   >;
   declare createCustomerOrg: BelongsToCreateAssociationMixin<CustomerOrgModel>;
+
+  declare getPermissions: BelongsToManyGetAssociationsMixin<AccountPermissionModel>;
+  declare countPermissions: BelongsToManyCountAssociationsMixin;
+  declare hasPermission: BelongsToManyHasAssociationMixin<
+    AccountPermissionModel,
+    number
+  >;
+  declare hasPermissions: BelongsToManyHasAssociationsMixin<
+    AccountPermissionModel,
+    number
+  >;
+  declare setPermissions: BelongsToManySetAssociationsMixin<
+    AccountPermissionModel,
+    number
+  >;
+  declare addPermission: BelongsToManyAddAssociationMixin<
+    AccountPermissionModel,
+    number
+  >;
+  declare addPermissions: BelongsToManyAddAssociationsMixin<
+    AccountPermissionModel,
+    number
+  >;
+  declare removePermission: BelongsToManyRemoveAssociationMixin<
+    AccountPermissionModel,
+    number
+  >;
+  declare removePermissions: BelongsToManyRemoveAssociationsMixin<
+    AccountPermissionModel,
+    number
+  >;
+  declare createPermission: BelongsToManyCreateAssociationMixin<AccountPermissionModel>;
 }
 
 export interface AuthTokenAttributes {
@@ -101,5 +145,10 @@ modelEvents.once("associate", (sequelize) => {
       name: "customerOrgId",
       allowNull: false,
     },
+  });
+
+  AuthTokenModel.hasMany(AccountPermissionModel, {
+    as: "permission",
+    foreignKey: "accountId",
   });
 });

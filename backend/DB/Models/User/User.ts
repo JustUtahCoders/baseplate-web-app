@@ -4,6 +4,7 @@ import { CustomerOrgModel } from "../CustomerOrg/CustomerOrg";
 import {
   BaseplateUUID,
   BelongsToManyMethods,
+  HasManyMethods,
   HasOneMethods,
 } from "../SequelizeTSHelpers";
 import {
@@ -21,11 +22,22 @@ import {
   HasOneGetAssociationMixin,
   HasOneSetAssociationMixin,
   HasOneCreateAssociationMixin,
+  HasManyGetAssociationsMixin,
+  HasManyCountAssociationsMixin,
+  HasManyHasAssociationMixin,
+  HasManyHasAssociationsMixin,
+  HasManyAddAssociationMixin,
+  HasManyAddAssociationsMixin,
+  HasManyRemoveAssociationMixin,
+  HasManyRemoveAssociationsMixin,
+  HasManyCreateAssociationMixin,
+  HasManySetAssociationsMixin,
 } from "sequelize";
 import { currentSchema } from "./UserSchema.js";
 import { AccountPermissionModel } from "../IAM/AccountPermission";
 import { AccountRoleModel } from "../IAM/AccountRole";
 import { UserPreferencesModel } from "./UserPreferences";
+import { AuthTokenModel } from "../AuthToken/AuthToken";
 
 export class UserModel
   extends Model<User, UserCreationAttributes>
@@ -37,6 +49,7 @@ export class UserModel
       permission: AccountPermissionModel;
     }>,
     HasOneMethods<{ userPreferences: UserPreferencesModel }>,
+    HasManyMethods<{ authToken: AuthTokenModel }>,
     DefaultModelAttrs
 {
   declare id: BaseplateUUID;
@@ -140,6 +153,23 @@ export class UserModel
     number
   >;
   declare createPermission: BelongsToManyCreateAssociationMixin<AccountPermissionModel>;
+
+  declare getAuthTokens: HasManyGetAssociationsMixin<AuthTokenModel>;
+  declare countAuthTokens: HasManyCountAssociationsMixin;
+  declare hasAuthToken: HasManyHasAssociationMixin<AuthTokenModel, number>;
+  declare hasAuthTokens: HasManyHasAssociationsMixin<AuthTokenModel, number>;
+  declare setAuthTokens: HasManySetAssociationsMixin<AuthTokenModel, number>;
+  declare addAuthToken: HasManyAddAssociationMixin<AuthTokenModel, number>;
+  declare addAuthTokens: HasManyAddAssociationsMixin<AuthTokenModel, number>;
+  declare removeAuthToken: HasManyRemoveAssociationMixin<
+    AuthTokenModel,
+    number
+  >;
+  declare removeAuthTokens: HasManyRemoveAssociationsMixin<
+    AuthTokenModel,
+    number
+  >;
+  declare createAuthToken: HasManyCreateAssociationMixin<AuthTokenModel>;
 }
 
 export interface UserAttributes {
@@ -186,6 +216,11 @@ modelEvents.once("associate", (sequelize) => {
 
   UserModel.hasOne(UserPreferencesModel, {
     as: "userPreferences",
+    foreignKey: "userId",
+  });
+
+  UserModel.hasMany(AuthTokenModel, {
+    as: "authTokens",
     foreignKey: "userId",
   });
 });
