@@ -6,7 +6,6 @@ import {
   EnvironmentModel,
 } from "../../DB/Models/Environment/Environment";
 import { BaseplatePermission } from "../../DB/Models/IAM/Permission";
-import { BaseplateUUID } from "../../DB/Models/SequelizeTSHelpers";
 import { router } from "../../Router";
 import { validationResponseMiddleware } from "../../Utils/EndpointResponses";
 import { RouteParamsWithCustomerOrg } from "../../Utils/EndpointUtils";
