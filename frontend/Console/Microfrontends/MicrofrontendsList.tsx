@@ -79,28 +79,17 @@ export function MicrofrontendsList() {
 
 export function useMicrofrontends(): MicrofrontendWithLastDeployed[] {
   const { customerOrgId } = useConsoleParams();
+  const rootProps = useContext(RootPropsContext);
   const queryResult = useQuery<unknown, Error, MicrofrontendWithLastDeployed[]>(
     `microfrontends-${customerOrgId}`,
     async function () {
-      if (global.IN_WEBPACK) {
-        return (
-          await baseplateFetch<EndpointGetMicrofrontendsResBody>(
-            `/api/orgs/${customerOrgId}/microfrontends`
-          )
-        ).microfrontends;
-      } else {
-        const getMicrofrontends = await import(
-          /* webpackIgnore: true */ "../../../backend/RestAPI/Microfrontends/GetMicrofrontends"
-        );
-
-        // @ts-ignore
-        const res = await getMicrofrontends.getMicrofrontendsWithDeployedAt(
-          customerOrgId,
-          "deployedAt"
-        );
-
-        return res.microfrontends;
-      }
+      return (
+        await baseplateFetch<EndpointGetMicrofrontendsResBody>(
+          `/api/orgs/${customerOrgId}/microfrontends`,
+          {},
+          rootProps
+        )
+      ).microfrontends;
     },
     {
       suspense: true,

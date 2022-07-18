@@ -192,6 +192,10 @@ router.post(
 );
 
 router.use("/", async (req, res, next) => {
+  if (req.baseplateAccount) {
+    return next();
+  }
+
   let accountId: string | undefined = req?.session?.passport?.user?.id;
   const isUsingCookie = Boolean(accountId);
   let isUser: boolean = isUsingCookie;

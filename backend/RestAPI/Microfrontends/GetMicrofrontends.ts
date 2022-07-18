@@ -6,7 +6,6 @@ import {
   Microfrontend,
   MicrofrontendModel,
 } from "../../DB/Models/Microfrontend/Microfrontend";
-import { BaseplateUUID } from "../../DB/Models/SequelizeTSHelpers";
 import { router } from "../../Router";
 import { validationResponseMiddleware } from "../../Utils/EndpointResponses";
 import { RouteParamsWithCustomerOrg } from "../../Utils/EndpointUtils";
@@ -32,69 +31,60 @@ router.get<RouteParamsWithCustomerOrg, EndpointGetMicrofrontendsResBody>(
 
   // Implementation
   async (req, res, next) => {
-    res.json(
-      await getMicrofrontendsWithDeployedAt(
-        req.params.customerOrgId,
-        req.query.sort as EndpointGetMicrofrontendsReqQuery["sort"]
-      )
+    console.log("Implementation");
+    const microfrontends = await MicrofrontendModel.findAll({
+      where: {
+        customerOrgId: req.params.customerOrgId,
+      },
+    });
+
+    const mostRecentDeployments = await DeployedMicrofrontendModel.findAll({
+      attributes: [
+        [sequelize.fn("max", sequelize.col("createdAt")), "createdAt"],
+        "microfrontendId",
+      ],
+      where: {
+        microfrontendId: {
+          [Op.in]: microfrontends.map((m) => m.id),
+        },
+      },
+      group: "microfrontendId",
+    });
+
+    const microfrontendsWithDeployedAt = microfrontends.map((m) => {
+      const mostRecentDeployedMicrofrontend = mostRecentDeployments.find(
+        (d) => d.microfrontendId === m.id
+      );
+      const microfrontend: MicrofrontendWithLastDeployed = {
+        ...m.get({ plain: true }),
+        deployedAt: mostRecentDeployedMicrofrontend
+          ? mostRecentDeployedMicrofrontend.createdAt
+          : null,
+      };
+      return microfrontend;
+    });
+
+    const sortedMicrofrontends = microfrontendsWithDeployedAt.sort(
+      (first, second) => {
+        if (req.query.sort === "deployedAt") {
+          if (first.deployedAt && second.deployedAt) {
+            return first.deployedAt > second.deployedAt ? -1 : 1;
+          } else if (first.deployedAt) {
+            return 1;
+          } else {
+            return -1;
+          }
+        } else {
+          return first.updatedAt > second.updatedAt ? -1 : 1;
+        }
+      }
     );
+
+    res.json({
+      microfrontends: sortedMicrofrontends,
+    });
   }
 );
-
-export async function getMicrofrontendsWithDeployedAt(
-  customerOrgId: BaseplateUUID,
-  sort: EndpointGetMicrofrontendsReqQuery["sort"]
-): Promise<EndpointGetMicrofrontendsResBody> {
-  const microfrontends = await MicrofrontendModel.findAll({
-    where: {
-      customerOrgId,
-    },
-  });
-
-  const mostRecentDeployments = await DeployedMicrofrontendModel.findAll({
-    attributes: [
-      [sequelize.fn("max", sequelize.col("createdAt")), "createdAt"],
-      "microfrontendId",
-    ],
-    where: {
-      microfrontendId: {
-        [Op.in]: microfrontends.map((m) => m.id),
-      },
-    },
-    group: "microfrontendId",
-  });
-
-  const microfrontendsWithDeployedAt = microfrontends.map((m) => {
-    const mostRecentDeployedMicrofrontend = mostRecentDeployments.find(
-      (d) => d.microfrontendId === m.id
-    );
-    const microfrontend: MicrofrontendWithLastDeployed = {
-      ...m.get({ plain: true }),
-      deployedAt: mostRecentDeployedMicrofrontend
-        ? mostRecentDeployedMicrofrontend.createdAt
-        : null,
-    };
-    return microfrontend;
-  });
-
-  const sortedMicrofrontends = microfrontendsWithDeployedAt.sort(
-    (first, second) => {
-      if (sort === "deployedAt") {
-        if (first.deployedAt && second.deployedAt) {
-          return first.deployedAt > second.deployedAt ? -1 : 1;
-        } else if (first.deployedAt) {
-          return 1;
-        } else {
-          return -1;
-        }
-      } else {
-        return first.updatedAt > second.updatedAt ? -1 : 1;
-      }
-    }
-  );
-
-  return { microfrontends: sortedMicrofrontends };
-}
 
 export interface EndpointGetMicrofrontendsReqQuery {
   sort: "deployedAt" | "updatedAt";

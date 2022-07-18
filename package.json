@@ -155,6 +155,7 @@
     "kremling": "^2.1.0",
     "lodash-es": "^4.17.21",
     "merge2": "^1.4.1",
+    "node-mocks-http": "^1.11.0",
     "open": "^8.4.0",
     "passport": "0.5",
     "passport-custom": "^1.1.1",
