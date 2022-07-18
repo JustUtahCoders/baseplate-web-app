@@ -13,6 +13,7 @@ import { RouteWithCustomerOrgId } from "./Utils/RouteWithCustomerOrgId";
 import { MainContent } from "./Styleguide/MainContent";
 import { Loader } from "./Styleguide/Loader";
 import { EnvironmentConfiguration } from "./Console/Environments/EnvironmentConfiguration";
+import { BaseplateAccount } from "../backend/Utils/IAMUtils";
 
 const Login = lazy(() =>
   import("./Auth/Login").then((m) => ({ default: m.Login }))
@@ -229,6 +230,7 @@ export interface AppProps {
   userInformation: UserInformation;
   ssrResult: SSRResult;
   reqUrl: string;
+  baseplateAccount?: BaseplateAccount;
 }
 
 export interface UserInformation {
