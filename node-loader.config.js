@@ -7,6 +7,7 @@ const cssLoader = {
     if (url.endsWith(".css")) {
       return {
         format: "module",
+        shortCircuit: true,
         source: "",
       };
     } else {
