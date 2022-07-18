@@ -31,7 +31,6 @@ router.get<RouteParamsWithCustomerOrg, EndpointGetMicrofrontendsResBody>(
 
   // Implementation
   async (req, res, next) => {
-    console.log("Implementation");
     const microfrontends = await MicrofrontendModel.findAll({
       where: {
         customerOrgId: req.params.customerOrgId,
