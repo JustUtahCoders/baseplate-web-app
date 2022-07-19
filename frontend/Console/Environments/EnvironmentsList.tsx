@@ -138,27 +138,17 @@ export function EnvironmentsList() {
 
 export function useEnvironments(): EnvironmentWithLastDeployed[] {
   const { customerOrgId } = useConsoleParams();
+  const rootProps = useContext(RootPropsContext);
   const queryResult = useQuery<unknown, Error, EnvironmentWithLastDeployed[]>(
     `environments-${customerOrgId}`,
     async function () {
-      if (global.IN_WEBPACK) {
-        return (
-          await baseplateFetch<EndpointGetEnvironmentsResBody>(
-            `/api/orgs/${customerOrgId}/environments`
-          )
-        ).environments;
-      } else {
-        const getEnvironments = await import(
-          /* webpackIgnore: true */ "../../../backend/RestAPI/Environments/GetEnvironments"
-        );
-
-        // @ts-ignore
-        const res = await getEnvironments.getEnvironmentsWithDeployedAt(
-          customerOrgId
-        );
-
-        return res.environments;
-      }
+      return (
+        await baseplateFetch<EndpointGetEnvironmentsResBody>(
+          `/api/orgs/${customerOrgId}/environments`,
+          {},
+          rootProps
+        )
+      ).environments;
     },
     {
       suspense: true,
@@ -183,7 +173,6 @@ function EnvironmentCard({
   handleMoveUp: Function;
   handleMoveDown: Function;
 }) {
-  const rootProps = useContext(RootPropsContext);
   const { customerOrgId } = useConsoleParams();
 
   let lastDeployed: string;

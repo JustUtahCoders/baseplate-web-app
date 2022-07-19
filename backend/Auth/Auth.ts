@@ -192,6 +192,14 @@ router.post(
 );
 
 router.use("/", async (req, res, next) => {
+  // Server-side baseplateFetch simulates an http request coming in,
+  // but it does it in-memory. In those situations, req.baseplateAccount
+  // was already defined once for the initial request and doesn't
+  // need to be redefined again
+  if (req.baseplateAccount) {
+    return next();
+  }
+
   let accountId: string | undefined = req?.session?.passport?.user?.id;
   const isUsingCookie = Boolean(accountId);
   let isUser: boolean = isUsingCookie;

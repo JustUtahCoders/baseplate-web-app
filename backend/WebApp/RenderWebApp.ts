@@ -61,6 +61,7 @@ export const renderWebApp = async (req, res: Response) => {
     userInformation,
     ssrResult,
     reqUrl: req.url,
+    baseplateAccount: req.baseplateAccount,
   };
 
   const ejsData = {
@@ -85,6 +86,10 @@ export const renderWebApp = async (req, res: Response) => {
           if (ssrResult.ejsData.pageTitle instanceof Promise) {
             ssrResult.ejsData.pageTitle = await ssrResult.ejsData.pageTitle;
           }
+
+          // The baseplateAccount object is only on rootProps for server-side
+          // baseplateFetch calls and shouldn't be sent to the browser
+          delete req.baseplateAccount;
 
           Object.assign(ejsData, ssrResult.ejsData, {
             rootProps: JSON.stringify(rootProps),
