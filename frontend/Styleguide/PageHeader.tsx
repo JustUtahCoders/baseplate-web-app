@@ -4,7 +4,7 @@ import { ButtonKind } from "../Styleguide/Button";
 
 export function PageHeader(props: PageHeaderProps) {
   return (
-    <div className="flex align-center">
+    <div className="flex align-center pt-4">
       <h1 className="text-2xl mb-2">{props.children}</h1>
       {props.badgeText && (
         <div

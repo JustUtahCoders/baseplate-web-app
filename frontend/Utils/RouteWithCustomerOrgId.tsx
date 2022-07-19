@@ -7,13 +7,13 @@ export function RouteWithCustomerOrgId(props: RouteWithCustomerOrgIdProps) {
   return (
     <>
       <Route
-        path={`/console/:customerOrgId/${props.pathSuffix}`}
+        path={`:customerOrgId/${props.pathSuffix}`}
         element={props.element}
       >
         {props.children}
       </Route>
       <Route
-        path={`/console/${props.pathSuffix}`}
+        path={props.pathSuffix}
         element={<RedirectWithCustomerOrgId pathSuffix={props.pathSuffix} />}
       >
         {props.children}

@@ -1,3 +1,4 @@
+import { always } from "kremling";
 import {
   ReactNode,
   useContext,
@@ -9,6 +10,7 @@ import { NavOrientation, PageLayoutContext } from "../App";
 import { useBrowserDimensions } from "../Utils/browserHelpers";
 import { Anchor } from "./Anchor";
 import { Button, ButtonKind } from "./Button";
+import { Icon, IconVariant } from "./Icon";
 import "./SecondaryNav.css";
 
 export function SecondaryNav(props: SecondaryNavProps) {
@@ -39,17 +41,30 @@ export function SecondaryNav(props: SecondaryNavProps) {
 
   return (
     <nav
-      className={`fixed w-full lg:w-${width} bg-slate-300 lg:border lg:border-r h-14 secondary-nav-height top-14`}
+      className={always(
+        `fixed w-full lg:w-${width} lg:border lg:border-r border-top-0 border-gray-400 h-14 secondary-nav-height top-14`
+      ).maybe("collapsed", collapsed)}
     >
-      <ul className="flex justify-between flex-col h-full hidden lg:block">
+      <ul className="justify-between flex-col h-full hidden lg:flex">
         <div>{props.children}</div>
-        <li className={secondaryNavRowClasses()}>
+        <li
+          className={always(secondaryNavRowClasses()).always(
+            "border-t border-b-0 border-gray-400"
+          )}
+        >
           <Button
             kind={ButtonKind.transparent}
             onClick={() => setCollapsed(!collapsed)}
             className={secondaryNavClickableClasses()}
           >
-            Collapse
+            {collapsed ? (
+              <Icon variant={IconVariant.collapsed} />
+            ) : (
+              <>
+                <Icon variant={IconVariant.expanded} />
+                Collapse
+              </>
+            )}
           </Button>
         </li>
       </ul>
@@ -100,7 +115,8 @@ export function SecondaryNavLink(props: SecondaryNavLinkProps) {
         to={props.to}
         className={secondaryNavClickableClasses()}
       >
-        {props.children}
+        {props.icon && <Icon variant={props.icon} />}
+        <div className="collapsible ml-2">{props.children}</div>
       </Anchor>
     </li>
   );
@@ -111,11 +127,11 @@ export function secondaryNavContentLeft(collapsed: boolean): number {
 }
 
 function secondaryNavRowClasses(): string {
-  return `border-b border text-left`;
+  return `border-b border-gray-600 text-left secondary-nav-row h-12 flex items-center justify-center`;
 }
 
 function secondaryNavClickableClasses(): string {
-  return `w-full py-6 text-left`;
+  return `w-full text-left inline-flex items-center justify-start secondary-nav-clickable h-full`;
 }
 
 interface SecondaryNavProps {
@@ -130,4 +146,5 @@ interface SecondaryNavSectionProps {
 interface SecondaryNavLinkProps {
   children: ReactNode;
   to: string;
+  icon?: IconVariant;
 }
