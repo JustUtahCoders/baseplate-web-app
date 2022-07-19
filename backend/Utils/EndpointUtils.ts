@@ -12,3 +12,8 @@ export interface RouteParamsWithMicrofrontendId
   extends RouteParamsWithCustomerOrg {
   microfrontendId: BaseplateUUID;
 }
+
+export interface RouteParamsWithEnvironmentId
+  extends RouteParamsWithCustomerOrg {
+  environmentId: BaseplateUUID;
+}

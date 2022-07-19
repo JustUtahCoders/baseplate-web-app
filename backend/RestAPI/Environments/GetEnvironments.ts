@@ -40,7 +40,7 @@ export async function getEnvironmentsWithDeployedAt(
       where: {
         customerOrgId,
       },
-      order: [["pipelineOrder", "DESC"]],
+      order: [["pipelineOrder", "ASC"]],
     }),
     DeploymentModel.findAll({
       attributes: [
