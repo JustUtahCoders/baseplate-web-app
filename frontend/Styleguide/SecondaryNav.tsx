@@ -42,7 +42,7 @@ export function SecondaryNav(props: SecondaryNavProps) {
   return (
     <nav
       className={always(
-        `fixed w-full lg:w-${width} lg:border lg:border-r border-top-0 border-gray-400 h-14 secondary-nav-height top-14`
+        `fixed w-full lg:w-${width} lg:border-r lg:border-t-0 border-gray-400 h-14 secondary-nav-height border-t-0 top-14`
       ).maybe("collapsed", collapsed)}
     >
       <ul className="justify-between flex-col h-full hidden lg:flex">
