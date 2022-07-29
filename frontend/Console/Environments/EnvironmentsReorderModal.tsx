@@ -6,7 +6,7 @@ import {
   Draggable,
   DropResult,
 } from "react-beautiful-dnd";
-import { MouseEventHandler, useEffect, useState } from "react";
+import { useState } from "react";
 import { always } from "kremling";
 import { Button, ButtonKind } from "../../Styleguide/Button";
 import { cloneDeep } from "lodash-es";
@@ -103,8 +103,10 @@ export function EnvironmentsReorderModal(props: EnvironmentsReorderModalProps) {
           type="button"
           kind={ButtonKind.primary}
           disabled={!orderIsChanged || props.isSaving}
-          onClick={async () => {
-            props.save(tempEnvironments);
+          onClick={() => {
+            if (orderIsChanged) {
+              props.save(tempEnvironments);
+            }
             props.close();
           }}
         >
