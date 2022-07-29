@@ -87,6 +87,14 @@ export function SecondaryNav(props: SecondaryNavProps) {
   );
 }
 
+export function SecondaryNavItem(props: SecondaryNavItemProps) {
+  return <li className={secondaryNavRowClasses()}>{props.children}</li>;
+}
+
+export interface SecondaryNavItemProps {
+  children: ReactNode;
+}
+
 export function SecondaryNavSection(props: SecondaryNavSectionProps) {
   const [collapsed, setCollapsed] = useState(false);
   const caret = collapsed ? "\u203A" : "\u2304";

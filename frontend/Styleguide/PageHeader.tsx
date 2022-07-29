@@ -4,7 +4,7 @@ import { ButtonKind } from "../Styleguide/Button";
 
 export function PageHeader(props: PageHeaderProps) {
   return (
-    <div className="flex align-center pt-4">
+    <div className="flex align-center">
       <h1 className="text-2xl mb-2">{props.children}</h1>
       {props.badgeText && (
         <div
@@ -27,14 +27,16 @@ export function PageExplanation(props: PageExplanationProps) {
   return (
     <p className="mb-8 text-sm text-gray-700">
       {props.briefExplanation}{" "}
-      <Anchor kind={ButtonKind.classic} to={props.docsLink}>
-        Documentation
-      </Anchor>
+      {props.docsLink && (
+        <Anchor kind={ButtonKind.classic} to={props.docsLink}>
+          Documentation
+        </Anchor>
+      )}
     </p>
   );
 }
 
 export interface PageExplanationProps {
   briefExplanation: ReactNode;
-  docsLink: string;
+  docsLink?: string;
 }

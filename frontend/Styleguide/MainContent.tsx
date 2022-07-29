@@ -14,7 +14,7 @@ export function MainContent(props: Props) {
       )}`}
     >
       <div
-        className={always("w-full")
+        className={always("w-full pt-4")
           .maybe("mx-auto", !props.leftAlign)
           .maybe("p-4", props.padding)}
         style={{ maxWidth: mainContentMaxWidth }}
