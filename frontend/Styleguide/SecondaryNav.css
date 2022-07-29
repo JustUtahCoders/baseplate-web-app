@@ -1,5 +1,22 @@
 @media screen(lg) {
   .h-14.secondary-nav-height {
-    height: calc(100vw - theme("spacing.14"));
+    height: calc(100vh - 56px);
+  }
+
+  .secondary-nav-height:not(.collapsed) .secondary-nav-clickable {
+    padding-left: 1.2rem;
+  }
+
+  .secondary-nav-height.collapsed .secondary-nav-clickable {
+    justify-content: center;
+  }
+
+  .secondary-nav-height.collapsed .secondary-nav-row {
+    padding-left: 0;
+  }
+
+  .secondary-nav-height.collapsed .secondary-nav-row .collapsible {
+    display: none;
+    margin-left: 0;
   }
 }

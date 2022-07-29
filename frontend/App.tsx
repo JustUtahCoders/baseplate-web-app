@@ -37,8 +37,8 @@ const Docs = lazy(() =>
 const DocsPage = lazy(() =>
   import("./Docs/DocsPage").then((m) => ({ default: m.DocsPage }))
 );
-const ConsoleHome = lazy(() =>
-  import("./Console/ConsoleHome").then((m) => ({ default: m.ConsoleHome }))
+const ConsolePage = lazy(() =>
+  import("./Console/ConsolePage").then((m) => ({ default: m.ConsolePage }))
 );
 const MicrofrontendsList = lazy(() =>
   import("./Console/Microfrontends/MicrofrontendsList").then((m) => ({
@@ -157,48 +157,64 @@ export function App(props: AppProps) {
                   element={<FinishAccountCreation />}
                 />
                 <Route path="/" element={<div>Home</div>} />
-                <Route path="/console" element={<ConsoleHome />} />
-                {RouteWithCustomerOrgId({
-                  pathSuffix: "microfrontends",
-                  element: <MicrofrontendsList />,
-                })}
-                {RouteWithCustomerOrgId({
-                  pathSuffix: "microfrontends/:microfrontendId",
-                  element: <MicrofrontendDetail />,
-                  children: (
+                <Route
+                  path="/console"
+                  element={<ConsolePage />}
+                  children={
                     <>
-                      <Route
-                        path="deployments"
-                        element={<MicrofrontendDeployments />}
-                      />
-                      <Route path="access" element={<MicrofrontendAccess />} />
-                      <Route
-                        path="configuration"
-                        element={<MicrofrontendConfiguration />}
-                      />
-                      <Route path="about" element={<MicrofrontendAbout />} />
-                      <Route path="" element={<MicrofrontendHome />} />
+                      {RouteWithCustomerOrgId({
+                        pathSuffix: "microfrontends",
+                        element: <MicrofrontendsList />,
+                      })}
+                      {RouteWithCustomerOrgId({
+                        pathSuffix: "microfrontends/:microfrontendId",
+                        element: <MicrofrontendDetail />,
+                        children: (
+                          <>
+                            <Route
+                              path="deployments"
+                              element={<MicrofrontendDeployments />}
+                            />
+                            <Route
+                              path="access"
+                              element={<MicrofrontendAccess />}
+                            />
+                            <Route
+                              path="configuration"
+                              element={<MicrofrontendConfiguration />}
+                            />
+                            <Route
+                              path="about"
+                              element={<MicrofrontendAbout />}
+                            />
+                            <Route path="" element={<MicrofrontendHome />} />
+                          </>
+                        ),
+                      })}
+                      {RouteWithCustomerOrgId({
+                        pathSuffix: "environments",
+                        element: <EnvironmentsList />,
+                      })}
+                      {RouteWithCustomerOrgId({
+                        pathSuffix: "environments/:environmentId",
+                        element: <EnvironmentDetail />,
+                        children: (
+                          <>
+                            <Route
+                              path="configuration"
+                              element={<EnvironmentConfiguration />}
+                            />
+                            <Route
+                              path="access"
+                              element={<EnvironmentAccess />}
+                            />
+                            <Route path="" element={<EnvironmentHome />} />
+                          </>
+                        ),
+                      })}
                     </>
-                  ),
-                })}
-                {RouteWithCustomerOrgId({
-                  pathSuffix: "environments",
-                  element: <EnvironmentsList />,
-                })}
-                {RouteWithCustomerOrgId({
-                  pathSuffix: "environments/:environmentId",
-                  element: <EnvironmentDetail />,
-                  children: (
-                    <>
-                      <Route
-                        path="configuration"
-                        element={<EnvironmentConfiguration />}
-                      />
-                      <Route path="access" element={<EnvironmentAccess />} />
-                      <Route path="" element={<EnvironmentHome />} />
-                    </>
-                  ),
-                })}
+                  }
+                />
                 <Route path="/console/select-org" element={<SelectOrg />} />
                 <Route
                   path="/console/:customerOrgId"
