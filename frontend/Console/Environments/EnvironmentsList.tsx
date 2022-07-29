@@ -6,7 +6,7 @@ import { MainContent } from "../../Styleguide/MainContent";
 import { useContext, useMemo, useState } from "react";
 import { RootPropsContext } from "../../App";
 import { Input } from "../../Styleguide/Input";
-import { Button, ButtonKind, ButtonSize } from "../../Styleguide/Button";
+import { ButtonKind, ButtonSize } from "../../Styleguide/Button";
 import Fuse from "fuse.js";
 import { Anchor } from "../../Styleguide/Anchor";
 import {
@@ -17,15 +17,25 @@ import { PageExplanation, PageHeader } from "../../Styleguide/PageHeader";
 import dayjs from "dayjs";
 import {
   Environment,
-  EnvironmentCreationAttributes,
   EnvironmentUpdateAttributes,
 } from "../../../backend/DB/Models/Environment/Environment";
+import { EnvironmentsReorderModal } from "./EnvironmentsReorderModal";
 import { BaseplateUUID } from "../../../backend/DB/Models/SequelizeTSHelpers";
+import {
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuItems,
+  MenuPopover,
+  MenuLink,
+} from "../../Styleguide/MenuButton";
+import { positionRight } from "@reach/popover";
 
 export function EnvironmentsList() {
   const { customerOrgId } = useConsoleParams();
   const queryClient = useQueryClient();
   const [search, setSearch] = useState("");
+  const [isReorderModalOpen, setIsReorderModalOpen] = useState(false);
 
   const environments = useEnvironments();
 
@@ -69,39 +79,60 @@ export function EnvironmentsList() {
     }
   );
 
-  const handleMoveUp = (environment, index) => {
-    const previousEnvironment = environments[index - 1];
-    if (previousEnvironment) {
-      // Swap the two pipelineOrders
-      updateEnvironment({
-        environmentId: environment.id,
-        patch: { pipelineOrder: previousEnvironment.pipelineOrder },
-      });
-      updateEnvironment({
-        environmentId: previousEnvironment.id,
-        patch: { pipelineOrder: environment.pipelineOrder },
-      });
-    }
-  };
+  const { mutate: updateEnvironmentsOrder, isLoading: isSavingEnvironments } =
+    useMutation<Environment, Error, EnvironmentWithLastDeployed[]>(
+      (orderedEnvs) => {
+        return baseplateFetch<Environment>(
+          `/api/orgs/${customerOrgId}/environments/order`,
+          {
+            method: "PATCH",
+            body: {
+              environmentIds: orderedEnvs.map(({ id }) => id),
+            },
+          }
+        );
+      },
+      {
+        onSuccess: refetchEnvironments,
+      }
+    );
 
-  const handleMoveDown = (environment, index) => {
-    const nextEnvironment = environments[index + 1];
-    if (nextEnvironment) {
-      // Swap the two pipelineOrders
-      updateEnvironment({
-        environmentId: environment.id,
-        patch: { pipelineOrder: nextEnvironment.pipelineOrder },
-      });
-      updateEnvironment({
-        environmentId: nextEnvironment.id,
-        patch: { pipelineOrder: environment.pipelineOrder },
-      });
-    }
+  const saveEnvironmentsOrder = (updatedEnvironments) => {
+    updateEnvironmentsOrder(updatedEnvironments);
   };
 
   return (
     <MainContent>
-      <PageHeader>Environments List</PageHeader>
+      <PageHeader
+        menu={
+          <Menu>
+            <MenuButton
+              kind={ButtonKind.secondary}
+              buttonSize={ButtonSize.medium}
+            >
+              Actions
+              <span aria-hidden className="ml-1">
+                ▾
+              </span>
+            </MenuButton>
+            <MenuPopover position={positionRight}>
+              <MenuItems>
+                <MenuItem onSelect={() => setIsReorderModalOpen(true)}>
+                  Reorder Environments
+                </MenuItem>
+                <MenuLink
+                  as="a"
+                  href={`/console/${customerOrgId}/environments/new`}
+                >
+                  Add an Environment
+                </MenuLink>
+              </MenuItems>
+            </MenuPopover>
+          </Menu>
+        }
+      >
+        Environments List
+      </PageHeader>
       <PageExplanation
         docsLink="/docs/concepts/environments"
         briefExplanation={
@@ -122,16 +153,17 @@ export function EnvironmentsList() {
         />
       </div>
       {filteredEnvironments.map((environment, index) => (
-        <EnvironmentCard
-          environment={environment}
-          key={environment.id}
-          index={index}
-          numEnvironments={filteredEnvironments.length}
-          handleMoveUp={handleMoveUp}
-          handleMoveDown={handleMoveDown}
-          search={search}
-        />
+        <EnvironmentCard environment={environment} key={environment.id} />
       ))}
+      {isReorderModalOpen && (
+        <EnvironmentsReorderModal
+          title="Reorder Environments"
+          close={() => setIsReorderModalOpen(false)}
+          save={saveEnvironmentsOrder}
+          environments={environments}
+          isSaving={isSavingEnvironments}
+        />
+      )}
     </MainContent>
   );
 }
@@ -160,18 +192,8 @@ export function useEnvironments(): EnvironmentWithLastDeployed[] {
 
 function EnvironmentCard({
   environment,
-  index,
-  search,
-  numEnvironments,
-  handleMoveUp,
-  handleMoveDown,
 }: {
   environment: EnvironmentWithLastDeployed;
-  index: number;
-  search: string;
-  numEnvironments: number;
-  handleMoveUp: Function;
-  handleMoveDown: Function;
 }) {
   const { customerOrgId } = useConsoleParams();
 
@@ -196,37 +218,14 @@ function EnvironmentCard({
           </CardFooter>
         }
       >
-        <div className="flex justify-between">
+        <div className="flex items-center">
           <div>{environment.name}</div>
-          {/* Do not show reordering buttons if a filter is applied */}
-          {!search && (
-            <div>
-              {index !== 0 && (
-                <Button
-                  type="button"
-                  onClick={(evt) => {
-                    evt.preventDefault();
-                    handleMoveUp(environment, index);
-                  }}
-                  kind={ButtonKind.secondary}
-                  buttonSize={ButtonSize.small}
-                >
-                  move up
-                </Button>
-              )}
-              {index < numEnvironments - 1 && (
-                <Button
-                  type="button"
-                  onClick={(evt) => {
-                    evt.preventDefault();
-                    handleMoveDown(environment, index);
-                  }}
-                  kind={ButtonKind.secondary}
-                  buttonSize={ButtonSize.small}
-                >
-                  move down
-                </Button>
-              )}
+          {environment.isProd && (
+            <div
+              style={{ maxHeight: "26px" }}
+              className="ml-3 uppercase text-xs tracking-widest rounded bg-gray-200 text-gray-700 py-1 px-2"
+            >
+              Prod
             </div>
           )}
         </div>

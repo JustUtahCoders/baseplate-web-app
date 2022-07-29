@@ -1,10 +1,11 @@
 import { body, param } from "express-validator";
-import { isString, isUndefined } from "lodash-es";
+import { isUndefined } from "lodash-es";
 import { BaseplatePermission } from "../../DB/Models/IAM/Permission";
 import {
   Environment,
   EnvironmentCreationAttributes,
   EnvironmentModel,
+  EnvironmentUpdateAttributes,
 } from "../../DB/Models/Environment/Environment";
 import { router } from "../../Router";
 import {
@@ -77,7 +78,7 @@ router.patch<
       );
     }
 
-    const patch: Partial<EnvironmentCreationAttributes> = {
+    const patch: EnvironmentUpdateAttributes = {
       name: req.body.name,
       isProd: req.body.isProd,
       useBaseplateStaticWebHosting: req.body.useBaseplateStaticWebHosting,

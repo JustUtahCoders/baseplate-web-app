@@ -9,6 +9,7 @@ import "./RestAPI/OrgSettings/GetThisCustomerOrg";
 import "./RestAPI/OrgSettings/GetStaticWebSettings";
 import "./RestAPI/Deployments/GetDeploymentCredentials";
 import "./RestAPI/Environments/GetEnvironments";
+import "./RestAPI/Environments/ReorderEnvironments";
 import "./RestAPI/Environments/PatchEnvironment";
 import "./RestAPI/Microfrontends/GetMicrofrontends";
 import "./RestAPI/Microfrontends/MicrofrontendDownloads";

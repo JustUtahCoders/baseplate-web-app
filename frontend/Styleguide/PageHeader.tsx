@@ -4,16 +4,19 @@ import { ButtonKind } from "../Styleguide/Button";
 
 export function PageHeader(props: PageHeaderProps) {
   return (
-    <div className="flex align-center pt-4">
-      <h1 className="text-2xl mb-2">{props.children}</h1>
-      {props.badgeText && (
-        <div
-          style={{ maxHeight: "26px", marginTop: "4px" }}
-          className="ml-4 uppercase text-sm tracking-widest rounded bg-gray-200 text-gray-700 py-1 px-2"
-        >
-          {props.badgeText}
-        </div>
-      )}
+    <div className="flex align-center justify-between pt-4">
+      <div>
+        <h1 className="text-2xl mb-2">{props.children}</h1>
+        {props.badgeText && (
+          <div
+            style={{ maxHeight: "26px", marginTop: "4px" }}
+            className="ml-4 uppercase text-sm tracking-widest rounded bg-gray-200 text-gray-700 py-1 px-2"
+          >
+            {props.badgeText}
+          </div>
+        )}
+      </div>
+      {props.menu && props.menu}
     </div>
   );
 }
@@ -21,6 +24,7 @@ export function PageHeader(props: PageHeaderProps) {
 export interface PageHeaderProps {
   children: ReactNode;
   badgeText?: string;
+  menu?: ReactNode;
 }
 
 export function PageExplanation(props: PageExplanationProps) {
