@@ -48,19 +48,34 @@ const IconComponents: Record<
   [IconVariant.puzzle]: PuzzleIcon,
 };
 
-function PuzzleIcon({ size }: IconProps) {
+function PuzzleIcon({ size, alt }: SpecificIconProps) {
   const px = `${size}px`;
-  return <_PuzzleIcon width={px} height={px} />;
+  return (
+    <>
+      <span className="sr-only">{alt ? alt : "Puzzle Icon"}</span>
+      <XIcon height={px} width={px} />
+    </>
+  );
 }
 
-function GlobeIcon({ size }: IconProps) {
+function GlobeIcon({ size, alt }: SpecificIconProps) {
   const px = `${size}px`;
-  return <_GlobeIcon width={px} height={px} />;
+  return (
+    <>
+      <span className="sr-only">{alt ? alt : "Globe Icon"}</span>
+      <XIcon height={px} width={px} />
+    </>
+  );
 }
 
-function GearIcon({ size }: IconProps) {
+function GearIcon({ size, alt }: SpecificIconProps) {
   const px = `${size}px`;
-  return <CogIcon width={px} height={px} />;
+  return (
+    <>
+      <span className="sr-only">{alt ? alt : "Cog Icon"}</span>
+      <CogIcon height={px} width={px} />
+    </>
+  );
 }
 
 function CloseIcon({ size, alt }: SpecificIconProps) {

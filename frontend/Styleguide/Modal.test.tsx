@@ -24,7 +24,7 @@ describe(`<Modal />`, () => {
     const w = render(<Modal title="Sample Header" close={close} />);
     expect(close).not.toHaveBeenCalled();
     fireEvent(
-      await w.findByTitle("Close Modal Icon"),
+      await w.findByText("Close Modal Icon"),
       new MouseEvent("click", {
         bubbles: true,
         cancelable: true,
