@@ -32,7 +32,7 @@ router.get<RouteParamsWithCustomerOrg, EndpointGetEnvironmentsResBody>(
         where: {
           customerOrgId: req.params.customerOrgId,
         },
-        order: [["pipelineOrder", "DESC"]],
+        order: [["pipelineOrder", "ASC"]],
       }),
       DeploymentModel.findAll({
         attributes: [

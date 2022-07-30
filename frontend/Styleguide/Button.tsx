@@ -8,12 +8,13 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       className,
       buttonSize = ButtonSize.large,
       children,
+      disabled = false,
       ...otherProps
     } = props;
 
     return (
       <button
-        className={buttonClasses(kind, buttonSize, className)}
+        className={buttonClasses(kind, buttonSize, className, disabled)}
         {...otherProps}
         ref={ref}
       >
@@ -45,7 +46,8 @@ export enum ButtonKind {
 export function buttonClasses(
   kind: ButtonKind,
   size: ButtonSize,
-  extraClassName: string = ""
+  extraClassName: string = "",
+  disabled?: boolean
 ) {
   const kindClasses = buttonKindClasses[kind] || "";
   const isStyled = styledButtonKinds.includes(kind);
@@ -56,6 +58,7 @@ export function buttonClasses(
     .maybe("py-2.5 px-5", isStyled && size === ButtonSize.large)
     .maybe("py-1 px-2 text-sm", isStyled && size === ButtonSize.medium)
     .maybe("py-.5 px-1 text-xs", isStyled && size === ButtonSize.small)
+    .maybe("bg-gray-300 cursor-not-allowed", disabled)
     .toString();
 }
 

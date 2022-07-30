@@ -26,7 +26,7 @@ describe("EnvironmentModel", () => {
     environment = await EnvironmentModel.create({
       customerOrgId: customerOrg.id,
       isProd: true,
-      pipelineOrder: 0,
+      pipelineOrder: 2,
       name: "prod",
       staticWebProxyHost: "s3://test",
       useBaseplateStaticWebHosting: true,
