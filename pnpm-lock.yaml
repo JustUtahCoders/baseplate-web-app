@@ -13,6 +13,7 @@ specifiers:
   '@baseplate-sdk/utils': ^3.1.2
   '@changesets/changelog-github': ^0.4.4
   '@changesets/cli': ^2.22.0
+  '@heroicons/react': ^1.0.6
   '@jest/globals': ^28.1.0
   '@jest/types': ^28.1.0
   '@mdx-js/loader': ^2.1.1
@@ -124,6 +125,7 @@ dependencies:
   '@aws-sdk/client-sts': 3.95.0
   '@aws-sdk/client-timestream-query': 3.109.0
   '@baseplate-sdk/utils': 3.1.2
+  '@heroicons/react': 1.0.6_react@18.1.0
   '@mdx-js/node-loader': 2.1.2
   '@mdx-js/react': 2.1.1_react@18.1.0
   '@reach/menu-button': 0.17.0_uuaz5p7xzfmtjacf6iqf7idnby
@@ -3160,6 +3162,14 @@ packages:
     transitivePeerDependencies:
       - supports-color
     dev: true
+
+  /@heroicons/react/1.0.6_react@18.1.0:
+    resolution: {integrity: sha512-JJCXydOFWMDpCP4q13iEplA503MQO3xLoZiKum+955ZCtHINWnx26CUxVxxFQu/uLb4LW3ge15ZpzIkXKkJ8oQ==}
+    peerDependencies:
+      react: '>= 16'
+    dependencies:
+      react: 18.1.0
+    dev: false
 
   /@humanwhocodes/config-array/0.9.5:
     resolution: {integrity: sha512-ObyMyWxZiCu/yTisA7uzx81s40xR2fD5Cg/2Kq7G02ajkNubJf6BopgDTmDyc3U7sXpNKM8cYOw7s7Tyr+DnCw==, registry: https://gitlab.com/api/v4/packages/npm/, tarball: https://gitlab.com/api/v4/packages/npm/@humanwhocodes/config-array/-/config-array-0.9.5.tgz}
