@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { AuthTokenModel } from "../DB/Models/AuthToken/AuthToken";
+import { CustomerOrgModel } from "../DB/Models/CustomerOrg/CustomerOrg";
 import { AccountPermissionModel } from "../DB/Models/IAM/AccountPermission";
 import {
   BaseplatePermission,
@@ -11,7 +12,7 @@ import {
 } from "../DB/Models/SequelizeTSHelpers";
 import { UserModel } from "../DB/Models/User/User";
 import { UserPreferencesAttributes } from "../DB/Models/User/UserPreferences";
-import { notAuthorized } from "./EndpointResponses";
+import { notAuthorized, notFound } from "./EndpointResponses";
 
 export function findMissingPermissions(
   accountPermissions: ModelWithIncludes<
@@ -90,17 +91,29 @@ export function findMissingPermissions(
   }
 }
 
-export function checkPermissionsMiddleware(
+export async function checkPermissionsMiddleware(
   req: Request,
   res: Response,
   next: NextFunction,
   requiredPermissions: RequiredPermissions
 ) {
+  const customerOrgId: string = req.params.customerOrgId!;
+  const customerOrg = await CustomerOrgModel.findByPk(customerOrgId);
+
+  if (!customerOrg) {
+    return notFound(res, `No such organization with id ${customerOrgId}`);
+  }
+
+  if (!customerOrg.accountEnabled && !["GET", "HEAD"].includes(req.method)) {
+    return notAuthorized(res, [`Organization's account is disabled`]);
+  }
+
   const missingPermissions = findMissingPermissions(
     req.baseplateAccount.accountPermissions,
-    req.params.customerOrgId!,
+    customerOrgId,
     requiredPermissions
   );
+
   if (missingPermissions.length > 0) {
     notAuthorized(res, missingPermissions);
   } else {

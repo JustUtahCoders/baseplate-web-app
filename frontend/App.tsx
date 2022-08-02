@@ -12,7 +12,6 @@ import { UserPreferencesAttributes } from "../backend/DB/Models/User/UserPrefere
 import { RouteWithCustomerOrgId } from "./Utils/RouteWithCustomerOrgId";
 import { MainContent } from "./Styleguide/MainContent";
 import { Loader } from "./Styleguide/Loader";
-import { EnvironmentConfiguration } from "./Console/Environments/EnvironmentConfiguration";
 import { BaseplateAccount } from "../backend/Utils/IAMUtils";
 
 const Login = lazy(() =>
@@ -85,7 +84,7 @@ const EnvironmentHome = lazy(() =>
     default: m.EnvironmentHome,
   }))
 );
-const EnvironmenetConfiguration = lazy(() =>
+const EnvironmentConfiguration = lazy(() =>
   import("./Console/Environments/EnvironmentConfiguration").then((m) => ({
     default: m.EnvironmentConfiguration,
   }))
@@ -106,6 +105,31 @@ const ConsoleOrgHome = lazy(() =>
 const MicrofrontendAbout = lazy(() =>
   import("./Console/Microfrontends/MicrofrontendAbout").then((m) => ({
     default: m.MicrofrontendAbout,
+  }))
+);
+const ConsolePageNotFound = lazy(() =>
+  import("./Console/ConsolePageNotFound").then((m) => ({
+    default: m.ConsolePageNotFound,
+  }))
+);
+const OrgSettingsPage = lazy(() =>
+  import("./Console/OrgSettings/OrgSettingsPage").then((m) => ({
+    default: m.OrgSettingsPage,
+  }))
+);
+const OrgSettingsConfiguration = lazy(() =>
+  import("./Console/OrgSettings/OrgSettingsConfiguration").then((m) => ({
+    default: m.OrgSettingsConfiguration,
+  }))
+);
+const OrgSettingsSubscription = lazy(() =>
+  import("./Console/OrgSettings/OrgSettingsSubscription").then((m) => ({
+    default: m.OrgSettingsSubscription,
+  }))
+);
+const OrgSettingsAccess = lazy(() =>
+  import("./Console/OrgSettings/OrgSettingsAccess").then((m) => ({
+    default: m.OrgSettingsConfiguration,
   }))
 );
 
@@ -211,6 +235,30 @@ export function App(props: AppProps) {
                             <Route path="" element={<EnvironmentHome />} />
                           </>
                         ),
+                      })}
+                      {RouteWithCustomerOrgId({
+                        pathSuffix: "org-settings",
+                        element: <OrgSettingsPage />,
+                        children: (
+                          <>
+                            <Route
+                              path="access"
+                              element={<OrgSettingsAccess />}
+                            />
+                            <Route
+                              path="subscription"
+                              element={<OrgSettingsSubscription />}
+                            />
+                            <Route
+                              path="configuration"
+                              element={<OrgSettingsConfiguration />}
+                            />
+                          </>
+                        ),
+                      })}
+                      {RouteWithCustomerOrgId({
+                        pathSuffix: "*",
+                        element: <ConsolePageNotFound />,
                       })}
                     </>
                   }
