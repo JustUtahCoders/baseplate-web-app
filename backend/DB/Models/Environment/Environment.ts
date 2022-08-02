@@ -87,6 +87,9 @@ export interface EnvironmentAttributes extends AuditTargetAttributes {
 
 export type EnvironmentCreationAttributes = Omit<EnvironmentAttributes, "id">;
 
+export type EnvironmentUpdateAttributes =
+  Partial<EnvironmentCreationAttributes>;
+
 export type Environment = Omit<
   EnvironmentAttributes & DefaultModelAttrs,
   "auditAccountId"

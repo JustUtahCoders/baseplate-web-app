@@ -53,7 +53,7 @@ router.get<
         where: {
           customerOrgId: req.params.customerOrgId,
         },
-        order: [["pipelineOrder", "DESC"]],
+        order: [["pipelineOrder", "ASC"]],
       }),
       DeployedMicrofrontendModel.findAll({
         attributes: [

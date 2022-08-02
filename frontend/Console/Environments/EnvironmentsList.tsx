@@ -1,4 +1,4 @@
-import { useQuery } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import { baseplateFetch } from "../../Utils/baseplateFetch";
 import { useConsoleParams } from "../../Utils/paramHelpers";
 import { Card, CardFooter } from "../../Styleguide/Card";
@@ -6,7 +6,7 @@ import { MainContent } from "../../Styleguide/MainContent";
 import { useContext, useMemo, useState } from "react";
 import { RootPropsContext } from "../../App";
 import { Input } from "../../Styleguide/Input";
-import { ButtonKind } from "../../Styleguide/Button";
+import { ButtonKind, ButtonSize } from "../../Styleguide/Button";
 import Fuse from "fuse.js";
 import { Anchor } from "../../Styleguide/Anchor";
 import {
@@ -15,9 +15,27 @@ import {
 } from "../../../backend/RestAPI/Environments/GetEnvironments";
 import { PageExplanation, PageHeader } from "../../Styleguide/PageHeader";
 import dayjs from "dayjs";
+import {
+  Environment,
+  EnvironmentUpdateAttributes,
+} from "../../../backend/DB/Models/Environment/Environment";
+import { EnvironmentsReorderModal } from "./EnvironmentsReorderModal";
+import { BaseplateUUID } from "../../../backend/DB/Models/SequelizeTSHelpers";
+import {
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuItems,
+  MenuPopover,
+  MenuLink,
+} from "../../Styleguide/MenuButton";
+import { positionRight } from "@reach/popover";
 
 export function EnvironmentsList() {
+  const { customerOrgId } = useConsoleParams();
+  const queryClient = useQueryClient();
   const [search, setSearch] = useState("");
+  const [isReorderModalOpen, setIsReorderModalOpen] = useState(false);
 
   const environments = useEnvironments();
 
@@ -33,9 +51,88 @@ export function EnvironmentsList() {
     }
   }, [environments, search]);
 
+  interface MutationProps {
+    environmentId: BaseplateUUID;
+    patch: EnvironmentUpdateAttributes;
+  }
+
+  function refetchEnvironments() {
+    queryClient.invalidateQueries(`environments-${customerOrgId}`);
+  }
+
+  const { mutate: updateEnvironment } = useMutation<
+    Environment,
+    Error,
+    MutationProps
+  >(
+    ({ environmentId, patch }) => {
+      return baseplateFetch<Environment>(
+        `/api/orgs/${customerOrgId}/environments/${environmentId}`,
+        {
+          method: "PATCH",
+          body: patch,
+        }
+      );
+    },
+    {
+      onSuccess: refetchEnvironments,
+    }
+  );
+
+  const { mutate: updateEnvironmentsOrder, isLoading: isSavingEnvironments } =
+    useMutation<Environment, Error, EnvironmentWithLastDeployed[]>(
+      (orderedEnvs) => {
+        return baseplateFetch<Environment>(
+          `/api/orgs/${customerOrgId}/environments/order`,
+          {
+            method: "PATCH",
+            body: {
+              environmentIds: orderedEnvs.map(({ id }) => id),
+            },
+          }
+        );
+      },
+      {
+        onSuccess: refetchEnvironments,
+      }
+    );
+
+  const saveEnvironmentsOrder = (updatedEnvironments) => {
+    updateEnvironmentsOrder(updatedEnvironments);
+  };
+
   return (
     <MainContent>
-      <PageHeader>Environments List</PageHeader>
+      <PageHeader
+        menu={
+          <Menu>
+            <MenuButton
+              kind={ButtonKind.secondary}
+              buttonSize={ButtonSize.medium}
+            >
+              Actions
+              <span aria-hidden className="ml-1">
+                ▾
+              </span>
+            </MenuButton>
+            <MenuPopover position={positionRight}>
+              <MenuItems>
+                <MenuItem onSelect={() => setIsReorderModalOpen(true)}>
+                  Reorder Environments
+                </MenuItem>
+                <MenuLink
+                  as="a"
+                  href={`/console/${customerOrgId}/environments/new`}
+                >
+                  Add an Environment
+                </MenuLink>
+              </MenuItems>
+            </MenuPopover>
+          </Menu>
+        }
+      >
+        Environments List
+      </PageHeader>
       <PageExplanation
         docsLink="/docs/concepts/environments"
         briefExplanation={
@@ -55,9 +152,18 @@ export function EnvironmentsList() {
           className="w-full"
         />
       </div>
-      {filteredEnvironments.map((environment) => (
+      {filteredEnvironments.map((environment, index) => (
         <EnvironmentCard environment={environment} key={environment.id} />
       ))}
+      {isReorderModalOpen && (
+        <EnvironmentsReorderModal
+          title="Reorder Environments"
+          close={() => setIsReorderModalOpen(false)}
+          save={saveEnvironmentsOrder}
+          environments={environments}
+          isSaving={isSavingEnvironments}
+        />
+      )}
     </MainContent>
   );
 }
@@ -112,10 +218,16 @@ function EnvironmentCard({
           </CardFooter>
         }
       >
-        <div className="flex justify-between">
-          <div>
-            <div>{environment.name}</div>
-          </div>
+        <div className="flex items-center">
+          <div>{environment.name}</div>
+          {environment.isProd && (
+            <div
+              style={{ maxHeight: "26px" }}
+              className="ml-3 uppercase text-xs tracking-widest rounded bg-gray-200 text-gray-700 py-1 px-2"
+            >
+              Prod
+            </div>
+          )}
         </div>
       </Card>
     </Anchor>

@@ -22,19 +22,19 @@ export function ConsolePage() {
         <ConsoleNavOrgSelect />
         <SecondaryNavLink
           to={`/console/${customerOrgId}/microfrontends`}
-          icon={IconVariant.required}
+          icon={IconVariant.puzzle}
         >
           Microfrontends
         </SecondaryNavLink>
         <SecondaryNavLink
           to={`/console/${customerOrgId}/environments`}
-          icon={IconVariant.move}
+          icon={IconVariant.globe}
         >
           Environments
         </SecondaryNavLink>
         <SecondaryNavLink
           to={`/console/${customerOrgId}/org-settings`}
-          icon={IconVariant.close}
+          icon={IconVariant.settings}
         >
           Settings
         </SecondaryNavLink>
